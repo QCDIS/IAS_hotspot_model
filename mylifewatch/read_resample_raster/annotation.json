@@ -1,0 +1,65 @@
+{
+  "name": "ias-hotspot-model-se_analytics",
+  "label": "ias hotspot model se analytics",
+  "description": "The file contains all functions called in the other scripts.",
+  "type": "DataAnalysing",
+  "dockerImage": "ias-hotspot-model-se_analytics",
+  "parameters": [
+  ],
+  "inputs": [
+    {
+      "name": "present_benthic_avg",
+      "label": "present benthic avg",
+      "description": "zip file containing the present benthic average raster data",
+      "type": "zip",
+      "path": "/mnt/inputs/Present_Benthic_Avg.zip"
+    },
+        {
+      "name": "present_surface",
+      "label": "present surface",
+      "description": "zip file containing the present surface raster data",
+      "type": "zip",
+      "path": "/mnt/inputs/Present_Surface.zip"
+    }
+  ],
+  "outputs": [
+    {
+      "type": "zip",
+      "name": "rasterstacks",
+      "path": "/mnt/outputs/rasterstacks.zip",
+      "label": "rasterstacks",
+      "description": "zip file containing the raster stacks"
+    }
+  ],
+  "resources": {
+    "cores": 2,
+    "memory": 512,
+    "gpuNeeded": false,
+    "gpuMemory": 1024,
+    "estimatedTime": 4
+  },
+  "tags": [
+    "tag 1",
+    "tag 2"
+  ],
+  "license": "GPL v3",
+  "version": "0.0.1",
+  "dependencies": [
+    {
+      "name": "r",
+      "license": "GPL v3",
+      "version": "4.2.2",
+      "author": "null",
+      "citation": null
+    }
+  ],
+  "publicationDate": "Thu, 30 June 2025 00:00:00 GMT",
+  "author": "Nowé Jo-Hannes" ,
+  "bugs": {
+      "email": "joaquin.lopez@lifewatch.eu",
+      "url": "https://helpdesk.lifewatch.eu/"
+  },
+  "citation": null,
+  "testPath": "emptyUnitTest.sh",
+  "metaDataCatalogueUrl": "https://metadatacatalogue.lifewatch.eu/srv/eng/catalog.search#/metadata/<>"
+}

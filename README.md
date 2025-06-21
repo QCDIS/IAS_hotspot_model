@@ -10,6 +10,28 @@ The workflow for running the analysis is written in R and was built under the co
 
 The original IAS hotspot model was expanded to predict suitable habitat in the northern Baltic Sea for invasive species originating from freshwater systems, i.e. lakes and rivers. This model is documented in the folder "Freshwater model for Bothnian sea".
 
+
+## Mylifewatch 
+
+To crated mylifewatch warps you need to run the wrapper library scripts. 
+In the folder mylifewatch you can find the scripts to create the mylifewatch warps.
+For example to create the mylifewatch warp 01_setup.R go to folder mylifewatch/01_setup and run the warper script:
+
+Here we assume that the mylifewatch-wrapper-development-kit is in ~/workspace/mylifewatch-wrapper-development-kit
+
+```bash
+cd mylifewatch/SEanalysis/
+~/workspace/mylifewatch-wrapper-development-kit/bin/build-image 
+```
+
+Next to test the warp you can run the following command:
+
+```bash
+~/workspace/mylifewatch-wrapper-development-kit/bin/execute
+```
+
+
+
 ## References
 
 Obst M, Andersson G (2023) Hotspot modell för invasiva arter i Bottniska viken - Övervakning i marin miljö. SeAnalytics rapport 2023-03. På uppdrag av Havs- och vattenmyndigheten.
