@@ -55,7 +55,7 @@ lista.ras2[  which(!outcome == "TRUE") ]
 # Just a check of non compilant rasters
 compareRaster(raster(lista.ras2[  which(!outcome == "TRUE") ][1]), raster(lista.ras2[  which(!outcome == "TRUE") ][2]) )
 
-#get extent of rasters 
+#get extent of rasters
 extent(raster(lista.ras2[  which(!outcome == "TRUE") ][1]))# raster with non standard projection
 extent(raster(lista.ras2[  which(outcome == "TRUE") ][1]))#rasters with standard prjection
 #plot(raster(lista.ras2[  which(outcome == "TRUE") ][1]))
@@ -63,23 +63,23 @@ extent(raster(lista.ras2[  which(outcome == "TRUE") ][1]))#rasters with standard
 #get projectins for rasters
 proj4string(raster(lista.ras2[  which(!outcome == "TRUE") ][1]))#non - standard, not used
 proj4string(raster(lista.ras2[  which(outcome == "TRUE") ][1]))#standard
-############# beskär och omsampla  
+############# beskär och omsampla
 
-#Define extent of the map to be used. In 
-e <- extent(-25, 45, 30, 72) #xmin, xmax,ymin,ymax 
+#Define extent of the map to be used. In
+e <- extent(-25, 45, 30, 72) #xmin, xmax,ymin,ymax
 lista.ras.tmp <- Sys.glob(paste(tmp,"*.tif",sep="/"))
 for(file in lista.ras.tmp[-c(91:92)]){
   copen<-raster(file)
   #proj4string(copen )
   #extent(copen)
-  rc <- crop(copen, e)	
+  rc <- crop(copen, e)
   tmp.string <- strsplit(as.character(tmp), "[\\]")[[1]][length(strsplit(as.character(tmp), "[\\]")[[1]])]
   tmp.string2 <- strsplit(as.character(tmp2), "[\\]")[[1]][length(strsplit(as.character(tmp), "[\\]")[[1]])]
-  
+
   newfile <- gsub( tmp.string,tmp.string2, file)
   #print(paste(file, newfile , sep="###########"))
   writeRaster(rc, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
-  
+
 }
 
 lista.ras.tmp2 <- Sys.glob(paste(tmp2,"*.tif",sep="/")) #Sys.glob(paste(tmp2,"*.*",sep="/"))
@@ -90,7 +90,7 @@ lista.ras.tmp2 <- Sys.glob(paste(tmp2,"*.tif",sep="/")) #Sys.glob(paste(tmp2,"*.
 
 ####
 require(fBasics)
-colorsBlue <- seqPalette(n=,10, name = c( "Blues") ) 
+colorsBlue <- seqPalette(n=,10, name = c( "Blues") )
 colorsBrBG <- rev(divPalette(n=10, name = c( "BrBG") ) )
 
 #plot(raster(lista.ras.tmp2[  which(!outcome == "TRUE") ][1]), col=colorsBlue)

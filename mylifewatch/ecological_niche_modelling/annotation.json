@@ -1,9 +1,9 @@
 {
-  "name": "ias-hotspot-model-se_analytics",
-  "label": "ias hotspot model se analytics",
+  "name": "ecological_niche_modelling",
+  "label": "ecological niche modelling",
   "description": "The file contains all functions called in the other scripts.",
   "type": "DataAnalysing",
-  "dockerImage": "ias-hotspot-model-se_analytics",
+  "dockerImage": "ecological_niche_modelling",
   "parameters": [
   ],
   "inputs": [
@@ -54,9 +54,9 @@
     }
   ],
   "publicationDate": "Thu, 30 June 2025 00:00:00 GMT",
-  "author": "Nowé Jo-Hannes" ,
+  "author": " Gunnar Andersson" ,
   "bugs": {
-      "email": "joaquin.lopez@lifewatch.eu",
+      "email": "gunnar.andersson@sva.se",
       "url": "https://helpdesk.lifewatch.eu/"
   },
   "citation": null,
