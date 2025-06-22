@@ -8,4 +8,4 @@ RUN apt-get update && apt-get install -y \
                                r-cran-fbasics
 
 
-COPY scripts/ /wrp/functions
+COPY functions/ /wrp/functions
