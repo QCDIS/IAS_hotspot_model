@@ -1,9 +1,9 @@
 {
-  "name": "ecological_niche_modelling",
-  "label": "ecological niche modelling",
-  "description": "The file contains all functions called in the other scripts.",
+  "name": "read_and_resample_raster",
+  "label": "read and resample raster",
+  "description": "The script extracts the zipfiles with the rasterlayers in a temporary directory. The compareRaster function is run to verify that all rasters have the same extent and projection, and thus can be included in a rasterstack. The rasters are cropped to match the region of interest and saved in temporary directory. Finally the rasters are aligned in a “rasterstack” which is saved as a .tif file. In the example stacks are prepared with a Global and a European limit.",
   "type": "DataAnalysing",
-  "dockerImage": "ecological_niche_modelling",
+  "dockerImage": "read_and_resample_raster",
   "parameters": [
   ],
   "inputs": [
