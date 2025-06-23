@@ -1,0 +1,149 @@
+{
+  "name": "invasive_data_masterscript_with_cv",
+  "label": "invasive data masterscript with CV",
+  "description": "This script performs all steps in the analysis, from extraction of data to preparation of plots.",
+  "type": "DataAnalysing",
+  "dockerImage": "invasive_data_masterscript_with_cv",
+  "parameters": [
+  ],
+  "inputs": [
+    {
+      "name": "Stackpath",
+      "label": "Stackpath",
+      "description": "zip Stackpath",
+      "type": "zip",
+      "path": "/mnt/inputs/rasterstacks.zip"
+    },
+        {
+      "name": "Speciespath",
+      "label": "Speciespath ",
+      "description": "zip Speciespath",
+      "type": "zip",
+      "path": "/mnt/inputs/species.zip"
+    },
+        {
+      "name": "NUTS_shapefile",
+      "label": "NUTS_shapefile ",
+      "description": "zip NUTS_shapefile",
+      "type": "zip",
+      "path": "/mnt/inputs/NUTS_shapefile.zip"
+    },
+        {
+      "name": "data_table",
+      "label": "data_table ",
+      "description": "zip data_table",
+      "type": "zip",
+      "path": "/mnt/inputs/data_table.zip"
+    }
+  ],
+  "outputs": [
+    {
+      "type": "zip",
+      "name": "Iterations.path",
+      "path": "/mnt/outputs/iterations.zip",
+      "label": "Iterations path",
+      "description": "zip iterations"
+    },
+    {
+      "type": "zip",
+      "name": "ROC.path",
+      "path": "/mnt/outputs/ROC.zip",
+      "label": "ROC path",
+      "description": "zip ROC"
+    },
+    {
+      "type": "zip",
+      "name": "Plotpath",
+      "path": "/mnt/outputs/plots.zip",
+      "label": "Plot path",
+      "description": "zip plots"
+    },
+    {
+      "type": "zip",
+      "name": "Outpath",
+      "path": "/mnt/outputs/RF.indata.zip",
+      "label": "Out path",
+      "description": "zip Out"
+    },
+    {
+      "type": "zip",
+      "name": "Modelpath",
+      "path": "/mnt/outputs/models.zip",
+      "label": "Modelpath",
+      "description": "zip Modelpath"
+    },
+    {
+      "type": "zip",
+      "name": "resultpath",
+      "path": "/mnt/outputs/Resultat.zip",
+      "label": "resultpath",
+      "description": "zip resultpath"
+    },
+    {
+      "type": "zip",
+      "name": "mappath",
+      "path": "/mnt/outputs/maps.zip",
+      "label": "mappath",
+      "description": "zip mappath"
+    },
+    {
+      "type": "zip",
+      "name": "rastermappath",
+      "path": "/mnt/outputs/predict.rasters.zip",
+      "label": "rastermappath",
+      "description": "zip rastermappath"
+    },
+    {
+      "type": "zip",
+      "name": "ICESpath",
+      "path": "/mnt/outputs/ICES_areas.zip",
+      "label": "ICESpath",
+      "description": "zip ICESpath"
+    },
+    {
+      "type": "zip",
+      "name": "ICESecopath",
+      "path": "/mnt/outputs/ICES_ecoregions.zip",
+      "label": "ICESecopath",
+      "description": "zip ICESecopath"
+    },
+    {
+      "type": "zip",
+      "name": "ICESstatrectpath",
+      "path": "/mnt/outputs/ICES_StatRec_mapto_ICES_Areas.zip",
+      "label": "ICESstatrectpath",
+      "description": "zip ICESstatrectpath"
+    }
+  ],
+  "resources": {
+    "cores": 2,
+    "memory": 512,
+    "gpuNeeded": false,
+    "gpuMemory": 1024,
+    "estimatedTime": 4
+  },
+  "tags": [
+    "tag 1",
+    "tag 2"
+  ],
+  "license": "GPL v3",
+  "version": "0.0.1",
+  "dependencies": [
+    {
+      "name": "r",
+      "license": "GPL v3",
+      "version": "4.2.2",
+      "author": "null",
+      "citation": null
+    }
+  ],
+  "publicationDate": "Thu, 30 June 2025 00:00:00 GMT",
+  "author": " Gunnar Andersson" ,
+  "bugs": {
+      "email": "gunnar.andersson@sva.se",
+      "url": "https://helpdesk.lifewatch.eu/"
+  },
+  "citation": null,
+  "testPath": "emptyUnitTest.sh",
+  "metaDataCatalogueUrl": "https://metadatacatalogue.lifewatch.eu/srv/eng/catalog.search#/metadata/<>"
+}
