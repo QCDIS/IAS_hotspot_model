@@ -1,0 +1,114 @@
+{
+  "name": "invasive_data_masterscript",
+  "label": "invasive data masterscript",
+  "description": "The first version of the script. A simpler implementation without cross validation.",
+  "type": "DataAnalysing",
+  "dockerImage": "invasive_data_masterscript",
+  "parameters": [
+  ],
+  "inputs": [
+    {
+      "name": "Stackpath",
+      "label": "Stackpath",
+      "description": "Stackpath",
+      "type": "zip",
+      "path": "/mnt/inputs/rasterstacks.zip"
+    },
+    {
+      "name": "Speciespath",
+      "label": "Speciespath",
+      "description": "Speciespath",
+      "type": "zip",
+      "path": "/mnt/inputs/species_to_use.zip"
+    },
+    {
+      "name": "Plotpath_input",
+      "label": "Plotpath input",
+      "description": "Plotpath input",
+      "type": "zip",
+      "path": "/mnt/inputs/plots.zip"
+    },
+    {
+      "name": "shape2",
+      "label": "shape2W",
+      "description": "shape2",
+      "type": "zip",
+      "path": "/mnt/inputs/NUTS_shapefile.zip"
+    }
+  ],
+  "outputs": [
+    {
+      "type": "zip",
+      "name": "Outpath",
+      "path": "/mnt/outputs/RF.indata.zip",
+      "label": "Outpath",
+      "description": "zip file indata"
+    },
+    {
+      "type": "zip",
+      "name": "Modelpath",
+      "path": "/mnt/outputs/models.zip",
+      "label": "Modelpath",
+      "description": "zip file indata"
+    },
+    {
+      "type": "zip",
+      "name": "mappath",
+      "path": "/mnt/outputs/maps.zip",
+      "label": "mappath",
+      "description": "zip file mappath"
+    },
+    {
+      "type": "zip",
+      "name": "rastermappath",
+      "path": "/mnt/outputs/predict.rasters.zip",
+      "label": "rastermappath",
+      "description": "zip file rastermappath"
+    },
+    {
+      "type": "zip",
+      "name": "ICESpath",
+      "path": "/mnt/outputs/ICES_areas.zip",
+      "label": "ICESpath",
+      "description": "zip file ICESpath"
+    },
+    {
+      "type": "zip",
+      "name": "ICESecopath",
+      "path": "/mnt/outputs/ICES_ecoregions.zip",
+      "label": "ICESecopath",
+      "description": "zip file ICESecopath"
+    }
+  ],
+  "resources": {
+    "cores": 2,
+    "memory": 512,
+    "gpuNeeded": false,
+    "gpuMemory": 1024,
+    "estimatedTime": 4
+  },
+  "tags": [
+    "tag 1",
+    "tag 2"
+  ],
+  "license": "GPL v3",
+  "version": "0.0.1",
+  "dependencies": [
+    {
+      "name": "r",
+      "license": "GPL v3",
+      "version": "4.2.2",
+      "author": "null",
+      "citation": null
+    }
+  ],
+  "publicationDate": "Thu, 30 June 2025 00:00:00 GMT",
+  "author": " Gunnar Andersson",
+  "bugs": {
+    "email": "gunnar.andersson@sva.se",
+    "url": "https://helpdesk.lifewatch.eu/"
+  },
+  "citation": null,
+  "testPath": "emptyUnitTest.sh",
+  "metaDataCatalogueUrl": "https://metadatacatalogue.lifewatch.eu/srv/eng/catalog.search#/metadata/<>"
+}
