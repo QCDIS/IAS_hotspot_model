@@ -14,11 +14,4 @@ Stack <- file.path(Stackpath, "globalStack.rda") # "globalStack.rda" or "europeS
 Iterations.path <- "/mnt/outputs/iterations" # Path to the iterations zip file
 
 
-
-rf.output.list <- run.random.forests(species = Species,
-            selvar = "all",
-            indata.path = Outpath,
-            iterations.path= Iterations.path)
-
-
- rf.output.cv <- rf.output.list[[RF_results]]
+split.data(species = Species, indata.path = Outpath, iterations.path= Iterations.path)
