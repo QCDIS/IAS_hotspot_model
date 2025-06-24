@@ -1,0 +1,79 @@
+{
+  "name": "gbif_download_check_hav2022",
+  "label": "gbif download check hav2022",
+  "description": "gbif download check hav2022",
+  "type": "DataAnalysing",
+  "dockerImage": "gbif_download_check_hav2022",
+  "parameters": [
+  ],
+  "inputs": [
+    {
+      "name": "gbifs",
+      "label": "gbifs",
+      "description": "zip gbifs",
+      "type": "zip",
+      "path": "/mnt/inputs/GBIF.zip"
+    },
+    {
+      "name": "speciesIndata2022",
+      "label": "speciesIndata2022",
+      "description": "speciesIndata2022",
+      "type": "zip",
+      "path": "/mnt/inputs/speciesIndata2022.zip"
+    },
+    {
+      "name": "CNTR_RG_01M_2020_4326",
+      "label": "CNTR_RG_01M_2020_4326",
+      "description": "CNTR_RG_01M_2020_4326",
+      "type": "zip",
+      "path": "/mnt/inputs/CNTR_RG_01M_2020_4326.zip"
+    }
+  ],
+  "outputs": [
+    {
+      "type": "zip",
+      "name": "jpgs",
+      "path": "/mnt/outputs/jpgs.zip",
+      "label": "jpgs",
+      "description": "zip jpgs"
+    },
+    {
+      "type": "zip",
+      "name": "rda",
+      "path": "/mnt/outputs/rda.zip",
+      "label": "rda",
+      "description": "zip rda"
+    }
+  ],
+  "resources": {
+    "cores": 2,
+    "memory": 512,
+    "gpuNeeded": false,
+    "gpuMemory": 1024,
+    "estimatedTime": 4
+  },
+  "tags": [
+    "tag 1",
+    "tag 2"
+  ],
+  "license": "GPL v3",
+  "version": "0.0.1",
+  "dependencies": [
+    {
+      "name": "r",
+      "license": "GPL v3",
+      "version": "4.2.2",
+      "author": "null",
+      "citation": null
+    }
+  ],
+  "publicationDate": "Thu, 30 June 2025 00:00:00 GMT",
+  "author": " Gunnar Andersson",
+  "bugs": {
+    "email": "gunnar.andersson@sva.se",
+    "url": "https://helpdesk.lifewatch.eu/"
+  },
+  "citation": null,
+  "testPath": "emptyUnitTest.sh",
+  "metaDataCatalogueUrl": "https://metadatacatalogue.lifewatch.eu/srv/eng/catalog.search#/metadata/<>"
+}
