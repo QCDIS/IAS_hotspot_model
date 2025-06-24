@@ -97,3 +97,20 @@ Within script "invasive.data.masterscript.r"
 The combined layers, stored as geotiff, are read in and plotted as png files.  Some computatons are done to obtain a reasonable colorscale so that plots are comparable and that the color-legend at the side will get a nice appearance (without breaks are strange numbers.)
 
 Plots are made with either the entire predicted area (limited by the rasterstac) and for a smaller area defined by xlim and ylim.  The plots are overlayed with a map showing anministrative areas of Sweden and Europe. “shape 2”. 
+
+
+## Summary of files and functions
+
+| Name                                  | Type      | Count |
+|---------------------------------------|-----------|-------|
+| read.and.resample.raster.r            | File      | 1     |
+| extract.data.r                        | File      | 2     |
+| invasive.data.masterscript.r          | File      | 3     |
+| invasive.data.masterscript.with_CV.r  | Function  | 4     |
+| read.and.extract                      | Function  | 5     |
+| split.data                            | Function  | 6     |
+| run.random.forests                    | Function  | 7     |
+| ROC curve                             | Function  | 8     |
+| plot.maps                             | Function  | 9     |
+| combine.layers                        | Function  | 10    |
+| Plot selected layers                  | Function  | 11    |
