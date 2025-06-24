@@ -13,7 +13,7 @@ Plotpath_input <- "/mnt/inputs/plots/"
 Plotpath_output <- "/mnt/outputs/plots/"
 data_table <- "/mnt/inputs/data.table.csv"
 
-Outpath <- "/mnt/outputs//RF.indata"
+Outpath <- "/mnt/outputs/RF.indata"
 Modelpath <- "/mnt/outputs/models"
 
 resultpath <-  "/mnt/outputs/Resultat"

@@ -1,9 +1,9 @@
 {
-  "name": "read_and_extract",
-  "label": "read and extract",
-  "description": "Read in present absent and pseudoabsent points, convert these points to spatial coordinates and extract environmental variables from rasterstack\n\nData points with errors are deleted and the data table, with environmental variables is saves as a .csv file",
+  "name": "split_data",
+  "label": "read and resample raster",
+  "description": "The cross validation scheme is prepared. M repetitions of a n-fld cross validation. The cross validation is prepared in such a way that observations from the same ICES-statistical rectangle will end up in the same set. This is a precaution to avoid overestimating the predictive performance",
   "type": "DataAnalysing",
-  "dockerImage": "read_and_extract",
+  "dockerImage": "split_data",
   "parameters": [
   ],
   "inputs": [
@@ -20,27 +20,13 @@
       "description": "zip species_to_use",
       "type": "zip",
       "path": "/mnt/inputs/species_to_use.zip"
-    },
-    {
-      "name": "rasterstacks",
-      "label": "rasterstacks",
-      "description": "zip rasterstacks",
-      "type": "zip",
-      "path": "/mnt/inputs/rasterstacks.zip"
-    },
-    {
-      "type": "zip",
-      "name": "plots",
-      "path": "/mnt/inputs/plots.zip",
-      "label": "plots",
-      "description": "zip plots"
     }
   ],
   "outputs": [
     {
       "type": "zip",
       "name": "outpath",
-      "path": "/mnt/outputs/outpath.zip",
+      "path": "/mnt/outputs/RF.indata.zip",
       "label": "outpath",
       "description": "zip outpath"
     }
