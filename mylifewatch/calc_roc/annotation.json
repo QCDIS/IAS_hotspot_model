@@ -1,9 +1,9 @@
 {
-  "name": "run_random_forests",
-  "label": "run random forests",
-  "description": "The function “run random forests” is preparing the data and then the method is execuded in the sub-function RF-process. First the cross-validation experiments is preformed and predicted class probability for each observation is stored. (but not the modell). Finally a model is training with the full dataset and stored for future use. In this case class predictions for the training set are stored. n.b. The code contains some “artifacts” that are left from an earlier implementation using parallel processing. The result is stored as two .rda files. One with cross validation results the other with the full model",
+  "name": "calc_roc",
+  "label": "calc roc",
+  "description": "Results are loaded from the cross validation results. The predicted class probability for each observation from the cross validation are sorted. FP TP FN and TN are calculated with different cutoffs.\n\nOne average ROC curve is computed with results from all repetition of the cross validation as well as individual curves for each repetition. The meaning of repeating the cross validation is to check that the performance estimate is stable, and does not vary a lot depending on how the data is split.",
   "type": "DataAnalysing",
-  "dockerImage": "run_random_forests",
+  "dockerImage": "calc_roc",
   "parameters": [
   ],
   "inputs": [
@@ -13,13 +13,6 @@
       "description": "zip species_to_use",
       "type": "zip",
       "path": "/mnt/inputs/species_to_use.zip"
-    },
-    {
-      "name": "data_table",
-      "label": "data table",
-      "description": "zip data_table",
-      "type": "zip",
-      "path": "/mnt/inputs/data_table.zip"
     }
   ],
   "outputs": [
