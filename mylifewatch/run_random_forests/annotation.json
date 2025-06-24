@@ -1,0 +1,65 @@
+{
+  "name": "split_data",
+  "label": "read and resample raster",
+  "description": "The cross validation scheme is prepared. M repetitions of a n-fld cross validation. The cross validation is prepared in such a way that observations from the same ICES-statistical rectangle will end up in the same set. This is a precaution to avoid overestimating the predictive performance",
+  "type": "DataAnalysing",
+  "dockerImage": "split_data",
+  "parameters": [
+  ],
+  "inputs": [
+    {
+      "name": "data_table",
+      "label": "data table",
+      "description": "zip data_table",
+      "type": "zip",
+      "path": "/mnt/inputs/data_table.zip"
+    },
+    {
+      "name": "species_to_use",
+      "label": "species to use",
+      "description": "zip species_to_use",
+      "type": "zip",
+      "path": "/mnt/inputs/species_to_use.zip"
+    }
+  ],
+  "outputs": [
+    {
+      "type": "zip",
+      "name": "outpath",
+      "path": "/mnt/outputs/RF.indata.zip",
+      "label": "outpath",
+      "description": "zip outpath"
+    }
+  ],
+  "resources": {
+    "cores": 2,
+    "memory": 512,
+    "gpuNeeded": false,
+    "gpuMemory": 1024,
+    "estimatedTime": 4
+  },
+  "tags": [
+    "tag 1",
+    "tag 2"
+  ],
+  "license": "GPL v3",
+  "version": "0.0.1",
+  "dependencies": [
+    {
+      "name": "r",
+      "license": "GPL v3",
+      "version": "4.2.2",
+      "author": "null",
+      "citation": null
+    }
+  ],
+  "publicationDate": "Thu, 30 June 2025 00:00:00 GMT",
+  "author": " Gunnar Andersson",
+  "bugs": {
+    "email": "gunnar.andersson@sva.se",
+    "url": "https://helpdesk.lifewatch.eu/"
+  },
+  "citation": null,
+  "testPath": "emptyUnitTest.sh",
+  "metaDataCatalogueUrl": "https://metadatacatalogue.lifewatch.eu/srv/eng/catalog.search#/metadata/<>"
+}

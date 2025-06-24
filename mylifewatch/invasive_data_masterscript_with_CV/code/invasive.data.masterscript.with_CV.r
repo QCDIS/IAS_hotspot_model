@@ -62,6 +62,8 @@ ICESstatrectpath <- "/mnt/outputs/ICES_StatRec_mapto_ICES_Areas"
 NUTS_shapefile = "/mnt/inputs/NUTS_shapefile"
 data_table = "/mnt/inputs/data_table.csv"
 
+RF_results <- "/mnt/outputs/RF_results"
+
 
 # read in the region map used in the plots, and transfor to WGS84 - World Geodetic System 1984
 # actually the map will not be needed until later. Readin git could be omitted here to save memory.
@@ -170,10 +172,11 @@ for(Species in Data.table$species){
   gc()
   # the rf.output.cv object contains the results from the cross validations analysis. 
   #Predictions for each entrie are stored for each repeat and cv-fold. The random forest model is not saved, to save memory
-  rf.output.cv <- rf.output.list[["RF.results.CV"]]
+
+  rf.output.cv <- rf.output.list[[paste(RF_results,"RF.results.CV",sep="/")]]
   # this object contains the random forests model obtainied when all indata is used as trainingset.
   # the predicted probability of being present is stored for each data poing
-  rf.output <- rf.output.list[["RF.results.alldata"]]
+  rf.output <- rf.output.list[[paste(RF_results,"RF.results.alldata",sep="/")]]
   
   #print results to see progression
   names(rf.output)

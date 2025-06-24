@@ -7,18 +7,12 @@ source("functions/SEanalytics.functions.r")
 Speciespath <- "/mnt/inputs/species_to_use"
 Outpath <- "/mnt/outputs/RF.indata"
 
-RF_results <- "/mnt/outputs/RF.results.cv"
-
 Species <- read.species(Speciespath) # Read the species list from the input path
 Stack <- file.path(Stackpath, "globalStack.rda") # "globalStack.rda" or "europeStack.rda"
 Iterations.path <- "/mnt/outputs/iterations" # Path to the iterations zip file
 
 
 
-rf.output.list <- run.random.forests(species = Species,
-            selvar = "all",
-            indata.path = Outpath,
-            iterations.path= Iterations.path)
-
-
- rf.output.cv <- rf.output.list[[RF_results]]
+  split.data(species = Species,
+             indata.path = Outpath,
+             iterations.path= Iterations.path)
