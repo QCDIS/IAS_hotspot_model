@@ -11,6 +11,7 @@ Stackpath <- "/mnt/inputs/rasterstacks"
 Speciespath <- "/mnt/inputs/species_to_use"
 Plotpath_input <- "/mnt/inputs/plots/"
 Plotpath_output <- "/mnt/outputs/plots/"
+data_table <- "/mnt/inputs/data.table.csv"
 
 Outpath <- "/mnt/outputs//RF.indata"
 Modelpath <- "/mnt/outputs/models"
@@ -29,7 +30,7 @@ proj4string(shape2)#GRS80 EPSG:4019
 shape2 <- spTransform(shape2, CRS("+init=epsg:4326"))
 
 #########################################################
-Data.table <- read.csv2("data.table.csv",header=TRUE, sep=";",stringsAsFactors = F)
+Data.table <- read.csv2(data_table,header=TRUE, sep=";",stringsAsFactors = F)
 names(Data.table)[1]<- "species"
 
 Species = "Ficopomatus enigmaticus"
