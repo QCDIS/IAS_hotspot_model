@@ -8,13 +8,6 @@
   ],
   "inputs": [
     {
-      "name": "data_table",
-      "label": "data table",
-      "description": "zip data_table",
-      "type": "zip",
-      "path": "/mnt/inputs/data_table.zip"
-    },
-    {
       "name": "species_to_use",
       "label": "species to use",
       "description": "zip species_to_use",
@@ -29,6 +22,13 @@
       "path": "/mnt/outputs/RF.indata.zip",
       "label": "outpath",
       "description": "zip outpath"
+    },
+    {
+      "type": "zip",
+      "name": "RF_results",
+      "path": "/mnt/outputs/RF.results.zip",
+      "label": "RF results",
+      "description": "zip RF_results"
     }
   ],
   "resources": {
