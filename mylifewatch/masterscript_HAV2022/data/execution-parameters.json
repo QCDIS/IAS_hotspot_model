@@ -1,19 +1,4 @@
 {
   "parameters": [
-    {
-      "name": "gbif_username",
-      "defaultValue": "",
-      "value": ""
-    },
-    {
-      "name": "gbif_password",
-      "defaultValue": "",
-      "value": "secret"
-    },
-    {
-      "name": "email",
-      "defaultValue": "",
-      "value": "nn@host.country"
-    }
   ]
 }
