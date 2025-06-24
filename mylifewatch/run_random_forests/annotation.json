@@ -1,9 +1,9 @@
 {
-  "name": "split_data",
-  "label": "read and resample raster",
-  "description": "The cross validation scheme is prepared. M repetitions of a n-fld cross validation. The cross validation is prepared in such a way that observations from the same ICES-statistical rectangle will end up in the same set. This is a precaution to avoid overestimating the predictive performance",
+  "name": "run_random_forests",
+  "label": "run random forests",
+  "description": "The function “run random forests” is preparing the data and then the method is execuded in the sub-function RF-process. First the cross-validation experiments is preformed and predicted class probability for each observation is stored. (but not the modell). Finally a model is training with the full dataset and stored for future use. In this case class predictions for the training set are stored. n.b. The code contains some “artifacts” that are left from an earlier implementation using parallel processing. The result is stored as two .rda files. One with cross validation results the other with the full model",
   "type": "DataAnalysing",
-  "dockerImage": "split_data",
+  "dockerImage": "run_random_forests",
   "parameters": [
   ],
   "inputs": [
