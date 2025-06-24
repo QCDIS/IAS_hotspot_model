@@ -10,7 +10,7 @@ data_table <- "/mnt/inputs/data.table.csv"
 Speciespath <- "/mnt/inputs/species_to_use"
 Stackpath <- "/mnt/inputs/rasterstacks"
 Plotpath_input <- "/mnt/inputs/plots/"
-Outpath <- "/mnt/outputs//RF.indata"
+Outpath <- "/mnt/outputs/RF.indata"
 
 Stack <- file.path(Stackpath, "globalStack.rda") # "globalStack.rda" or "europeStack.rda"
 
