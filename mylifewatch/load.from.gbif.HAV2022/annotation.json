@@ -1,10 +1,33 @@
 {
-  "name": "gbif_download_check_hav2022",
-  "label": "gbif download check hav2022",
-  "description": "gbif download check hav2022",
+  "name": "load_from_gbif_hav2022",
+  "label": "load from gbif hav2022",
+  "description": "load from gbif hav2022",
   "type": "DataAnalysing",
-  "dockerImage": "gbif_download_check_hav2022",
+  "dockerImage": "load_from_gbif_hav2022",
   "parameters": [
+    {
+      "name": "gbif_username",
+      "label": "gbif username",
+      "description": "gbif username",
+      "type": "String",
+      "defaultValue": "",
+      "secret": true
+    },
+    {
+      "name": "gbif_password",
+      "label": "gbif password",
+      "description": "gbif password",
+      "type": "String",
+      "defaultValue": "",
+      "secret": true
+    },
+    {
+      "name": "email",
+      "label": "email",
+      "description": "email",
+      "type": "String",
+      "defaultValue": ""
+    }
   ],
   "inputs": [
     {
@@ -15,35 +38,14 @@
       "path": "/mnt/inputs/GBIF.zip"
     },
     {
-      "name": "speciesIndata2022",
-      "label": "speciesIndata2022",
-      "description": "speciesIndata2022",
+      "name": "csv_path",
+      "label": "csv path",
+      "description": "csv path",
       "type": "zip",
-      "path": "/mnt/inputs/speciesIndata2022.zip"
-    },
-    {
-      "name": "CNTR_RG_01M_2020_4326",
-      "label": "CNTR_RG_01M_2020_4326",
-      "description": "CNTR_RG_01M_2020_4326",
-      "type": "zip",
-      "path": "/mnt/inputs/CNTR_RG_01M_2020_4326.zip"
+      "path": "/mnt/inputs/csv.zip"
     }
   ],
   "outputs": [
-    {
-      "type": "zip",
-      "name": "jpgs",
-      "path": "/mnt/outputs/jpgs.zip",
-      "label": "jpgs",
-      "description": "zip jpgs"
-    },
-    {
-      "type": "zip",
-      "name": "rda",
-      "path": "/mnt/outputs/rda.zip",
-      "label": "rda",
-      "description": "zip rda"
-    }
   ],
   "resources": {
     "cores": 2,
