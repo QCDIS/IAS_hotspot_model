@@ -15,6 +15,13 @@
       "path": "/mnt/inputs/rasterstacks.zip"
     },
     {
+      "name": "data_table",
+      "label": "data table",
+      "description": "data table",
+      "type": "zip",
+      "path": "/mnt/inputs/data_table.zip"
+    },
+    {
       "name": "Speciespath",
       "label": "Speciespath",
       "description": "Speciespath",
