@@ -113,6 +113,13 @@
       "path": "/mnt/outputs/ICES_StatRec_mapto_ICES_Areas.zip",
       "label": "ICESstatrectpath",
       "description": "zip ICESstatrectpath"
+    },
+    {
+      "type": "zip",
+      "name": "RF_results",
+      "path": "/mnt/outputs/RF_results.zip",
+      "label": "RF_results",
+      "description": "zip RF_results"
     }
   ],
   "resources": {
