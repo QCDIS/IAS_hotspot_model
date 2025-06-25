@@ -4,11 +4,14 @@ require(rgdal)
 library(sf)
 require(fBasics)
 
-path <- "~/path/to/project/Data2022/NASA"
+CHLORA_tif = "/mnt/inputs/CHLORA_tiff/"
+SST_tif = "/mnt/inputs/SST_tiff/"
+globalStack = "/mnt/inputs/globalStack.rda"
+processpath = "/mnt/outputs/processlayers/"
 # set one path per class of downloaded data.
-rasterpaths <- paste(path, c("CHLORA tiff/", "SST tiff/"), sep="/")
+rasterpaths <- c(CHLORA_tif, SST_tif)
 
-processpath <-paste(path, "processlayers" ,sep="/")
+
 layersclass <- c("CHLORA", "SST")
 #Chech that files are there
 for(mypath in rasterpaths){
@@ -192,7 +195,7 @@ extent(mask)
 plot(mask)
 
 # Load the file with rasterstack from last project and select salinity layer
-load("~/path/to/project/Data2022/Rasterstacks/globalStack.rda")
+load(globalStack)
 names(var)
 
 #[80] "Present.Surface.Salinity.Max"                         

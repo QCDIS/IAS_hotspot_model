@@ -1,111 +1,41 @@
 {
-  "name": "masterscript_hav2022",
-  "label": "masterscript hav2022",
-  "description": "masterscript hav2022",
+  "name": "prepare_environmental_layers_hav2022",
+  "label": "prepare environmental layers hav2022",
+  "description": "prepare environmental layers hav2022",
   "type": "DataAnalysing",
-  "dockerImage": "masterscript_hav2022",
+  "dockerImage": "prepare_environmental_layers_hav2022",
   "parameters": [
   ],
   "inputs": [
     {
-      "name": "SpeciespathRaw",
-      "label": "SpeciespathRaw",
-      "description": "zip SpeciespathRaw",
+      "name": "CHLORA tif",
+      "label": "CHLORA tif",
+      "description": "zip CHLORA tif",
       "type": "zip",
-      "path": "/mnt/inputs/species"
+      "path": "/mnt/inputs/CHLORA_tif.zip"
     },
     {
-      "name": "data_table",
-      "label": "data table",
-      "description": "data table",
+      "name": "SST tif",
+      "label": "SST tif",
+      "description": "SST tif",
       "type": "zip",
-      "path": "/mnt/inputs/data.table.all.csv"
+      "path": "/mnt/inputs/SST_tif.zip"
     },
     {
-      "name": "Stackpath",
-      "label": "Stackpath",
-      "description": "Stackpath",
+      "name": "globalStack",
+      "label": "globalStack",
+      "description": "globalStack",
       "type": "zip",
-      "path": "/mnt/inputs/processlayers"
-    },
-    {
-      "name": "iterations",
-      "label": "iterations",
-      "description": "iterations",
-      "type": "zip",
-      "path": "/mnt/inputs/iterations"
-    },
-    {
-      "name": "ICES_ecoregions",
-      "label": "ICES ecoregions",
-      "description": "ICES ecoregions",
-      "type": "zip",
-      "path": "/mnt/inputs/ICES_ecoregions"
-    },
-    {
-      "name": "roc",
-      "label": "roc",
-      "description": "roc",
-      "type": "zip",
-      "path": "/mnt/inputs/ROC"
-    },
-    {
-      "name": "trafficpath",
-      "label": "trafficpath",
-      "description": "trafficpath",
-      "type": "zip",
-      "path": "/mnt/inputs/traffic/2016_All_shiptypes_AIS_Shipping_Density"
+      "path": "/mnt/inputs/globalStack.zip"
     }
   ],
   "outputs": [
     {
-      "name": "plots",
-      "label": "plots",
-      "description": "plots",
+      "name": "processpath",
+      "label": "processpath",
+      "description": "processpath",
       "type": "zip",
-      "path": "/mnt/outputs/Plots"
-    },
-    {
-      "name": "results",
-      "label": "results",
-      "description": "results",
-      "type": "zip",
-      "path": "/mnt/outputs/Results"
-    },
-    {
-      "name": "Models",
-      "label": "Models",
-      "description": "Models",
-      "type": "zip",
-      "path": "/mnt/outputs/Models"
-    },
-    {
-      "name": "mappath",
-      "label": "mappath",
-      "description": "mappath",
-      "type": "zip",
-      "path": "/mnt/outputs/Maps"
-    },
-    {
-      "name": "RF_indata",
-      "label": "RF_indata",
-      "description": "RF_indata",
-      "type": "zip",
-      "path": "/mnt/outputs/RF_indata"
-    },
-    {
-      "name": "rastermappath",
-      "label": "rastermappath",
-      "description": "rastermappath",
-      "type": "zip",
-      "path": "/mnt/outputs/Rastermaps"
-    },
-    {
-      "name": "species_stats",
-      "label": "species_stats",
-      "description": "species_stats",
-      "type": "zip",
-      "path": "/mnt/outputs/species_stats"
+      "path": "/mnt/outputs/processlayers.zip"
     }
   ],
   "resources": {

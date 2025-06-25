@@ -12,49 +12,49 @@
       "label": "SpeciespathRaw",
       "description": "zip SpeciespathRaw",
       "type": "zip",
-      "path": "/mnt/inputs/species"
+      "path": "/mnt/inputs/species.zip"
     },
     {
       "name": "data_table",
       "label": "data table",
       "description": "data table",
       "type": "zip",
-      "path": "/mnt/inputs/data.table.all.csv"
+      "path": "/mnt/inputs/data.table.all.zip"
     },
     {
       "name": "Stackpath",
       "label": "Stackpath",
       "description": "Stackpath",
       "type": "zip",
-      "path": "/mnt/inputs/processlayers"
+      "path": "/mnt/inputs/processlayers.zip"
     },
     {
       "name": "iterations",
       "label": "iterations",
       "description": "iterations",
       "type": "zip",
-      "path": "/mnt/inputs/iterations"
+      "path": "/mnt/inputs/iterations.zip"
     },
     {
       "name": "ICES_ecoregions",
       "label": "ICES ecoregions",
       "description": "ICES ecoregions",
       "type": "zip",
-      "path": "/mnt/inputs/ICES_ecoregions"
+      "path": "/mnt/inputs/ICES_ecoregions.zip"
     },
     {
       "name": "roc",
       "label": "roc",
       "description": "roc",
       "type": "zip",
-      "path": "/mnt/inputs/ROC"
+      "path": "/mnt/inputs/ROC.zip"
     },
     {
       "name": "trafficpath",
       "label": "trafficpath",
       "description": "trafficpath",
       "type": "zip",
-      "path": "/mnt/inputs/traffic/2016_All_shiptypes_AIS_Shipping_Density"
+      "path": "/mnt/inputs/traffic/2016_All_shiptypes_AIS_Shipping_Density.zip"
     }
   ],
   "outputs": [
@@ -63,49 +63,49 @@
       "label": "plots",
       "description": "plots",
       "type": "zip",
-      "path": "/mnt/outputs/Plots"
+      "path": "/mnt/outputs/Plots.zip"
     },
     {
       "name": "results",
       "label": "results",
       "description": "results",
       "type": "zip",
-      "path": "/mnt/outputs/Results"
+      "path": "/mnt/outputs/Results.zip"
     },
     {
       "name": "Models",
       "label": "Models",
       "description": "Models",
       "type": "zip",
-      "path": "/mnt/outputs/Models"
+      "path": "/mnt/outputs/Models.zip"
     },
     {
       "name": "mappath",
       "label": "mappath",
       "description": "mappath",
       "type": "zip",
-      "path": "/mnt/outputs/Maps"
+      "path": "/mnt/outputs/Maps.zip"
     },
     {
       "name": "RF_indata",
       "label": "RF_indata",
       "description": "RF_indata",
       "type": "zip",
-      "path": "/mnt/outputs/RF_indata"
+      "path": "/mnt/outputs/RF_indata.zip"
     },
     {
       "name": "rastermappath",
       "label": "rastermappath",
       "description": "rastermappath",
       "type": "zip",
-      "path": "/mnt/outputs/Rastermaps"
+      "path": "/mnt/outputs/Rastermaps.zip"
     },
     {
       "name": "species_stats",
       "label": "species_stats",
       "description": "species_stats",
       "type": "zip",
-      "path": "/mnt/outputs/species_stats"
+      "path": "/mnt/outputs/species_stats.zip"
     }
   ],
   "resources": {
