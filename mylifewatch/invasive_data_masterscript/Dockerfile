@@ -1,4 +1,4 @@
-FROM ias_hotspot_model
+FROM ghcr.io/qcdis/ias_hotspot_model:v0.1.0
 
 # Copy dependencies and install them
 COPY req req
