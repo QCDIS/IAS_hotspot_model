@@ -13,3 +13,4 @@ COPY functions/ /wrp/functions
 # Install devtools::install_github("azizka/speciesgeocodeR")
 RUN Rscript -e "install.packages('devtools')"
 RUN Rscript -e "devtools::install_github('azizka/speciesgeocodeR')"
+RUN Rscript -e "devtools::install_github('bio-oracle/biooracler')"
