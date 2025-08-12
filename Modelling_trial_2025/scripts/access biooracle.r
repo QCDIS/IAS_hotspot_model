@@ -73,26 +73,45 @@ variable.selection <- read_excel("data/dataset och variabler 2025.xlsx")
 variable.selection <- variable.selection[!is.na(variable.selection$Final),]
 variable.selection <-variable.selection[-3,]# chl does not exist at depthmean ssp119
 
+dec.vec <- c("", "dec50", "dec100")
 for(sel.sen in c(4:7)){
-scenario <- dataset_scenarios[[sel.sen]][1]
+  scenario <- dataset_scenarios[[sel.sen]][1]
+  for(dec in dec.vec[c(2,3)]){
 
-ssp_scenarios <- list()
-constraints.base <- list(
+  ssp_scenarios <- list()
+  constraints.base <- list(
   #latitude = c(25, 80),
   #longitude = c(-15, 40),
   time = c("2010-01-01T00:00:00Z", "2010-01-01T00:00:00Z") # Ensure time is correctly specified
-)
-constraints.ssp <- list(
+  )
+  constraints.ssp <- list(
   #latitude = c(25, 80),
   #longitude = c(-15, 40),
-  time = c("2020-01-01T00:00:00Z", "2020-01-01T00:00:00Z") # Ensure time is correctly specified
-)
+  time = c("2020-01-01T00:00:00Z", "2020-01-01T00:00:00Z") )# Ensure time is correctly specified
+
+  constraints.dec50 <- list(
+    #latitude = c(25, 80),
+    #longitude = c(-15, 40),
+    time = c("2040-01-01T00:00:00Z", "2040-01-01T00:00:00Z") )# Ensure time is correctly specified
+   
+   constraints.dec100 <- list(
+      #latitude = c(25, 80),
+      #longitude = c(-15, 40),
+      time = c("2090-01-01T00:00:00Z", "2090-01-01T00:00:00Z") # Ensure time is correctly specified
+    )
 
 
 i <-1 #
 #variable.selection$Spellout
 
-if(scenario == "baseline"){constraints <- constraints.base}else{constraints <- constraints.ssp}
+if(scenario == "baseline"){constraints <- constraints.base}else{
+      constraints <- constraints.ssp
+      if(dec == "dec50"){constraints <- constraints.dec50}
+      if(dec == "dec100"){constraints <- constraints.dec100
+      }
+}
+
+
 scenario.info <- list()
 scenario.info[[scenario]]<-list()
 scenario.info[[scenario]][["datasets"]]<- list()
@@ -137,7 +156,7 @@ for (dataset.nr in 1:length(scenario.info[[scenario]][["datasets"]])) {
   filename1 <- glue("{dir}{dataset_id}_{variables}.nc")
   
   # datalayer.tiff for tif, etc
-  outdir <- paste(dir,"datalayer.nc/",scenario,"/",sep="")
+  outdir <- paste(dir,"datalayer.nc/",scenario,dec,"/",sep="")
   if (!dir.exists(outdir)) dir.create(outdir) 
   depth <- strsplit(dataset_id,"_")[[1]][length(strsplit(dataset_id,"_")[[1]])]
   filename <-paste(outdir,variable,"_",depth,".tif",sep="")
@@ -149,13 +168,33 @@ for (dataset.nr in 1:length(scenario.info[[scenario]][["datasets"]])) {
   file.rename(filename1,filename)
   }#for var
 }
+}#end dec
 }#end sel.sen
-
-## rename files
+##################################################################
+######## copy the missing layer to the new folders
+##################################################################
+dec.vec <- c("", "dec50", "dec100")
 for(sel.sen in c(2:7)){
+  scenario <- dataset_scenarios[[sel.sen]][1]
+  for(dec in dec.vec[c(2,3)]){
+    indir <- paste(dir,"datalayer.nc/",dataset_scenarios[[1]][1],"/",sep="")
+    outdir <- paste(dir,"datalayer.nc/",scenario,dec,"/",sep="")
+    print( paste(outdir,"par_mean_mean_depthsurf.nc exists", 
+                 file.exists(paste(outdir,"par_mean_mean_depthsurf.nc",sep=""))))
+    
+    file.copy(paste(indir,"par_mean_mean_depthsurf.nc",sep=""), 
+              paste(outdir,"par_mean_mean_depthsurf.nc",sep=""), overwrite = TRUE)
+    
+    print( paste(outdir,"par_mean_mean_depthsurf.nc exists", 
+                 file.exists(paste(outdir,"par_mean_mean_depthsurf.nc",sep=""))))
+  }}
+##################################################################
+    ####################################################
+## rename files
+for(sel.sen in c(4:7)){
   #sel.sen <- 1
   scenario <- dataset_scenarios[[sel.sen]][1]
-  outdir <- paste(dir,"/datalayer.tiff/",scenario,"/",sep="")
+  outdir <- paste(dir,"/datalayer.tiff/",scenario,dec,"/",sep="")
   a = list.files(outdir, pattern = "*_1.tif")
   for(i in a){
     i <- paste(outdir,i,sep="")
