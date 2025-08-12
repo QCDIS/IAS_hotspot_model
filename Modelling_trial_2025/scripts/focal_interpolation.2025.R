@@ -11,15 +11,26 @@ library(RNetCDF)
 projectpath <- "~/Dokument/Projekt/HAV2025"
 dir <- "~/Dokument/Projekt/HAV2025/data/Biooracle.download/"
 dataset_scenarios <- c( "baseline" ,"ssp119" ,  "ssp126"  , "ssp245"   ,"ssp370" ,  "ssp460"  , "ssp585"  )
+dec.vec <- c("", "dec50", "dec100")
 
 #for(sel.sen in c(2:7)){
-  sel.sen <- 1
-  scenario <- dataset_scenarios[[sel.sen]]
+ # sel.sen <- 1
+ # scenario <- dataset_scenarios[[sel.sen]]
   #  outdir <- paste(dir,"/datalayer.tiff/",scenario,"/",sep="")
-  
-stackpath <- paste(dir,"rasterstacks/",scenario,"/",sep="")
-rasterpath <- paste(dir,"datalayer.nc/",scenario,sep="")
 
+for(sel.sen in c(3:7)){
+  scenario <- dataset_scenarios[[sel.sen]]
+  for(dec in dec.vec[c(2,3)]){
+print(paste(scenario, dec))    
+    # indir <- paste(dir,"datalayer.nc/",dataset_scenarios[[1]][1],"/",sep="")
+#  outdir <- paste(dir,"datalayer.nc/",scenario,dec,"/",sep="")
+
+
+stackpath <- paste(dir,"rasterstacks/",scenario,dec,"/",sep="")
+rasterpath <- paste(dir,"datalayer.nc/",scenario,dec,sep="")
+
+if (!dir.exists(stackpath)) dir.create(stackpath) 
+print(stackpath)
 #paste(path, c("data/Biooracle_datalager/datalager.tiff"), sep="/")
 
 lista.ras<- Sys.glob(paste(rasterpath,"/*.nc",sep=""))
@@ -40,7 +51,7 @@ land <- st_transform(land, crs(template))
 land_vect <- vect(land)
 plot(land_vect)
 
-plot(template)
+#plot(template)
 # Rasterize the land polygons onto the template.
 # Use background = NA so that cells not covered by a polygon remain NA.
 land_mask <- rasterize(land_vect, template, field = 1, background = NA)
@@ -72,47 +83,62 @@ filled_layers <- rast(filled_list)
 
 # PLOTS TO CHECK RESULTS
 
-plot(land_mask, main = "Binary Land Mask (1 = Land, NA = Water)")
+#plot(land_mask, main = "Binary Land Mask (1 = Land, NA = Water)")
 # Overlay the original land polygons for reference
-plot(land_vect, add = TRUE, border = "red")
+#plot(land_vect, add = TRUE, border = "red")
 
-plot(masked_layers[[1]], main = "Masked Layer (Land = NA)")
+#plot(masked_layers[[1]], main = "Masked Layer (Land = NA)")
 # Overlay the land polygons
-plot(land_vect, add = TRUE, border = "blue")
+#plot(land_vect, add = TRUE, border = "blue")
 
-plot(filled_layers[[1]], main = "Filled Layer (Coastal Interpolated)")
+#plot(filled_layers[[1]], main = "Filled Layer (Coastal Interpolated)")
 # Overlay the land polygons to see the boundary
-plot(land_vect, add = TRUE, border = "green")
+#plot(land_vect, add = TRUE, border = "green")
 
-par(mfrow = c(1, 3))
-plot(layers[[1]], main = "Original Layer")
-plot(masked_layers[[1]], main = "Masked Layer")
-plot(filled_layers[[1]], main = "Filled Layer")
-par(mfrow = c(1, 1))
-
+#par(mfrow = c(1, 3))
+#plot(layers[[1]], main = "Original Layer")
+##plot(masked_layers[[1]], main = "Masked Layer")
+#plot(filled_layers[[1]], main = "Filled Layer")
+#par(mfrow = c(1, 1))
+print("write raster")
 
 summary(values(template))
 summary(values(filled_layers[[1]]))
 writeRaster(filled_layers, paste(stackpath ,"filled_layers_new.tif",sep=""), overwrite = TRUE, filetype = "GTiff")
-saveRDS(filled_layers, paste(stackpath ,"filled_layers.rds",sep=""))
+#saveRDS(filled_layers, paste(stackpath ,"filled_layers.rds",sep=""))
 
 ########## load and create stacks for use
 #filled_layers <- readRDS(paste(stackpath ,"filled_layers_new.tif",sep=""))
 mystack <- stack(paste(stackpath ,"filled_layers_new.tif",sep=""))
-plot(mystack)
+rm(masked_layers)
+rm(land_mask)
+rm(this_layer)
+gc()
+#mystack <- filled_layers
+rm(filled_layers)
+rm(land_mask)
+gc()
+
+#plot(mystack)
 e <- extent(-25, 45, 30, 72) #xmin, xmax,ymin,ymax 
 rasterstack.filled.layers.Europe.2025 <- crop(mystack, e)
-plot(rasterstack.filled.layers.Europe.2025)
+#plot(rasterstack.filled.layers.Europe.2025)
 
 filename <- paste(stackpath,"/","Biooracle.filled.layers.global2025.tif", sep="")
-writeRaster(mystack, filename, format="GTiff",overwrite=TRUE)
+print("save filled layers)")
 
+writeRaster(mystack, filename, format="GTiff",overwrite=TRUE)
+print(filename)
 filename2 <- paste(stackpath,"/","Biooracle.filled.layers.Europe2025.tif", sep="")
 writeRaster(rasterstack.filled.layers.Europe.2025, filename2, format="GTiff",overwrite=TRUE)
 
-
+print("save layernames")
 layernames <- names(mystack)
 save(layernames, file = paste(stackpath,"/layernames.filled.rda" ,sep =""))
+rm(mystack)
+rm(rasterstack.filled.layers.Europe.2025)
+gc()
+}}
 # get full layernames
 load(paste(stackpath,"/layernames.rda" ,sep =""))
 
