@@ -1,0 +1,81 @@
+{
+  "name": "load_from_gbif_hav2022",
+  "label": "load from gbif hav2022",
+  "description": "load from gbif hav2022",
+  "type": "DataAnalysing",
+  "dockerImage": "load_from_gbif_hav2022",
+  "parameters": [
+    {
+      "name": "gbif_username",
+      "label": "gbif username",
+      "description": "gbif username",
+      "type": "String",
+      "defaultValue": "",
+      "secret": true
+    },
+    {
+      "name": "gbif_password",
+      "label": "gbif password",
+      "description": "gbif password",
+      "type": "String",
+      "defaultValue": "",
+      "secret": true
+    },
+    {
+      "name": "email",
+      "label": "email",
+      "description": "email",
+      "type": "String",
+      "defaultValue": ""
+    }
+  ],
+  "inputs": [
+    {
+      "name": "gbifs",
+      "label": "gbifs",
+      "description": "zip gbifs",
+      "type": "zip",
+      "path": "/mnt/inputs/GBIF.zip"
+    },
+    {
+      "name": "csv_path",
+      "label": "csv path",
+      "description": "csv path",
+      "type": "zip",
+      "path": "/mnt/inputs/csv.zip"
+    }
+  ],
+  "outputs": [
+  ],
+  "resources": {
+    "cores": 2,
+    "memory": 512,
+    "gpuNeeded": false,
+    "gpuMemory": 1024,
+    "estimatedTime": 4
+  },
+  "tags": [
+     "IAS hotspot model",
+     "MARCO-BOLO"
+  ],
+  "license": "GPL v3",
+  "version": "0.0.1",
+  "dependencies": [
+    {
+      "name": "r",
+      "license": "GPL v3",
+      "version": "4.2.2",
+      "author": "null",
+      "citation": null
+    }
+  ],
+  "publicationDate": "Thu, 30 June 2025 00:00:00 GMT",
+  "author": " Gunnar Andersson",
+  "bugs": {
+    "email": "gunnar.andersson@sva.se",
+    "url": "https://helpdesk.lifewatch.eu/"
+  },
+  "citation": null,
+  "testPath": "emptyUnitTest.sh",
+  "metaDataCatalogueUrl": "https://metadatacatalogue.lifewatch.eu/srv/eng/catalog.search#/metadata/<>"
+}
