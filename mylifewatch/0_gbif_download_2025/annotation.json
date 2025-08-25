@@ -31,21 +31,21 @@
   ],
   "inputs": [
     {
-      "name": "gbifs",
-      "label": "gbifs",
-      "description": "zip gbifs",
+      "name": "file_url",
+      "label": "file_url",
+      "description": "zip file_url",
       "type": "zip",
-      "path": "/mnt/inputs/GBIF.zip"
-    },
-    {
-      "name": "csv_path",
-      "label": "csv path",
-      "description": "csv path",
-      "type": "zip",
-      "path": "/mnt/inputs/csv.zip"
+      "path": "/mnt/inputs/NIS_list_combined_Mar2025_v2.zip"
     }
   ],
   "outputs": [
+    {
+      "type": "zip",
+      "name": "download_file",
+      "path": "/mnt/outputs/0010903-240202131308920.zip",
+      "label": "download_file",
+      "description": "zip download_file"
+    }
   ],
   "resources": {
     "cores": 2,

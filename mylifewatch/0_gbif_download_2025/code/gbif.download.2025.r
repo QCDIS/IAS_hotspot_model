@@ -10,9 +10,10 @@ pwd=args$gbif_password
 email=args$email
 
 
-path <- "~/Dokument/Projekt/HAV2025/"
-#file_url <- paste(path,"Data2022/valda.arter.5.csv",sep ="" )
-file_url <- paste(path,"data/species.data/NIS_list_combined_Mar2025_v2.csv",sep ="" )
+file_url <- "/mnt/inputs/NIS_list_combined_Mar2025_v2.csv"
+download_path <- "/mnt/outputs/"
+key <- "0010903-240202131308920"
+download_file = paste(download_path,key,".zip",sep ="" )
 
 
 ########################################
@@ -28,9 +29,11 @@ gbif_taxon_keys <- gbif_taxon_keys
 occ_download(
   pred_in("taxonKey", gbif_taxon_keys),
   format = "SIMPLE_CSV",
-  user=user,pwd=pwd,email=email
+  user=user,
+  pwd=pwd,
+  email=email
 )
 
 ###########################
-d <- occ_download_get('0010903-240202131308920') %>%
+d <- occ_download_get(key,path=download_path) %>%
   occ_download_import()
