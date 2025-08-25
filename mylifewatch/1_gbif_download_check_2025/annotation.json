@@ -1,0 +1,100 @@
+{
+  "name": "gbif_download_check_2025",
+  "label": "gbif download check 2025",
+  "description": "gbif download check 2025",
+  "type": "DataAnalysing",
+  "dockerImage": "gbif_download_check_2025",
+  "parameters": [
+    {
+      "name": "shapefile_link",
+      "label": "shapefile_link",
+      "defaultValue": "https://gisco-services.ec.europa.eu/distribution/v2/countries/shp/CNTR_RG_01M_2020_4326.shp.zip",
+      "type": "String",
+      "description": "shapefile link"
+    },
+    {
+      "name": "bio_oracle_dataset_id",
+      "label": "bio_oracle_dataset_id",
+      "defaultValue": "tas_baseline_2000_2020_depthsurf",
+      "type": "String",
+      "description": "bio oracle dataset id"
+    },
+    {
+      "name": "bio_oracle_time_start",
+      "label": "bio_oracle_time_start",
+      "defaultValue": "2001-01-01T00:00:00Z",
+      "type": "String",
+      "description": "bio oracle time start"
+    },
+    {
+      "name": "bio_oracle_time_end",
+      "label": "bio_oracle_time_end",
+      "defaultValue": "2010-01-01T00:00:00Z",
+      "type": "String",
+      "description": "bio oracle time end"
+    },
+    {
+      "name": "bio_oracle_latitude",
+      "label": "bio_oracle_latitude",
+      "defaultValue": "10, 20",
+      "description": "bio_oracle_latitude",
+      "type": "String"
+    },
+    {
+      "name": "bio_oracle_longitude",
+      "label": "bio_oracle_longitude",
+      "defaultValue": "120, 130",
+      "description": "bio_oracle_longitude",
+      "type": "String"
+    },
+    {
+      "name": "bio_oracle_variables",
+      "label": "bio_oracle_variables",
+      "defaultValue": "tas_max, tas_min",
+      "description": "bio_oracle_variables",
+      "type": "String"
+    }
+  ],
+  "inputs": [
+  ],
+  "outputs": [
+    {
+      "type": "zip",
+      "name": "download_file",
+      "path": "/mnt/outputs/0010903-240202131308920.zip",
+      "label": "download_file",
+      "description": "zip download_file"
+    }
+  ],
+  "resources": {
+    "cores": 2,
+    "memory": 512,
+    "gpuNeeded": false,
+    "gpuMemory": 1024,
+    "estimatedTime": 4
+  },
+  "tags": [
+    "IAS hotspot model",
+    "MARCO-BOLO"
+  ],
+  "license": "GPL v3",
+  "version": "0.0.1",
+  "dependencies": [
+    {
+      "name": "r",
+      "license": "GPL v3",
+      "version": "4.2.2",
+      "author": "null",
+      "citation": null
+    }
+  ],
+  "publicationDate": "Thu, 30 June 2025 00:00:00 GMT",
+  "author": " Gunnar Andersson",
+  "bugs": {
+    "email": "gunnar.andersson@sva.se",
+    "url": "https://helpdesk.lifewatch.eu/"
+  },
+  "citation": null,
+  "testPath": "emptyUnitTest.sh",
+  "metaDataCatalogueUrl": "https://metadatacatalogue.lifewatch.eu/srv/eng/catalog.search#/metadata/<>"
+}

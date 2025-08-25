@@ -1,9 +1,9 @@
 {
-  "name": "load_from_gbif_hav2022",
-  "label": "load from gbif hav2022",
-  "description": "load from gbif hav2022",
+  "name": "gbif_download_2025",
+  "label": "gbif download 2025",
+  "description": "gbif download 2025",
   "type": "DataAnalysing",
-  "dockerImage": "load_from_gbif_hav2022",
+  "dockerImage": "gbif_download_2025",
   "parameters": [
     {
       "name": "gbif_username",

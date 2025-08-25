@@ -1,0 +1,9 @@
+{
+  "parameters": [
+    {
+      "name": "shapefile_link",
+      "defaultValue": "https://gisco-services.ec.europa.eu/distribution/v2/countries/shp/CNTR_RG_01M_2020_4326.shp.zip",
+      "value": "https://gisco-services.ec.europa.eu/distribution/v2/countries/shp/CNTR_RG_01M_2020_4326.shp.zip"
+    }
+  ]
+}
