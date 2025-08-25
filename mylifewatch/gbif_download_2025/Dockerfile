@@ -1,6 +1,5 @@
 FROM ias_hotspot_model
 
-
 WORKDIR wrp
 
 # copy the folder code and the main.r code
