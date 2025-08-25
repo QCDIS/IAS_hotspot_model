@@ -3,14 +3,16 @@ library(readr)
 library(rgbif) # for occ_download
 
 #1
-args = args_parse(commandArgs(trailingOnly = TRUE))
 
-# gbif.org credentials
-user = args$gbif_username
-pwd = args$gbif_password
-email = args$email
+#gbif.org credentials
+user=args$gbif_username
+pwd=args$gbif_password
+email=args$email
 
-file_url <- "/mnt/inputs/NIS_list_combined_Mar2025_v2.csv"
+
+path <- "~/Dokument/Projekt/HAV2025/"
+#file_url <- paste(path,"Data2022/valda.arter.5.csv",sep ="" )
+file_url <- paste(path,"data/species.data/NIS_list_combined_Mar2025_v2.csv",sep ="" )
 
 
 ########################################
