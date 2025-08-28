@@ -26,6 +26,8 @@ RUN apt-get update && apt-get install -y \
     python3-venv \
     python3-pip \
     python3 \
+    libnlopt-dev \
+    cmake \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
