@@ -103,12 +103,16 @@ names(input)[c(22:23)]
 cleanput <- input[-c(1),]
 cleanput[,23] <- as.numeric(cleanput[,23])
 
-names(cleanput)[c(22:23)] <- c("decimalLatitude" , "decimalLongitude")
+names(cleanput)[c(22:23)] <- c("decimallatitude" , "decimallongitude")
 hist(cleanput[,22])
 hist(cleanput[,23])
 which(!is.numeric(cleanput[,22]))
 cleanput[,22]<- as.numeric(cleanput[,22])
-
+# Save cleanput as RDS file
+saveRDS(cleanput, file = "/mnt/outputs/cleanput_before_clean_coordinates.rds")
+print(packageVersion("CoordinateCleaner"))
+print(packageVersion("speciesgeocodeR"))
+print(packageVersion("sf"))
 cleanput <- clean_coordinates(x = cleanput)
 # summary(cleanput)
 #

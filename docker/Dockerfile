@@ -1,35 +1,46 @@
-FROM ghcr.io/qcdis/habitat_suitability_model:v0.2.1
+FROM rocker/r-ver:4.3.3
 
+# System dependencies for building R packages
 RUN apt-get update && apt-get install -y \
-                               gdal-bin \
-                               proj-bin \
-                               libgdal-dev \
-                               libproj-dev \
-                               r-cran-fbasics
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2-dev \
+    libgit2-dev \
+    build-essential \
+    libblas-dev \
+    liblapack-dev \
+    gfortran \
+    libudunits2-dev \
+    libsodium-dev \
+    libgdal-dev \
+    libfontconfig1-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    freetype2-demos \
+    protobuf-compiler \
+    libprotobuf-dev \
+    php-xml \
+    libjq-dev \
+    libmagick++-dev \
+    curl \
+    python3-venv \
+    python3-pip \
+    python3 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
+# Copy lockfile and project source
+COPY renv.lock ./
 
+# Install renv and restore packages
+RUN R -e "install.packages('renv'); renv::restore(lockfile = 'renv.lock', clean = TRUE)"
+RUN mkdir /wrp
 COPY functions/ /wrp/functions
+RUN mkdir /wrp/utils
+COPY utils/ /wrp/utils
 
-# Install devtools::install_github("azizka/speciesgeocodeR")
-RUN Rscript -e "install.packages('devtools')"
-RUN Rscript -e "devtools::install_github('azizka/speciesgeocodeR')"
-RUN Rscript -e "devtools::install_github('bio-oracle/biooracler')"
-RUN Rscript -e "install.packages('rgbif')"
-RUN Rscript -e "install.packages('CoordinateCleaner')"
-RUN Rscript -e "install.packages('speciesgeocodeR')"
-RUN Rscript -e "install.packages('sf')"
-RUN Rscript -e "install.packages('raster')"
-RUN Rscript -e "install.packages('terra')"
-RUN Rscript -e "install.packages('dplyr')"
-RUN Rscript -e "install.packages('readr')"
-RUN Rscript -e "install.packages('ggplot2')"
-RUN Rscript -e "install.packages('maps')"
-RUN Rscript -e "install.packages('glue')"
-RUN Rscript -e "install.packages('randomForest')"
-RUN Rscript -e "install.packages('fBasics')"
-RUN Rscript -e "install.packages('rnaturalearth')"
-RUN Rscript -e "install.packages('rnaturalearthdata')"
-RUN Rscript -e "install.packages('ncdf4')"
-RUN Rscript -e "install.packages('RNetCDF')"
-RUN Rscript -e "install.packages('readxl')"
-RUN Rscript -e "install.packages('parallel')"
+RUN chmod -R +x /wrp/utils/entrypoint.sh
+# Default command
+
+ENTRYPOINT ["/wrp/utils/entrypoint.sh"]
+
