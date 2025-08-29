@@ -302,6 +302,7 @@ selected.species <- read.csv2(file_url, sep=",")
 cathegories <- unique(selected.species$category)
 #my.cathegory <- cathegories[1]
 tab <- c()
+print(paste("Number of species to process:", length(all.species)))
 for(s in all.species){
   print(paste("Working on species", s))
   id <- which(!is.na(match(selected.species$Taxon.name,s)))
@@ -342,12 +343,14 @@ for(s in all.species){
   my.filename <- paste(s,".csv",sep="")
   print(paste("my.filename:", my.filename))
   my.pseudoname <- paste("pseudoabsences.marine.excludebox",cat,".csv",sep="")
-  tab <- rbind(tab, c(s, my.filename,my.filename,my.pseudoname,
-                      length(which(temp$occurrenceStatus == "PRESENT")),length(which(temp$occurrenceStatus == "ABSENT")),comment))
+  tab <- rbind(tab, c(s, my.filename,my.filename,my.pseudoname,length(which(temp$occurrenceStatus == "PRESENT")),length(which(temp$occurrenceStatus == "ABSENT")),comment))
   print(paste("my.pseudoname:", my.pseudoname))
-  print(paste("tab: ", tab))
+  print(paste("tab in loop: ", tab))
+  print(paste("tab len: ", length(tab)))
 }
-
+print(paste("tab : ", tab))
+print(paste("tab len: ", length(tab)))
+print(paste("tab summary: ", summary(tab)))
 colnames(tab)<- c("species","present.data","absence.data","pseudoabsence.data","n.present","n.absent","comment on Taxon")
 # write.csv2(tab, file=paste(speciespath, "data_table_mars2025.csv",sep=""))
 # print(paste("Wrote species data table to", paste(speciespath, "data_table_mars2025.csv",sep="")))
