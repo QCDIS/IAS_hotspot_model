@@ -7,39 +7,55 @@ require(biooracler)
 
 
 species_file <- "/mnt/inputs/0010903-240202131308920.csv"# Arter från Matthias Mars 2024
-shapefile_zip = "shapefile.shp.zip"
+file_url <- "/mnt/inputs/NIS_list_combined_Mar2025_v2.csv"
 
-test_plot_file <- "/mnt/outputs/testplot.mars_2025_smaller.jpg"
-cleanput_plot_file = "/mnt/outputs/cleanput.result.mars_2025.jpg"
-test_plot_cleanput_2025 = "/mnt/outputs/testplot.cleanput.mars2025.jpg"
-test_plot_cleanput_2024 = "/mnt/outputs/testplot.cleanput.mar2024.jpg"
-species_file_filtered_clean_coordinates2025 = "/mnt/outputs/filtered.clean.coordinates.output.mars2025.rda"
-species_file_filtered_clean_coordinates2025_2 = "/mnt/outputs/filtered.clean.coordinates.output.mars2025_2.rda"
+test_plot <- "/mnt/outputs/test_plot.jpg"
+cleanput_plot = "/mnt/outputs/cleanput_plot.jpg"
+testplot_cleanput_mars_2025 = "/mnt/outputs/testplot_cleanput_mars_2025.jpg"
+test_plot_cleanput_2024 = "/mnt/outputs/testplot_cleanput_mar2024.jpg"
+filtered_clean_coordinates_output_mars_2025 = "/mnt/outputs/filtered_clean_coordinates_output_mars_2025.rda"
+filtered_clean_coordinates_output_mars_2025_2 = "/mnt/outputs/filtered_clean_coordinates_output_mars_2025_2.rda"
+filtered_clean_marine_coordinates_output_mars_2025 = "/mnt/outputs/filtered_clean_marine_coordinates_output_mars_2025.rda"
+speciespath <- "/mnt/outputs/species/"
+if(!dir.exists(speciespath)){
+  dir.create(speciespath, recursive = TRUE)
+}
 
+cahche_dir <- "/mnt/inputs/cache/"
+if(!dir.exists(cahche_dir)){
+  dir.create(cahche_dir, recursive = TRUE)
+}
+cleanput_cache = paste(cahche_dir, "cleaned_coordinates.rds", sep = "")
+shapefile_zip = paste(cahche_dir, "shapefile.shp.zip", sep = "")
 
-
-shapefile_link=args$shapefile_link
-# Download file from shapefile_link
-download.file(shapefile_link, destfile = shapefile_zip, mode = "wb")
-
+# If shapefile_zip exits skip download
+if(file.exists(shapefile_zip)){
+    print(paste("Shapefile zip file already exists:", shapefile_zip))
+    } else {
+    print(paste("Shapefile zip file does not exist, will download to:", shapefile_zip))
+    shapefile_link=args$shapefile_link
+    # Download file from shapefile_link
+    download.file(shapefile_link, destfile = shapefile_zip, mode = "wb")
+}
 # Unzip the downloaded file
 unzip(shapefile_zip, exdir = ".")
 shapefile <- list.files(".", pattern = "\\.shp$", full.names = TRUE)[1]
-# Print the path to the shapefile
-print(paste("Shapefile path:", shapefile))
 
 
-# -------------------Download bio_oracle data-----------------------
-# dataset_id=args$bio_oracle_dataset_id
-# time = c(args$bio_oracle_time_start, args$bio_oracle_time_end)
-# # Get coordinates from the arguments and convert them to numeric
-# latitude = as.numeric(unlist(strsplit(args$bio_oracle_latitude, ",")))
-# longitude = as.numeric(unlist(strsplit(args$bio_oracle_longitude, ",")))
-# constraints = list(time, latitude, longitude)
-# names(constraints) = c("time", "latitude", "longitude")
-# variables <- trimws(unlist(strsplit(args$bio_oracle_variables, ",")))
-# dir <- tempdir()
-# download_layers(dataset_id, variables, constraints, fmt = "raster", directory = dir)
+# -------------------bio_oracle data-----------------------
+dataset_id=args$bio_oracle_dataset_id
+time = c(args$bio_oracle_time_start, args$bio_oracle_time_end)
+# Get coordinates from the arguments and convert them to numeric
+latitude = as.numeric(unlist(strsplit(args$bio_oracle_latitude, ",")))
+longitude = as.numeric(unlist(strsplit(args$bio_oracle_longitude, ",")))
+constraints = list(time, latitude, longitude)
+names(constraints) = c("time", "latitude", "longitude")
+variables <- trimws(unlist(strsplit(args$bio_oracle_variables, ",")))
+biooracle_dir = paste(cahche_dir, "Biooracle.download/", sep = "")
+# Create directory if it doesn't exist
+if(!dir.exists(biooracle_dir)){
+    dir.create(biooracle_dir, recursive = TRUE)
+}
 # ---------------------------------------------------------------
 
 input <- read.delim(species_file,header =T,sep="\t",
@@ -88,59 +104,69 @@ par(mfrow=c(1,1))
 xlim <- c(-100,20)
 ylim <- c(8, 68)
 #jpeg("testplot2.jpg", width = 90*( xlim[2] - xlim[1]),height = 90*( ylim[2] - ylim[1]), pointsize = 10)
-jpeg(test_plot_file, width = 10*( xlim[2] - xlim[1]),height = 10*( ylim[2] - ylim[1]), pointsize = 4)
+jpeg(test_plot, width = 10*( xlim[2] - xlim[1]),height = 10*( ylim[2] - ylim[1]), pointsize = 4)
 plot(world1$geometry, xlim = xlim, ylim = ylim, col = "light grey")
 points(input$"decimalLongitude",input$"decimalLatitude", col = fac2, pch = fac1)
 dev.off()
-print(paste("plot written to", test_plot_file))
+print(paste("plot written to", test_plot))
 
 ################################ ################################# #################################
 ####################### clean coordinates #################################
 ################################ ################################# #################################
 print("Clean coordinates")
-summary(input)
-names(input)[c(22:23)]
-cleanput <- input[-c(1),]
-cleanput[,23] <- as.numeric(cleanput[,23])
+# if filtered_clean_coordinates_output_mars_2025 exists, skip cleaning
+if(file.exists(cleanput_cache)){
+    print(paste("Filtered clean coordinates file already exists:", cleanput_cache))
+    cleanput <- readRDS(cleanput_cache)
+    } else {
+    print(paste("Filtered clean coordinates file does not exist, will create:", cleanput_cache))
+    summary(input)
+    names(input)[c(22:23)]
+    cleanput <- input[-c(1),]
+    cleanput[,23] <- as.numeric(cleanput[,23])
 
-names(cleanput)[c(22:23)] <- c("decimallatitude" , "decimallongitude")
-hist(cleanput[,22])
-hist(cleanput[,23])
-which(!is.numeric(cleanput[,22]))
-cleanput[,22]<- as.numeric(cleanput[,22])
-# Save cleanput as RDS file
-saveRDS(cleanput, file = "/mnt/outputs/cleanput_before_clean_coordinates.rds")
-print(packageVersion("CoordinateCleaner"))
-print(packageVersion("speciesgeocodeR"))
-print(packageVersion("sf"))
-cleanput <- clean_coordinates(x = cleanput, lon = "decimallongitude", lat = "decimallatitude")
-summary(cleanput)
+    names(cleanput)[c(22:23)] <- c("decimalLatitude" , "decimalLongitude")
+    hist(cleanput[,22])
+    hist(cleanput[,23])
+    which(!is.numeric(cleanput[,22]))
+    cleanput[,22]<- as.numeric(cleanput[,22])
 
-jpeg(cleanput_plot_file, width = 1000,height=1000, pointsize = 10)
-plot(cleanput)
-dev.off()
-print(paste("plot written to", cleanput_plot_file))
+    print("Running clean_coordinates")
+    cleanput <- clean_coordinates(x = cleanput)
+    print("Done clean_coordinates")
 
-save(cleanput, species_file = species_file_filtered_clean_coordinates2025)
+    jpeg(cleanput_plot, width = 1000,height=1000, pointsize = 10)
+    plot(cleanput)
+    dev.off()
+    print(paste("plot written to", cleanput_plot))
+
+    save(cleanput, file = filtered_clean_coordinates_output_mars_2025)
+    saveRDS(cleanput, cleanput_cache)
+}
+
+
 # lines below used to merge datasets
 #cleanput2 <- cleanput
-#load(species_file_filtered_clean_coordinates2025)
+#load(filtered_clean_coordinates_output_mars_2025)
 
-#Merge two downloads
+# #Merge two downloads
+# print("Merge two downloads")
 #cleanput <- rbind(cleanput,cleanput2)
-#################################### plotta på världskarta igen ################################################
+# #################################### plotta på världskarta igen ################################################
+print("plot on world map again")
 factor <- as.numeric(as.factor(cleanput$species))
 fac1 <- ceiling(factor/10)
 fac2 <- factor - 10*(fac1-1)
 
 unique(fac1)
-jpeg(test_plot_cleanput_2025, width = 90*( xlim[2] - xlim[1]),height = 90*( ylim[2] - ylim[1]), pointsize = 10)
+jpeg(testplot_cleanput_mars_2025, width = 90*( xlim[2] - xlim[1]),height = 90*( ylim[2] - ylim[1]), pointsize = 10)
 plot(world1$geometry, xlim = xlim, ylim = ylim, col = "light grey")
 points(cleanput$"decimalLongitude",cleanput$"decimalLatitude", col = fac2, pch = fac1)
 dev.off()
 
 
-####################################artvisa plottar ################################################
+# ####################################artvisa plottar ################################################
+print("Plot each species separately")
 all.species <- unique(cleanput$species)
 xlim <- c(-180,180)
 ylim <- c(-40, 80)
@@ -163,13 +189,13 @@ dev.off()
 }
 
 ############################## check if filter worked
+print("check if filter worked")
 head(cleanput)
 unique(cleanput$basisOfRecord)
 for( u in unique(cleanput$basisOfRecord)){
   n <- length(which(cleanput$basisOfRecord == u))
   print(paste("BasisOfRecord", u,":", n,"cases"))
 }
-#}
 #[1] "HUMAN_OBSERVATION"   "PRESERVED_SPECIMEN"  "FOSSIL_SPECIMEN"     "OCCURRENCE"          "MATERIAL_CITATION"   "MATERIAL_SAMPLE"
 #[7] "OBSERVATION"         "MACHINE_OBSERVATION" "LIVING_SPECIMEN"
 
@@ -177,27 +203,40 @@ exclude.Basis <- c("MACHINE_OBSERVATION","PRESERVED_SPECIMEN","FOSSIL_SPECIMEN",
              "MATERIAL_CITATION"  , "MATERIAL_SAMPLE" ,"LIVING_SPECIMEN")
 exclude.Basis.pattern <- paste(exclude.Basis, collapse = "|")
 exlude.index <- grep (exclude.Basis.pattern, cleanput$basisOfRecord)
-
+print("Excluding entries")
 filtered.cleanput <- cleanput[-exlude.index,]
 unique(filtered.cleanput$basisOfRecord)
 for( u in unique(filtered.cleanput$basisOfRecord)){
   n <- length(which(filtered.cleanput$basisOfRecord == u))
   print(paste("BasisOfRecord", u,":", n,"cases"))
 }
-save(filtered.cleanput, species_file = species_file_filtered_clean_coordinates2025_2)
+save(filtered.cleanput, file = filtered_clean_coordinates_output_mars_2025_2)
 
 #save(filtered.cleanput, file = "filtered.clean.coordinates. mars 2024.output.rda")
 ###################### speciesgeododeR
-#load( species_file_filtered_clean_coordinates2025_2)
+#load( filtered_clean_coordinates_output_mars_2025_2)
 #####load( "filtered.clean.coordinates. download feb 15.output.rda")
 
 
 ########## filter out data outside marine environment
-stackpath <- paste(path, c("data/Biooracle.download/rasterstacks/baseline"), sep="/")
-filename <- paste(stackpath,"/","filled_layers_new.tif", sep="")
-mystack <- raster(filename)
+print("Filter out data outside marine environment")
+# stackpath <- paste(path, c("data/Biooracle.download/rasterstacks/baseline"), sep="/")
+# filename <- paste(stackpath,"/","filled_layers_new.tif", sep="")
+# If biooracle_dir contains files skip download
+if(length(list.files(biooracle_dir))>0){
+    print(paste("Biooracle data already exists in:", biooracle_dir))
+    } else {
+    print(paste("Biooracle data does not exist, will download to:", biooracle_dir
+    ))
+    download_layers(dataset_id, variables, constraints, fmt = "raster", directory = biooracle_dir)
+}
+
+# Get filename of the downloaded data in dir
+raster_file <- list.files(biooracle_dir, full.names = TRUE)
+mystack <- raster(raster_file)
 mask <- mean(mystack)
 plot(mask)
+print("mask plotted")
 
 observations <- unique(filtered.cleanput[,c("gbifID","decimalLongitude", "decimalLatitude", "occurrenceStatus")])
 names(observations) <- c("ID","Lon","Lat","occurrenceStatus")
@@ -212,7 +251,8 @@ observations1 <- observations
 #coord <- coord[c(1:5),]
 #coordinates(coord) <- ~Lon+Lat
 
-head(observations)
+# head(observations)
+print(paste("Number of unique observations to check for marine occurrences:", length(observations$ID)))
 observations2 <- as.data.frame(observations[,-c(2,3)])
 #points<-SpatialPointsDataFrame(coord,
 #                              observations2, proj4string=CRS("+init=epsg:4326")) # expression decapriated
@@ -235,13 +275,13 @@ points(points, col=ifelse(is.na(points2$layer),2,3))
 
 head(points2)
 names(points2)
-
+print(paste("Number of observations in marine environment:", length(which(!is.na(points2$layer)))))
 
 is.marine <- sapply(filtered.cleanput$gbifID, function(i)
   points2$layer[which( points2$ID == i)]
 )
 filtered.cleanput.marine <- filtered.cleanput[!is.na(is.marine),]
-save(filtered.cleanput.marine, file = paste(path, "data/species.data/filtered.clean.marine.coordinates.output.mars 2025.rda", sep=""))
+save(filtered.cleanput.marine, file = filtered_clean_marine_coordinates_output_mars_2025)
 ##############################################################
 ##################################################################
 all.species <- unique(filtered.cleanput.marine$species)
@@ -253,28 +293,45 @@ all.species <- unique(filtered.cleanput.marine$species)
 #  geocode1 <- SpeciesGeoCoder(temp, world1, areanames = "CNTR_NAME")
 
 head(filtered.cleanput.marine)
+print("Prepare input files for species distribution modelling")
 #unique(filtered.cleanput$occurrenceStatus)
 # s <- all.species[18]
-speciespath <- paste(path, "/data/Indata2025/speciesIndata2025/", sep ="")
 #prepare input file
+print(paste("selected species from", file_url))
 selected.species <- read.csv2(file_url, sep=",")
 cathegories <- unique(selected.species$category)
 #my.cathegory <- cathegories[1]
 tab <- c()
 for(s in all.species){
-
+  print(paste("Working on species", s))
   id <- which(!is.na(match(selected.species$Taxon.name,s)))
+  print(paste("species id:", id))
+  print(paste("len id:", length(id)))
   if(length(id)<1){
-    string <- strsplit(s," ")[[1]][1]
-    id <- grep(string,selected.species$Taxon.name)
+    print("id len <1")
+    spaces_name <- strsplit(s," ")[[1]][1]
+    print(paste("spaces_name:", spaces_name))
+    print(paste("selected.species$Taxon.name len", length(selected.species$Taxon.name)))
+    id <- grep(spaces_name,selected.species$Taxon.name)
+    print(paste("new species id:", id))
     comment <- selected.species$Taxon.name[id]
-  }else{comment <- "names match"}
+  }else{
+    print("id len ok")
+    comment <- "names match"
+  }
+  print(paste("comment:", comment))
   cat <- selected.species$category[id]
+  print(paste("category:", cat))
 
   temp <- filtered.cleanput.marine[ which(filtered.cleanput$species == s ),
                              c("gbifID","occurrenceID","species", "occurrenceStatus", "decimalLongitude","decimalLatitude","coordinateUncertaintyInMeters",
                                "depth", "depthAccuracy","eventDate")]
+
+  print(paste("temp nrow:", nrow(temp)))
+
+
   #fix names of deciomal coordinates. capital L
+  print("Fix names of decimal coordinates")
   names(temp)<- c("gbifID","occurrenceID","species", "occurrenceStatus", "decimalLongitude","decimalLatitude","coordinateUncertaintyInMeters",
                   "depth", "depthAccuracy","eventDate")
   #head(temp)
@@ -283,106 +340,108 @@ for(s in all.species){
   print(paste("no positives: ",length(which(temp$occurrenceStatus == "PRESENT")), sep =""))
   print(paste("no negatives: ",length(which(temp$occurrenceStatus == "ABSENT")), sep =""))
   my.filename <- paste(s,".csv",sep="")
+  print(paste("my.filename:", my.filename))
   my.pseudoname <- paste("pseudoabsences.marine.excludebox",cat,".csv",sep="")
   tab <- rbind(tab, c(s, my.filename,my.filename,my.pseudoname,
                       length(which(temp$occurrenceStatus == "PRESENT")),length(which(temp$occurrenceStatus == "ABSENT")),comment))
-
-
-
+  print(paste("my.pseudoname:", my.pseudoname))
+  print(paste("tab: ", tab))
 }
+
 colnames(tab)<- c("species","present.data","absence.data","pseudoabsence.data","n.present","n.absent","comment on Taxon")
-write.csv2(tab, file=paste(path, "/data/species.data/data.table.mars2025.csv",sep=""))
-###################################################################
-###################################################################
-filtered.cleanput<-filtered.cleanput.marine
-#define a box to exclude pseudoabsences
-boxxlim=c(12,30)
-boxylim = c(50,66)
-xlim <- c(-180,180)
-ylim <- c(-60, 84)
-plot(world1$geometry, xlim = xlim, ylim = ylim, col = "light grey")
-lines( boxxlim[c(1,2,2,1,1)], boxylim[c(1,1,2,2,1)])
-
-excludebox <- intersect(
-  which(filtered.cleanput$decimalLongitude > boxxlim[1] & filtered.cleanput$decimalLongitude < boxxlim[2]),
-  which(filtered.cleanput$decimalLatitude > boxylim[1] & filtered.cleanput$decimalLatitude < boxylim[2])
-)
-#plot excluded points
-
-points(filtered.cleanput$decimalLongitude[excludebox], filtered.cleanput$decimalLatitude[excludebox], col=2)
-#plot included points
-points(filtered.cleanput$decimalLongitude[-excludebox], filtered.cleanput$decimalLatitude[-excludebox], col=3)
-
-filtered.cleanput.unbox <- filtered.cleanput[-excludebox,]
-
-##############################################
-######### define groups of species      ######
-
-file_url <- paste(path,"data/species.data/NIS_list_combined_Mar2025_v2.csv",sep ="" )
-selected.species <- read.csv2(file_url, sep=",")
-cathegories <- unique(selected.species$category)
-
-#my.cathegory <- cathegories[1]
-for (my.cathegory in cathegories[-5]){
-
-my.species.list <- selected.species$Taxon.name[which(selected.species$category == my.cathegory)]
-
-#get entries matching
-filtered.cleanput.subset <- filtered.cleanput.unbox[which(!is.na(match(filtered.cleanput.unbox$species,my.species.list))),]
-
-locationsamples <- sample(1:length(filtered.cleanput.subset$gbifID), 1000, replace =F)
-
-#locationsamples <- sample(1:length(filtered.cleanput.unbox$gbifID), 10000, replace =F)
-pseudoabsences <- filtered.cleanput.subset[ locationsamples,
-                                           c("gbifID","occurrenceID","species", "occurrenceStatus", "decimalLongitude","decimalLatitude","coordinateUncertaintyInMeters",
-                                             "depth", "depthAccuracy","eventDate")]
-#pseudoabsences <- filtered.cleanput.unbox[ locationsamples,
-#                                     c("gbifID","occurrenceID","species", "occurrenceStatus", "decimalLongitude","decimalLatitude","coordinateUncertaintyInMeters",
-#                                       "depth", "depthAccuracy","eventDate")]
-pseudoabsences$gbifID <- paste("pseudo",seq(1:1000), sep ="")
-pseudoabsences$species <- NA
-pseudoabsences$occurrenceStatus <- "ABSENT"
-pseudoabsences$coordinateUncertaintyInMeters <- NA
-pseudoabsences$depthAccuracy <- NA
-pseudoabsences$eventDate <- NA
-head(pseudoabsences)
-names(pseudoabsences)<- c("gbifID","occurrenceID","species", "occurrenceStatus", "decimalLongitude","decimalLatitude","coordinateUncertaintyInMeters",
-                "depth", "depthAccuracy","eventDate")
-
-xlim <- c(-180,180)
-ylim <- c(-60, 84)
-
-#boxxlim=c(12,30)
-#boxylim = c(50,66)
-jpeg(paste(path,"/speciesplots/","testplot.pseudoabsences.",my.cathegory,".jpg",sep=""), width = 18*( xlim[2] - xlim[1]),height = 18*( ylim[2] - ylim[1]), pointsize = 4)
-plot(world1$geometry, xlim = xlim, ylim = ylim, col = "light grey")
-lines( boxxlim[c(1,2,2,1,1)], boxylim[c(1,1,2,2,1)])
-points(pseudoabsences$"decimalLongitude",pseudoabsences$"decimalLatitude", col = "red", pch = "*", cex = 5)
-dev.off()
-
-write.csv(pseudoabsences,file = paste(speciespath,"pseudoabsences.marine.excludebox",my.cathegory,".csv", sep =""), row.names = F)
-print(paste("wrote: ", speciespath,"/pseudoabsences.marine.excludebox",my.cathegory,".csv", sep =""))
-
-
-}#end cathegory
-##################xlim <- c(-100,20)
-filtered.cleanput <- filtered.cleanput[ ,
-                           c("gbifID","occurrenceID","species", "occurrenceStatus", "decimalLongitude","decimalLatitude","coordinateUncertaintyInMeters",
-                             "depth", "depthAccuracy","eventDate")]
-#fix names of deciomal coordinates. capital L
-#names(filtered.cleanput)<- c("gbifID","occurrenceID","species", "occurrenceStatus", "decimalLongitude","decimalLatitude","coordinateUncertaintyInMeters",
-#                "depth", "depthAccuracy","eventDate")
-
-world1 <- st_read(shapefile,layer="CNTR_RG_01M_2020_4326")
-
-factor <- as.numeric(as.factor(filtered.cleanput$species))
-fac1 <- ceiling(factor/10)
-fac2 <- factor - 10*(fac1-1)
-xlim <- c(-110,40)
-ylim <- c(-2, 68)#jpeg("testplot2.jpg", width = 90*( xlim[2] - xlim[1]),height = 90*( ylim[2] - ylim[1]), pointsize = 10)
-jpeg(paste(path,"speciesplots/","testplot.CLEANPUT.SMALLER.world.mar2025.jpg", sep=""), width = 10*( xlim[2] - xlim[1]),height = 10*( ylim[2] - ylim[1]), pointsize = 4)
-plot(world1, xlim = xlim, ylim = ylim, col = "light grey")
-points(filtered.cleanput$"decimalLongitude",filtered.cleanput$"decimalLatitude", col = fac2, pch = fac1)
-dev.off()
+# write.csv2(tab, file=paste(speciespath, "data_table_mars2025.csv",sep=""))
+# print(paste("Wrote species data table to", paste(speciespath, "data_table_mars2025.csv",sep="")))
+# ###################################################################
+# ###################################################################
+# filtered.cleanput<-filtered.cleanput.marine
+# #define a box to exclude pseudoabsences
+# print("define a box to exclude pseudoabsences")
+# boxxlim=c(12,30)
+# boxylim = c(50,66)
+# xlim <- c(-180,180)
+# ylim <- c(-60, 84)
+# plot(world1$geometry, xlim = xlim, ylim = ylim, col = "light grey")
+# lines( boxxlim[c(1,2,2,1,1)], boxylim[c(1,1,2,2,1)])
+#
+# excludebox <- intersect(
+#   which(filtered.cleanput$decimalLongitude > boxxlim[1] & filtered.cleanput$decimalLongitude < boxxlim[2]),
+#   which(filtered.cleanput$decimalLatitude > boxylim[1] & filtered.cleanput$decimalLatitude < boxylim[2])
+# )
+# #plot excluded points
+#
+# points(filtered.cleanput$decimalLongitude[excludebox], filtered.cleanput$decimalLatitude[excludebox], col=2)
+# #plot included points
+# points(filtered.cleanput$decimalLongitude[-excludebox], filtered.cleanput$decimalLatitude[-excludebox], col=3)
+#
+# filtered.cleanput.unbox <- filtered.cleanput[-excludebox,]
+#
+# ##############################################
+# ######### define groups of species      ######
+#
+# selected.species <- read.csv2(file_url, sep=",")
+# cathegories <- unique(selected.species$category)
+#
+# #my.cathegory <- cathegories[1]
+# for (my.cathegory in cathegories[-5]){
+#
+# my.species.list <- selected.species$Taxon.name[which(selected.species$category == my.cathegory)]
+#
+# #get entries matching
+# filtered.cleanput.subset <- filtered.cleanput.unbox[which(!is.na(match(filtered.cleanput.unbox$species,my.species.list))),]
+#
+# locationsamples <- sample(1:length(filtered.cleanput.subset$gbifID), 1000, replace =F)
+#
+# #locationsamples <- sample(1:length(filtered.cleanput.unbox$gbifID), 10000, replace =F)
+# pseudoabsences <- filtered.cleanput.subset[ locationsamples,
+#                                            c("gbifID","occurrenceID","species", "occurrenceStatus", "decimalLongitude","decimalLatitude","coordinateUncertaintyInMeters",
+#                                              "depth", "depthAccuracy","eventDate")]
+# #pseudoabsences <- filtered.cleanput.unbox[ locationsamples,
+# #                                     c("gbifID","occurrenceID","species", "occurrenceStatus", "decimalLongitude","decimalLatitude","coordinateUncertaintyInMeters",
+# #                                       "depth", "depthAccuracy","eventDate")]
+# pseudoabsences$gbifID <- paste("pseudo",seq(1:1000), sep ="")
+# pseudoabsences$species <- NA
+# pseudoabsences$occurrenceStatus <- "ABSENT"
+# pseudoabsences$coordinateUncertaintyInMeters <- NA
+# pseudoabsences$depthAccuracy <- NA
+# pseudoabsences$eventDate <- NA
+# head(pseudoabsences)
+# names(pseudoabsences)<- c("gbifID","occurrenceID","species", "occurrenceStatus", "decimalLongitude","decimalLatitude","coordinateUncertaintyInMeters",
+#                 "depth", "depthAccuracy","eventDate")
+#
+# xlim <- c(-180,180)
+# ylim <- c(-60, 84)
+#
+# #boxxlim=c(12,30)
+# #boxylim = c(50,66)
+# jpeg(paste(path,"/speciesplots/","testplot.pseudoabsences.",my.cathegory,".jpg",sep=""), width = 18*( xlim[2] - xlim[1]),height = 18*( ylim[2] - ylim[1]), pointsize = 4)
+# plot(world1$geometry, xlim = xlim, ylim = ylim, col = "light grey")
+# lines( boxxlim[c(1,2,2,1,1)], boxylim[c(1,1,2,2,1)])
+# points(pseudoabsences$"decimalLongitude",pseudoabsences$"decimalLatitude", col = "red", pch = "*", cex = 5)
+# dev.off()
+#
+# write.csv(pseudoabsences,file = paste(speciespath,"pseudoabsences.marine.excludebox",my.cathegory,".csv", sep =""), row.names = F)
+# print(paste("wrote: ", speciespath,"/pseudoabsences.marine.excludebox",my.cathegory,".csv", sep =""))
+#
+#
+# }#end cathegory
+# ##################xlim <- c(-100,20)
+# filtered.cleanput <- filtered.cleanput[ ,
+#                            c("gbifID","occurrenceID","species", "occurrenceStatus", "decimalLongitude","decimalLatitude","coordinateUncertaintyInMeters",
+#                              "depth", "depthAccuracy","eventDate")]
+# #fix names of deciomal coordinates. capital L
+# #names(filtered.cleanput)<- c("gbifID","occurrenceID","species", "occurrenceStatus", "decimalLongitude","decimalLatitude","coordinateUncertaintyInMeters",
+# #                "depth", "depthAccuracy","eventDate")
+#
+# world1 <- st_read(shapefile,layer="CNTR_RG_01M_2020_4326")
+#
+# factor <- as.numeric(as.factor(filtered.cleanput$species))
+# fac1 <- ceiling(factor/10)
+# fac2 <- factor - 10*(fac1-1)
+# xlim <- c(-110,40)
+# ylim <- c(-2, 68)#jpeg("testplot2.jpg", width = 90*( xlim[2] - xlim[1]),height = 90*( ylim[2] - ylim[1]), pointsize = 10)
+# jpeg(paste(path,"speciesplots/","testplot.CLEANPUT.SMALLER.world.mar2025.jpg", sep=""), width = 10*( xlim[2] - xlim[1]),height = 10*( ylim[2] - ylim[1]), pointsize = 4)
+# plot(world1, xlim = xlim, ylim = ylim, col = "light grey")
+# points(filtered.cleanput$"decimalLongitude",filtered.cleanput$"decimalLatitude", col = fac2, pch = fac1)
+# dev.off()
 
 ########################
