@@ -303,15 +303,18 @@ cathegories <- unique(selected.species$category)
 #my.cathegory <- cathegories[1]
 tab <- c()
 print(paste("Number of species to process:", length(all.species)))
+print(paste("Categories:", cathegories))
+print(paste("selected.species: ", head(selected.species)))
 for(s in all.species){
   print(paste("Working on species", s))
+  comment <- "no match"
   id <- which(!is.na(match(selected.species$Taxon.name,s)))
   print(paste("species id:", id))
-  print(paste("len id:", length(id)))
+  # If we didn't find a match, try to match only the first part of the name
   if(length(id)<1){
     print("id len <1")
     spaces_name <- strsplit(s," ")[[1]][1]
-    print(paste("spaces_name:", spaces_name))
+    print(paste("Try to find with spaces_name:", spaces_name))
     print(paste("selected.species$Taxon.name len", length(selected.species$Taxon.name)))
     id <- grep(spaces_name,selected.species$Taxon.name)
     print(paste("new species id:", id))
@@ -324,34 +327,34 @@ for(s in all.species){
   cat <- selected.species$category[id]
   print(paste("category:", cat))
 
-  temp <- filtered.cleanput.marine[ which(filtered.cleanput$species == s ),
-                             c("gbifID","occurrenceID","species", "occurrenceStatus", "decimalLongitude","decimalLatitude","coordinateUncertaintyInMeters",
-                               "depth", "depthAccuracy","eventDate")]
-
-  print(paste("temp nrow:", nrow(temp)))
-
-
-  #fix names of deciomal coordinates. capital L
-  print("Fix names of decimal coordinates")
-  names(temp)<- c("gbifID","occurrenceID","species", "occurrenceStatus", "decimalLongitude","decimalLatitude","coordinateUncertaintyInMeters",
-                  "depth", "depthAccuracy","eventDate")
-  #head(temp)
-  write.csv(temp,file = paste(speciespath,s,".csv", sep =""), row.names = F)
-  print(paste("wrote: ", speciespath,s,".csv", sep =""))
-  print(paste("no positives: ",length(which(temp$occurrenceStatus == "PRESENT")), sep =""))
-  print(paste("no negatives: ",length(which(temp$occurrenceStatus == "ABSENT")), sep =""))
-  my.filename <- paste(s,".csv",sep="")
-  print(paste("my.filename:", my.filename))
-  my.pseudoname <- paste("pseudoabsences.marine.excludebox",cat,".csv",sep="")
-  tab <- rbind(tab, c(s, my.filename,my.filename,my.pseudoname,length(which(temp$occurrenceStatus == "PRESENT")),length(which(temp$occurrenceStatus == "ABSENT")),comment))
-  print(paste("my.pseudoname:", my.pseudoname))
-  print(paste("tab in loop: ", tab))
-  print(paste("tab len: ", length(tab)))
+#   temp <- filtered.cleanput.marine[ which(filtered.cleanput$species == s ),
+#                              c("gbifID","occurrenceID","species", "occurrenceStatus", "decimalLongitude","decimalLatitude","coordinateUncertaintyInMeters",
+#                                "depth", "depthAccuracy","eventDate")]
+#
+#   print(paste("temp nrow:", nrow(temp)))
+#
+#
+#   #fix names of deciomal coordinates. capital L
+#   print("Fix names of decimal coordinates")
+#   names(temp)<- c("gbifID","occurrenceID","species", "occurrenceStatus", "decimalLongitude","decimalLatitude","coordinateUncertaintyInMeters",
+#                   "depth", "depthAccuracy","eventDate")
+#   #head(temp)
+#   write.csv(temp,file = paste(speciespath,s,".csv", sep =""), row.names = F)
+#   print(paste("wrote: ", speciespath,s,".csv", sep =""))
+#   print(paste("no positives: ",length(which(temp$occurrenceStatus == "PRESENT")), sep =""))
+#   print(paste("no negatives: ",length(which(temp$occurrenceStatus == "ABSENT")), sep =""))
+#   my.filename <- paste(s,".csv",sep="")
+#   print(paste("my.filename:", my.filename))
+#   my.pseudoname <- paste("pseudoabsences.marine.excludebox",cat,".csv",sep="")
+#   tab <- rbind(tab, c(s, my.filename,my.filename,my.pseudoname,length(which(temp$occurrenceStatus == "PRESENT")),length(which(temp$occurrenceStatus == "ABSENT")),comment))
+#   print(paste("my.pseudoname:", my.pseudoname))
+#   print(paste("tab in loop: ", tab))
+#   print(paste("tab len: ", length(tab)))
 }
-print(paste("tab : ", tab))
-print(paste("tab len: ", length(tab)))
-print(paste("tab summary: ", summary(tab)))
-colnames(tab)<- c("species","present.data","absence.data","pseudoabsence.data","n.present","n.absent","comment on Taxon")
+# print(paste("tab : ", tab))
+# print(paste("tab len: ", length(tab)))
+# print(paste("tab summary: ", summary(tab)))
+# colnames(tab)<- c("species","present.data","absence.data","pseudoabsence.data","n.present","n.absent","comment on Taxon")
 # write.csv2(tab, file=paste(speciespath, "data_table_mars2025.csv",sep=""))
 # print(paste("Wrote species data table to", paste(speciespath, "data_table_mars2025.csv",sep="")))
 # ###################################################################
