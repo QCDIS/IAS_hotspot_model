@@ -13,7 +13,6 @@ email=args$email
 file_url <- "/mnt/inputs/NIS_list_combined_Mar2025_v2.csv"
 download_path <- "/mnt/outputs/"
 key <- "0010903-240202131308920"
-download_file = paste(download_path,key,".zip",sep ="" )
 
 
 ########################################
