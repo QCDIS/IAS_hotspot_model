@@ -39,8 +39,6 @@ if(!dir.exists(cahche_dir)){
 ### BIO-ORACLE LAYERS
 # Explore environmental variables from Bio-Oracle
 layers.bio2 <- as.data.frame(list_layers(simplify=F) )#simplify=F if need more info
-print(paste("Found datasets: ",length(layers.bio2$dataset_id)))
-
 
 #remove irrelevant
 exclude <- c(grep("terrain",layers.bio2$dataset_id),grep("kdpar",layers.bio2$dataset_id))
@@ -54,6 +52,7 @@ dataset_variables <- unique(lapply(layers.bio2$dataset_id, function(i)
 dataset_scenarios <- unique(lapply(layers.bio2$dataset_id, function(i)
   strsplit(i,"_")[[1]][2]
 ))
+
 print(paste("dataset_scenarios: ",length(dataset_scenarios)))
 dataset_scenarios<- dataset_scenarios[-8]#remove mean
 dataset_scenarios_titles <- unique(layers.bio2$title)
@@ -130,10 +129,9 @@ for (sel.sen in c(4:7)) {
             #longitude = c(-15, 40),
             time = c("2090-01-01T00:00:00Z", "2090-01-01T00:00:00Z")
         )
-
         i <- 1
-
         if (scenario == "baseline") {
+            print("Scenario is baseline")
             constraints <- constraints.base
         } else {
             constraints <- constraints.ssp
@@ -159,8 +157,6 @@ for (sel.sen in c(4:7)) {
         for (dataset.nr in 1:length(scenario.info[[scenario]][["datasets"]])) {
             dataset <- scenario.info[[scenario]][["datasets"]][[dataset.nr]]
             dataset_id <- dataset$dataset_id
-            print(paste("dataset_id:", dataset_id, ", scenario:", scenario))
-
             if (!(scenario == "baseline")) {
                 scenario.pos <- which(!is.na(match(strsplit(dataset_id, "_")[[1]], "baseline")))
                 variable.vector <- strsplit(dataset_id, "_")[[1]]
@@ -172,16 +168,20 @@ for (sel.sen in c(4:7)) {
             strsplit(dataset_id, "_")[[1]]
             variables <- dataset$variables
             constraints <- dataset$constraints
-            print(paste("variables:", variables))
-
             # --- Variable loop ---
             for (variable in strsplit(variables, ",")[[1]]) {
 #                 info_layer(dataset_id) # We get Error: 429 Too Many Requests
-                filename1 <- glue("{output_dir}{dataset_id}_{variables}.nc")
-                if (!file.exists(filename1)) {
-                    print(paste("File already exists, skipping download:", filename1))
+                filename1_nc <- glue("{output_dir}{dataset_id}_{variables}.nc")
+                outdir <- paste(output_dir, "datalayer.nc/", scenario, dec, "/", sep = "")
+#                 outdir <- paste(output_dir, "datalayer.tif/", scenario, dec, "/", sep = "")
+                if (!dir.exists(outdir)) dir.create(outdir, recursive = TRUE)
+                depth <- strsplit(dataset_id, "_")[[1]][length(strsplit(dataset_id, "_")[[1]])]
+#                 filename_tif <- paste(outdir, variable, "_", depth, ".tif", sep = "")
+                filename_nc <- paste(outdir, variable, "_", depth, ".nc", sep = "")
+                if (file.exists(filename_nc)) {
                     next
                 }
+                print(paste("file: ", filename_nc," does not exist, downloading..."))
                 a <- download_layers(dataset_id, variables = variable, constraints = constraints, directory = output_dir)
                 filename_with_ext <- basename(terra::sources(a))[1]
                 file.rename(
@@ -189,51 +189,57 @@ for (sel.sen in c(4:7)) {
                     to = glue("{output_dir}{dataset_id}_{variables}.nc")
                 )
                 b <- brick(glue("{output_dir}{dataset_id}_{variables}.nc"))
-                outdir <- paste(output_dir, "datalayer.nc/", scenario, dec, "/", sep = "")
-                print(paste("outdir:", outdir))
-                if (!dir.exists(outdir)) dir.create(outdir, recursive = TRUE)
-                depth <- strsplit(dataset_id, "_")[[1]][length(strsplit(dataset_id, "_")[[1]])]
-                filename <- paste(outdir, variable, "_", depth, ".tif", sep = "")
-                filename <- paste(outdir, variable, "_", depth, ".nc", sep = "")
-                file.rename(filename1, filename)
+#                 print(paste("Renaming ", filename1_nc, " to ", filename_tif))
+#                 file.rename(filename1_nc, filename_tif)
+                print(paste("Renaming ", filename1_nc, " to ", filename_nc))
+                file.rename(filename1_nc, filename_nc)
             } # --- End variable loop ---
         } # --- End dataset loop ---
     } # --- End decadal loop ---
 } # --- End outer scenario loop ---
 
-##################################################################
-######## copy the missing layer to the new folders
-##################################################################
+# ##################################################################
+# ######## copy the missing layer to the new folders
+# ##################################################################
 dec.vec <- c("", "dec50", "dec100")
 # --- Scenario loop for copying ---
 for (sel.sen in c(2:7)) {
     scenario <- dataset_scenarios[[sel.sen]][1]
     # clear whitespace
     scenario <- gsub(" ", "", scenario)
-    print(paste("Copying par_mean_mean_depthsurf.nc to scenario:", scenario))
     # --- Decadal loop for copying ---
     for (dec in dec.vec[c(2, 3)]) {
         indir <- paste(output_dir, "datalayer.nc/", dataset_scenarios[[1]][1], "/", sep = "")
         indir <- gsub(" ", "", indir)
         outdir <- paste(output_dir, "datalayer.nc/", scenario, dec, "/", sep = "")
-        outdir <- gsub(" ", "", outdir)
-        print(paste(outdir, "par_mean_mean_depthsurf.nc exists", file.exists(paste(outdir, "par_mean_mean_depthsurf.nc", sep = ""))))
-        file.copy(paste(indir, "par_mean_mean_depthsurf.nc", sep = ""), paste(outdir, "par_mean_mean_depthsurf.nc", sep = ""), overwrite = TRUE)
-        print(paste(outdir, "par_mean_mean_depthsurf.nc exists", file.exists(paste(outdir, "par_mean_mean_depthsurf.nc", sep = ""))))
+
+        f_name_dest = paste(outdir, "par_mean_mean_depthsurf.nc", sep = "")
+        f_name_source = paste(indir, "par_mean_mean_depthsurf.nc", sep = "")
+#         print(paste(outdir, f_name_dest," exists", file.exists(f_name_dest)))
+        file.copy(f_name_source, f_name_dest, overwrite = TRUE)
+#         print(paste(f_name_dest, file.exists(f_name_dest)))
     } # --- End decadal loop for copying ---
 } # --- End scenario loop for copying ---
 
-##################################################################
-####################################################
-## rename files
-# --- Scenario loop for renaming ---
-for (sel.sen in c(4:7)) {
-    scenario <- dataset_scenarios[[sel.sen]][1]
-    outdir <- paste(dir, "/datalayer.tiff/", scenario, dec, "/", sep = "")
-    a <- list.files(outdir, pattern = "*_1.tif")
-    # --- File renaming loop ---
-    for (i in a) {
-        i <- paste(outdir, i, sep = "")
-        file.rename(i, gsub("_1.tif", ".tif", i))
-    } # --- End file renaming loop ---
-} # --- End scenario loop for renaming ---
+# Rename datalayer.nc/ to datalayer.tiff/
+
+# ##################################################################
+# ####################################################
+# ## rename files
+# # --- Scenario loop for renaming ---
+# for (sel.sen in c(4:7)) {
+#     scenario <- dataset_scenarios[[sel.sen]][1]
+#     print(paste("Renaming files for scenario:", scenario))
+#     indir <- paste(output_dir, "datalayer.nc/", scenario, dec, "/", sep = "")
+#     outdir <- paste(output_dir, "datalayer.tiff/", scenario, dec, "/", sep = "")
+#     if (!dir.exists(outdir)) dir.create(outdir, recursive = TRUE)
+#     print(paste("outdir:", outdir))
+#     a <- list.files(indir, pattern = "*_1.tif")
+#     # --- File renaming loop ---
+#     for (i in a) {
+#         print(paste("Renaming file:", i))
+#         i <- paste(outdir, i, sep = "")
+#         print(paste("Renaming file:", i))
+#         file.rename(i, gsub("_1.tif", ".tif", i))
+#     } # --- End file renaming loop ---
+# } # --- End scenario loop for renaming ---

@@ -1,9 +1,9 @@
 {
-  "name": "gbif_download_2025",
-  "label": "gbif download 2025",
-  "description": "gbif download 2025",
+  "name": "focal_interpolation_2025",
+  "label": "focal interpolation 2025",
+  "description": "focal interpolation 2025",
   "type": "DataAnalysing",
-  "dockerImage": "gbif_download_2025",
+  "dockerImage": "focal_interpolation_2025",
   "parameters": [
     {
       "name": "gbif_username",

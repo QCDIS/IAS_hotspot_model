@@ -137,6 +137,7 @@ for (dataset.nr in 1:length(scenario.info[[scenario]][["datasets"]])) {
 
   dataset_id <- paste(variable.vector, collapse ="_")
   }#end if
+
   strsplit(dataset_id,"_")[[1]]
   variables <- dataset$variables
   constraints <- dataset$constraints
