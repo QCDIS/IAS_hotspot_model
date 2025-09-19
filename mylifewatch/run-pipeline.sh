@@ -3,18 +3,8 @@
 base_dir="$(pwd)"
 dev_kit_dir="$HOME/workspace/mylifewatch-wrapper-development-kit"
 
-wrapper_paths=("01_setup"
-        "02_download_presences"
-        "03_download_environment"
-        "04_preprocess_presences"
-        "05a_sample_background"
-        "05b_sample_background"
-        "06_extract_environment"
-        "07_PAExploration"
-        "08_ensemble_decade"
-        "09_ensemble_month"
-        "10_mapping_predictions"
-        "11_static_plot")
+wrapper_paths=("01_gbif_download_2025"
+        )
 
 
 check_inputs_outputs() {

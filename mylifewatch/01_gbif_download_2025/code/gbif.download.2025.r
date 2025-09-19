@@ -10,14 +10,22 @@ pwd=args$gbif_password
 email=args$email
 
 
-file_url <- "/mnt/inputs/NIS_list_combined_Mar2025_v2.csv"
+nis_list <- "/mnt/inputs/NIS_list_combined_Mar2025_v2.csv"
+
+if (!dir.exists(nis_list)) {
+    nis_list_url=args$nis_list_url
+    download.file(nis_list_url,
+                destfile = paste0(Stackpath, "/NIS_list_combined_Mar2025_v2.zip"))
+    unzip(paste0(Stackpath, "/NIS_list_combined_Mar2025_v2.zip"), exdir = "/mnt/inputs/")
+}
+
 download_path <- "/mnt/outputs/"
-key <- "0010903-240202131308920"
+key <- args$key
 
 
 ########################################
 gbif_taxon_keys <- 
-  readr::read_delim(file_url, delim =",",na = c("", "NA"), comment = "",   col_names = TRUE,skip_empty_rows = TRUE)%>%
+  readr::read_delim(nis_list, delim =",",na = c("", "NA"), comment = "",   col_names = TRUE,skip_empty_rows = TRUE)%>%
   pull("Taxon name") %>% # use fewer names if you want to just test 
   name_backbone_checklist()  %>% # match to backbone
   filter(!matchType == "NONE") %>% # get matched names

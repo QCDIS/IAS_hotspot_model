@@ -1,16 +1,16 @@
 {
-  "name": "focal_interpolation_2025",
-  "label": "focal interpolation 2025",
-  "description": "focal interpolation 2025",
+  "name": "arrange_datalayers_2025",
+  "label": "arrange datalayers 2025",
+  "description": "arrange datalayers 2025",
   "type": "DataAnalysing",
-  "dockerImage": "focal_interpolation_2025",
+  "dockerImage": "arrange_datalayers_2025",
   "parameters": [
   ],
   "inputs": [
     {
-      "name": "input_biooracle_dir",
-      "label": "input_biooracle_dir",
-      "description": "zip file containing biooracle layers in .nc format",
+      "name": "biooracle_dir",
+      "label": "biooracle_dir",
+      "description": "zip biooracle dir",
       "type": "zip",
       "path": "/mnt/inputs/biooracle.zip"
     }
@@ -18,17 +18,10 @@
   "outputs": [
     {
       "type": "zip",
-      "name": "output_biooracle_dir",
-      "path": "/mnt/outputs/biooracle.zip",
-      "label": "output_biooracle_dir",
-      "description": "zip file containing biooracle layers after focal interpolation in .tif format"
-    },
-    {
-      "type": "zip",
-      "name": "plots_path",
-      "path": "/mnt/outputs/plots_path.zip",
-      "label": "plots path",
-      "description": "zip file containing plots of the layers before and after focal interpolation"
+      "name": "rasterstacks_outputs",
+      "path": "/mnt/outputs/0010903-rasterstacks.zip",
+      "label": "rasterstacks outputs",
+      "description": "zip rasterstacks outputs"
     }
   ],
   "resources": {

@@ -1,0 +1,191 @@
+{
+  "name": "invasive_data_masterscript_with_cv_2025",
+  "label": "invasive data masterscript with cv 2025",
+  "description": "invasive data masterscript with cv 2025",
+  "type": "DataAnalysing",
+  "dockerImage": "invasive_data_masterscript_with_cv_2025",
+  "parameters": [
+    {
+      "name": "data_table_url",
+      "label": "data_table_url",
+      "description": "data table url",
+      "type": "String",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/DNqTYAyQdaD5gbh/download"
+    },
+    {
+      "name": "ais_shipping_density_url",
+      "label": "ais_shipping_density_url",
+      "description": "ais shipping density url",
+      "type": "String",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/mRsQEzzJma7lGTc/download"
+    },
+    {
+      "name": "biooracle_filled_layers_url",
+      "label": "biooracle_filled_layers_url",
+      "description": "biooracle filled layers url",
+      "type": "String",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/K1a5zyNlKHIr0rD/download"
+    },
+    {
+      "name": "ICESpath_url",
+      "label": "ICESpath url",
+      "description": "ICESpath url",
+      "type": "String",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/MzIMedyFZbdV1Hh/download"
+    },
+    {
+      "name": "ICESecopath_url",
+      "label": "ICESecopath_url url",
+      "description": "ICESecopath url",
+      "type": "String",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/sgjj0HCYLnjJ0AO/download"
+    },
+    {
+      "name": "data_table_url",
+      "label": "data_table_url",
+      "description": "data table url",
+      "type": "String",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/DNqTYAyQdaD5gbh"
+    },
+    {
+      "name": "layernames_url",
+      "label": "layernames_url",
+      "description": "layernames url",
+      "type": "String",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/MijCe0RvTpexGWi/download"
+    },
+    {
+      "name": "SpeciespathRaw_url",
+      "label": "SpeciespathRaw_url",
+      "description": "SpeciespathRaw url",
+      "type": "String",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/YeTn0U9TCPKFniI/download"
+    }
+  ],
+  "inputs": [
+    {
+      "name": "ICESpath",
+      "label": "ICESpath",
+      "description": "zip ICESpath dir",
+      "type": "zip",
+      "path": "/mnt/inputs/ICES_areas.zip"
+    },
+    {
+      "name": "ICESecopath",
+      "label": "ICESecopath",
+      "description": "zip ICESecopath dir",
+      "type": "zip",
+      "path": "/mnt/inputs/ICES_ecoregions.zip"
+    },
+    {
+      "name": "data_table_path",
+      "label": "data table path",
+      "description": "zip species path dir",
+      "type": "zip",
+      "path": "/mnt/inputs/data_table.zip"
+    },
+    {
+      "name": "biooracle_path",
+      "label": "biooracle path",
+      "description": "zip biooracle path dir",
+      "type": "zip",
+      "path": "/mnt/inputs/biooracle.zip"
+    },
+    {
+      "name": "invasive_species",
+      "label": "invasive_species",
+      "description": "zip invasive_species dir",
+      "type": "zip",
+      "path": "/mnt/inputs/invasive_species.zip"
+    },
+    {
+      "name": "traffic_path",
+      "label": "traffic_path",
+      "description": "zip traffic_path dir",
+      "type": "zip",
+      "path": "/mnt/inputs/traffic_layers.zip"
+    }
+  ],
+  "outputs": [
+    {
+      "type": "zip",
+      "name": "Speciespath",
+      "path": "/mnt/outputs/invasive_species.zip",
+      "label": "Speciespath",
+      "description": "zip invasive species dir with results"
+    },
+    {
+      "type": "zip",
+      "name": "iterations_path",
+      "path": "/mnt/outputs/Iterations.zip",
+      "label": "iterations path",
+      "description": "zip iterations_path dir with results"
+    },
+    {
+      "type": "zip",
+      "name": "ROC_path",
+      "path": "/mnt/outputs/ROC.zip",
+      "label": "ROC path",
+      "description": "zip ROC_path dir with results"
+    },
+    {
+      "type": "zip",
+      "name": "Plotpath",
+      "path": "/mnt/outputs/Plots.zip",
+      "label": "Plotpath",
+      "description": "zip Plots dir"
+    },
+    {
+      "type": "zip",
+      "name": "Outpath",
+      "path": "/mnt/outputs/RF_indata.zip",
+      "label": "Outpath",
+      "description": "zip RF indata dir"
+    },
+    {
+      "type": "zip",
+      "name": "Modelpath",
+      "path": "/mnt/outputs/Models.zip",
+      "label": "Modelpath",
+      "description": "zip Models dir with results"
+    },
+    {
+      "type": "resultpath",
+      "name": "resultpath",
+      "path": "/mnt/outputs/Results.zip",
+      "label": "resultpath",
+      "description": "logfile"
+    }
+  ],
+  "resources": {
+    "cores": 2,
+    "memory": 512,
+    "gpuNeeded": false,
+    "gpuMemory": 1024,
+    "estimatedTime": 4
+  },
+  "tags": [
+    "IAS hotspot model",
+    "MARCO-BOLO"
+  ],
+  "license": "GPL v3",
+  "version": "0.0.1",
+  "dependencies": [
+    {
+      "name": "r",
+      "license": "GPL v3",
+      "version": "4.2.2",
+      "author": "null",
+      "citation": null
+    }
+  ],
+  "publicationDate": "Thu, 30 June 2025 00:00:00 GMT",
+  "author": " Gunnar Andersson",
+  "bugs": {
+    "email": "gunnar.andersson@sva.se",
+    "url": "https://helpdesk.lifewatch.eu/"
+  },
+  "citation": null,
+  "testPath": "emptyUnitTest.sh",
+  "metaDataCatalogueUrl": "https://metadatacatalogue.lifewatch.eu/srv/eng/catalog.search#/metadata/<>"
+}

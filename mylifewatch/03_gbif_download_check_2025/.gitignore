@@ -1,3 +1,4 @@
 .RData
 data/outputs
 data/execution-parameters.json
+/data/inputs/

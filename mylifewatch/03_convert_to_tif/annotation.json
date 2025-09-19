@@ -1,16 +1,16 @@
 {
-  "name": "focal_interpolation_2025",
-  "label": "focal interpolation 2025",
-  "description": "focal interpolation 2025",
+  "name": "convert_to_tif",
+  "label": "convert to tif",
+  "description": "convert biooracle layers to tif format",
   "type": "DataAnalysing",
-  "dockerImage": "focal_interpolation_2025",
+  "dockerImage": "convert_to_tif",
   "parameters": [
   ],
   "inputs": [
     {
       "name": "input_biooracle_dir",
       "label": "input_biooracle_dir",
-      "description": "zip file containing biooracle layers in .nc format",
+      "description": "zip file containing biooracle layers",
       "type": "zip",
       "path": "/mnt/inputs/biooracle.zip"
     }
@@ -21,14 +21,7 @@
       "name": "output_biooracle_dir",
       "path": "/mnt/outputs/biooracle.zip",
       "label": "output_biooracle_dir",
-      "description": "zip file containing biooracle layers after focal interpolation in .tif format"
-    },
-    {
-      "type": "zip",
-      "name": "plots_path",
-      "path": "/mnt/outputs/plots_path.zip",
-      "label": "plots path",
-      "description": "zip file containing plots of the layers before and after focal interpolation"
+      "description": "zip file containing biooracle layers in tif format"
     }
   ],
   "resources": {

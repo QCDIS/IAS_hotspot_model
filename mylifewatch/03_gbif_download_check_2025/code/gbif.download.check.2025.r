@@ -7,18 +7,29 @@ require(biooracler)
 
 # --- Define file paths and output folders ---
 species_file <- "/mnt/inputs/0010903-240202131308920.csv"
-file_url <- "/mnt/inputs/NIS_list_combined_Mar2025_v2.csv"
-plots_folder <- "/mnt/outputs/speciesplots/"
-if (!dir.exists(plots_folder)) dir.create(plots_folder, recursive = TRUE)
+nis_list <- "/mnt/inputs/NIS_list_combined_Mar2025_v2.csv"
+if (!dir.exists(nis_list)) {
+    nis_list_url=args$nis_list_url
+    download.file(nis_list_url,
+                destfile = paste0(Stackpath, "/NIS_list_combined_Mar2025_v2.zip"))
+    unzip(paste0(Stackpath, "/NIS_list_combined_Mar2025_v2.zip"), exdir = "/mnt/inputs/")
+}
+
+specie_splots_dir <- "/mnt/outputs/speciesplots/"
+if (!dir.exists(specie_splots_dir)) dir.create(specie_splots_dir, recursive = TRUE)
 
 test_plot <- "test_plot.jpg"
-cleanput_plot <- "/mnt/outputs/cleanput_plot.jpg"
-filled_layers_plot <- "/mnt/outputs/filled_layers_plot.jpg"
+cleanput_plot <- paste(specie_splots_dir, "cleanput_plot.jpg", sep = "")
+filled_layers_plot <- paste(specie_splots_dir, "filled_layers_plot.jpg", sep = "")
+
 testplot_cleanput_mars_2025 <- "testplot_cleanput_mars_2025.jpg"
 test_plot_cleanput_2024 <- "testplot_cleanput_mar2024.jpg"
-filtered_clean_coordinates_output_mars_2025 <- "/mnt/outputs/filtered_clean_coordinates_output_mars_2025.rda"
-filtered_clean_coordinates_output_mars_2025_2 <- "/mnt/outputs/filtered_clean_coordinates_output_mars_2025_2.rda"
-filtered_clean_marine_coordinates_output_mars_2025 <- "/mnt/outputs/filtered_clean_marine_coordinates_output_mars_2025.rda"
+coordinates_output = "/mnt/outputs/cleaned_coordinates/"
+if (!dir.exists(coordinates_output)) dir.create(coordinates_output, recursive = TRUE)
+filtered_clean_coordinates_output_mars_2025 <- paste(coordinates_output, "filtered_clean_coordinates_output_mars_2025.rda", sep = "")
+filtered_clean_coordinates_output_mars_2025_2 <- paste(coordinates_output, "filtered_clean_coordinates_output_mars_2025_2.rda", sep = "")
+filtered_clean_marine_coordinates_output_mars_2025 <- paste(coordinates_output, "filtered_clean_marine_coordinates_output_mars_2025.rda", sep = "")
+filtered_clean_coordinates_mars_2024_output <- paste(coordinates_output, "filtered_clean_coordinates_mars_2024_output.rda", sep = "")
 filled_layers_file <- "/mnt/inputs/filled_layers_new.tif"
 
 speciespath <- "/mnt/outputs/species/"
@@ -56,7 +67,7 @@ plot(world1$geometry)
 par(mfrow = c(1, 1))
 xlim <- c(-100, 20)
 ylim <- c(8, 68)
-test_plot_file_name <- paste(plots_folder, test_plot)
+test_plot_file_name <- paste(specie_splots_dir, test_plot)
 jpeg(test_plot_file_name, width = 10 * (xlim[2] - xlim[1]), height = 10 * (ylim[2] - ylim[1]), pointsize = 4)
 plot(world1$geometry, xlim = xlim, ylim = ylim, col = "light grey")
 points(input$decimalLongitude, input$decimalLatitude, col = fac2, pch = fac1)
@@ -88,7 +99,7 @@ print("plot on world map again")
 factor <- as.numeric(as.factor(cleanput$species))
 fac1 <- ceiling(factor / 10)
 fac2 <- factor - 10 * (fac1 - 1)
-testplot_cleanput_mars_2025_filename <- paste(plots_folder, testplot_cleanput_mars_2025, sep = "")
+testplot_cleanput_mars_2025_filename <- paste(specie_splots_dir, testplot_cleanput_mars_2025, sep = "")
 jpeg(testplot_cleanput_mars_2025_filename, width = 90 * (xlim[2] - xlim[1]), height = 90 * (ylim[2] - ylim[1]), pointsize = 10)
 plot(world1$geometry, xlim = xlim, ylim = ylim, col = "light grey")
 points(cleanput$decimalLongitude, cleanput$decimalLatitude, col = fac2, pch = fac1)
@@ -101,7 +112,7 @@ xlim <- c(-180, 180)
 ylim <- c(-40, 80)
 for (s in all.species) {
   print(paste("Plotting species", s))
-  plot_filename <- paste(plots_folder, s, ".jpg", sep = "")
+  plot_filename <- paste(specie_splots_dir, s, ".jpg", sep = "")
   jpeg(plot_filename, width = 18 * (xlim[2] - xlim[1]), height = 18 * (ylim[2] - ylim[1]), pointsize = 4)
   plot(world1$geometry, xlim = xlim, ylim = ylim, col = "light grey")
   points(cleanput$decimalLongitude[cleanput$species == s], cleanput$decimalLatitude[cleanput$species == s],
@@ -132,7 +143,7 @@ for (u in unique(filtered.cleanput$basisOfRecord)) {
   print(paste("BasisOfRecord", u, ":", n, "cases"))
 }
 save(filtered.cleanput, file = filtered_clean_coordinates_output_mars_2025_2)
-save(filtered.cleanput, file = "filtered.clean.coordinates. mars 2024.output.rda")
+save(filtered.cleanput, file = filtered_clean_coordinates_mars_2024_output)
 
 # --- Filter out data outside marine environment ---
 print("Filter out data outside marine environment")
@@ -163,7 +174,7 @@ save(filtered.cleanput.marine, file = filtered_clean_marine_coordinates_output_m
 all.species <- unique(filtered.cleanput.marine$species)
 all.species <- c(all.species, "Asparagopsis armata")
 print("Prepare input files for species distribution modelling")
-selected.species <- read.csv2(file_url, sep = ",")
+selected.species <- read.csv2(nis_list, sep = ",")
 cathegories <- unique(selected.species$category)
 tab <- c()
 print(paste("Number of species to process:", length(all.species)))
@@ -235,7 +246,7 @@ points(filtered.cleanput$decimalLongitude[-excludebox], filtered.cleanput$decima
 filtered.cleanput.unbox <- filtered.cleanput[-excludebox, ]
 
 # --- Define groups of species and generate pseudoabsences ---
-selected.species <- read.csv2(file_url, sep = ",")
+selected.species <- read.csv2(nis_list, sep = ",")
 cathegories <- unique(selected.species$category)
 for (my.cathegory in cathegories[-5]) {
   my.species.list <- selected.species$Taxon.name[selected.species$category == my.cathegory]

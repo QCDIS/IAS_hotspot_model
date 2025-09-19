@@ -27,13 +27,27 @@
       "description": "email",
       "type": "String",
       "defaultValue": ""
+    },
+    {
+      "name": "nis_list_url",
+      "label": "nis_list_url",
+      "description": "optional value to download nis list url",
+      "type": "String",
+      "defaultValue": "https://minio.lifewatch.eu/02de6973-cc46-4ec4-ba2f-5b40e0fba462/mylifewatch_datasets/IAS_hotspot_model/NIS_list_combined_Mar2025_v2.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=miniouser-C7v6%21u5%2F20250918%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250918T103957Z&X-Amz-Expires=43200&X-Amz-SignedHeaders=host&X-Amz-Signature=f265886ac66ea714f7ac963dc558470ce89ed0462ea1f3d1dd3f84258c1ae8b3"
+    },
+    {
+      "name": "key",
+      "label": "key",
+      "description": "key",
+      "type": "String",
+      "defaultValue": "0010903-240202131308920"
     }
   ],
   "inputs": [
     {
-      "name": "file_url",
-      "label": "file_url",
-      "description": "zip file_url",
+      "name": "nis_list",
+      "label": "nis_list",
+      "description": "zip nis_list",
       "type": "zip",
       "path": "/mnt/inputs/NIS_list_combined_Mar2025_v2.zip"
     }

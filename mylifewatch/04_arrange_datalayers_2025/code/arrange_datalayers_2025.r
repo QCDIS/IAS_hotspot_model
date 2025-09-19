@@ -1,0 +1,54 @@
+# Required libraries
+require(raster)
+library(sf)
+require(fBasics)
+
+# Define directories
+biooracle_dir <- "/mnt/inputs/biooracle/"
+rasterstacks_outputs <- "/mnt/outputs/"
+
+datalayer_dir = "/datalayer.tif/"
+# Get scenario folders
+dataset_scenarios <- list.dirs(
+  paste(biooracle_dir, datalayer_dir, sep = ""),
+  full.names = FALSE,
+  recursive = FALSE
+)
+
+
+
+# --- Scenario loop ---
+for (sel.sen in 1:length(dataset_scenarios)) {
+    #sel.sen <- 1
+    scenario <- dataset_scenarios[[sel.sen]]
+    print(paste("Processing scenario:", scenario))
+    #  outdir <- paste(dir,datalayer_dir,scenario,"/",sep="")
+
+    rasterpath <- paste(biooracle_dir,datalayer_dir,scenario,"/",sep="")
+    stackpath <- paste(rasterstacks_outputs,"/rasterstacks/",scenario,"/",sep="")
+    if (!dir.exists(stackpath)) dir.create(stackpath, recursive = TRUE)
+#
+    lista.ras<- Sys.glob(paste(rasterpath,"/*",".tif",sep=""))
+    print(paste("Number of raster files found:", length(lista.ras)))
+    mystack <- stack(lista.ras)
+    for(i in lista.ras){
+        print(i)
+       #plot(raster(i))
+        gc()
+    }
+    filename <- paste(stackpath,"/","Biooracle.global.tif", sep="")
+    writeRaster(mystack, filename, format="GTiff",overwrite=TRUE)
+
+    e <- extent(-25, 45, 30, 72) #xmin, xmax,ymin,ymax
+    rasterstack.Europe.2025 <- crop(mystack, e)
+    plot(rasterstack.Europe.2025)
+    png(paste(stackpath,"/","Biooracle.Europe2025.png", sep=""))
+
+    filename2 <- paste(stackpath,"/","Biooracle.Europe2025.tif", sep="")
+    writeRaster(rasterstack.Europe.2025, filename2, format="GTiff",overwrite=TRUE)
+
+
+    layernames <- names(mystack)
+    save(layernames, file = paste(stackpath,"/layernames.rda" ,sep =""))
+
+}
