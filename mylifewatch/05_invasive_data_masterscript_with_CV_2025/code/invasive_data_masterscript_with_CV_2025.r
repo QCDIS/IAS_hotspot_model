@@ -225,7 +225,6 @@ for(Species in Data.table$species[-1]){
      species.data <- species.data.list[["complete.points"]]
      stats.temp <- c(Species,species.data.list[["stats"]])
      stats <- rbind(stats, stats.temp)
-     print(paste("head(species.data)", head(species.data)))
      ## Check that there are no erroneous entries in the files.
      # the most common synonyms for "present" and "absent" are identified and entries harmonized.
     #      For entires where status cannot be determiend the line is removed
