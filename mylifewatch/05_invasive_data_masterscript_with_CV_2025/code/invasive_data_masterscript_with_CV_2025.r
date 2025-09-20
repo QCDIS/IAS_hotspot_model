@@ -251,142 +251,137 @@ for(Species in Data.table$species[-1]){
 }
 colnames(stats)<- c("Species","npos","nabs", "npos.unique", "nabs.unique", "npos.unique.complete", "nabs.unique.complete")
 write.csv2(as.data.frame(stats),file =  paste(outputs_path,"species.stats",suffix,".csv", sep=""))
-print(species)
-# ###
-# stats <- as.data.frame(stats)
-# exclude <-  union(which(as.numeric(stats$npos.unique.complete) <6),
-#            which(as.numeric(stats$nabs.unique.complete) <6))
-# #krasch <- c(11,17,34)
-# #exclude <- union(exclude, krasch)
-# #stats[exclude,]
-# #stats <- read.csv2(file = "stats.mar 2025.csv", sep=",")
-# write.csv2(stats, file = paste("stats",suffix,"apr 2025.csv", sep=""))
-# save(exclude, file = paste("exclude",suffix,".apr2025.csv",sep=""))
+
+###
+stats <- as.data.frame(stats)
+exclude <-  union(which(as.numeric(stats$npos.unique.complete) <6),
+           which(as.numeric(stats$nabs.unique.complete) <6))
+#krasch <- c(11,17,34)
+#exclude <- union(exclude, krasch)
+#stats[exclude,]
+#stats <- read.csv2(file = "stats.mar 2025.csv", sep=",")
+write.csv2(stats, file = paste("stats",suffix,"apr 2025.csv", sep=""))
+save(exclude, file = paste("exclude",suffix,".apr2025.csv",sep=""))
+
+Data.table$species[exclude]
+#load(file = "excludemar2025.csv")
+load(file= paste("exclude",suffix,".apr2025.csv",sep=""))
+#################################################################
+### prepare iterations
+##################################################################
+
+
+#Call the split data function to generate a list object that describes which entries are
+# used as training data in each repetition and CV-fold in the cross-validation
+# the resutls is stored as a rda file in the folder defined in "iterations path"
+
+#The settings are made in teh "split data" function
+#  n.repeat <- 5 this defines the number of times the cross validation process is performed
+#  CV.level <- 5 this defienes the level of the cross validation
+# to speed up thing it is possible to make  2-fold cross validation and just one repeat.
+# when the data is split into ICES statistical rectangles based on their latitude and longitide.
+#If data from other parts of the globe are used this may have to be modified
 #
-# Data.table$species[exclude]
-# #load(file = "excludemar2025.csv")
-# load(file= paste("exclude",suffix,".apr2025.csv",sep=""))
-# ##################################################################
-# ### prepare iterations
-# ##################################################################
-#
-#
-# #Call the split data function to generate a list object that describes which entries are
-# # used as training data in each repetition and CV-fold in the cross-validation
-# # the resutls is stored as a rda file in the folder defined in "iterations path"
-#
-# #The settings are made in teh "split data" function
-# #  n.repeat <- 5 this defines the number of times the cross validation process is performed
-# #  CV.level <- 5 this defienes the level of the cross validation
-# # to speed up thing it is possible to make  2-fold cross validation and just one repeat.
-# # when the data is split into ICES statistical rectangles based on their latitude and longitide.
-# #If data from other parts of the globe are used this may have to be modified
-# #
-# exclude2 <- c()
-# #for(Species in Data.table$species[-exclude]){
-#   for(Species in Data.table$species){
-#
-# #for(Species in Data.table$species[-c(22,23,24,25,26)]){
-#
-#   # Species <- Data.table$species[1]
-#  # iterations_path
-#   print(Species)
-#   nsites <- split.data(species = Species,
-#              indata.path = Outpath,
-#              iterations_path= iterations_path)
-# #unique(all.site.iters.tot[[5]][[5]])
-#   if(nsites[1]<5 | nsites[2]<5){
-#     exclude2<- rbind(exclude2, c(Species, nsites[1],nsites[2]))
-#   }
-# }
-# exclude2.index <- match(exclude2[,1],Data.table$species)
-# exclude <- union(exclude, exclude2.index)
-# ##################################################################
-# ## Run MCMC  the function will prepare data and execute.
-# ##################################################################
-# # note to self exclude3 <- c(8,20,23,27,42,44,46,47,50, 53, 57, 58,62, 64, 65,68, 69,70,71,72,73,74,75,76,77,78,79 ,80) #Mnemiopsis leidyi,Halothrix lumbricalis,Haloa japonicaCelleporaria brunnea,Apionsoma misakianum,
-# # Pleurosira laevis,Fenestrulina delicia Gonionemus vertens Smittoidea prolifica Corambe obscura Haminella solitaria Sinelobus vanhaareni Cephalothrix simula
-# #Torquigener flavimaculosus Boccardia proboscidea Paracerceis sculpta Oithona davisae Pseudodiaptomus marinus Polydora websteri Xenostrobus securis Aurelia solida,
-# #Evadne anonyx Parathalestris harpactoides Stylochus ellipticus Marenzelleria neglecta Marenzelleria arctia Aporrectodea caliginosa Polycerella emertoni
-# #intersect(exclude, exclude3) #exclude 3 == exclude...
-# #exclude3 <- c(8,20,23,27,42,44,46,47,50, 53, 57, 58,62, 64, 65,68, 69,70,71,72,73,74,75,76,77,78,79 ,80)
-# #exclude <- union(exclude, exclude3)
-#
-# mcmc <- T
-# if(mcmc){
-#   require("rmcfs")
-#   #for j48 trees
-#   require("RWeka")
-#   require("parallel")
-#   #Species <-Data.table$species[5]){
-#   lista.rda<- Sys.glob(paste(iterations_path,"*.rda",sep="/"))
-#  # for(Species in Data.table$species[-c(1:20, 22,23,24,25,26)]){
-#     for(Species in Data.table$species[-exclude]){
-#     #  for(Species in Data.table$species[-c(1:79)]){
-#
-#     indata.path = Outpath
-#     lista.csv<- Sys.glob(paste(indata.path,"*.csv",sep="/"))
-#     my.data <- read.csv(lista.csv[grep(Species,lista.csv)],header=T)
-#     my.data$RANDOMVAR <- runif(length(my.data$ID),0,1)
-#     my.data$RANDOMVAR2 <- runif(length(my.data$ID),0,1)
-#     my.data$RANDOMVAR3 <- runif(length(my.data$ID),0,1)
-#
-#     print(paste(Species, "n.abs=", length(which(my.data$occurrenceStatus == "absent")),
-#     ":n.pos=" ,length(which(my.data$occurrenceStatus == "present"))))
-#     unique(my.data$occurrenceStatus )
-# ##    We are using occurrence iters in this project, not NUTS iters
-#      use.site.inters <- TRUE
-#     if(use.site.inters){
-#       load(lista.rda[
-#         intersect(grep("occurance.iters_",lista.rda),grep(Species,lista.rda))
-#       ])
-#     }
-#      # get info from iterations data structure
-#      nrep <- length(all.occurance.iters)
-#      CV.level <- length(all.occurance.iters[[1]])
-#      process <- seq(1,nrep*CV.level)
-#      rep <- sort(rep(seq(1,nrep),CV.level))
-#      iter <- rep(seq(1,CV.level),nrep)
-#      process.plan <- cbind(process,rep,iter)
-#     # initiate MCMC
-#      ptm2 <- proc.time()
-#      no_cores <- detectCores() -1
-#      no_cores <- min(no_cores, length(iter))
-#      cl <- makeCluster(no_cores)
-#      #clusterExport(cl,"dummy.process")
-#      #result <- parLapply(cl,1:60,function(i) dummy.process(i))
-#      clusterExport(cl,c("MCMC.process", "my.data", "all.occurance.iters","process.plan"))
-#      #clusterEvalQ(cl,library(randomForest))
-#      clusterEvalQ(cl,library(rmcfs))
-#
-#      ## start parallell execution
-#      MCMCresult <- try(parLapply(cl,1:length(process.plan[,1]),
-#                              function(i) MCMC.process(.mydata =my.data,
-#                                                       .iters =all.occurance.iters,
-#                                                       .process.plan = process.plan,
-#                                                       .process.ID = i)))
-#      stopCluster(cl)
-#      time.to.complete2 <- proc.time()-ptm2
-#      print(time.to.complete2)
-#    #
-#   #
-#      if(length(grep("Error",MCMCresult))>0){
-#        print("Error - fallback")
-#        myreturn <- list()
-#        for(prid in 1:25){
-#    myreturn[[prid]] <- MCMC.process(.mydata =my.data,
-#                    .iters =all.occurance.iters,
-#                   .process.plan = process.plan,
-#                    .process.ID = prid)
-#      }
-#      MCMCresult <- myreturn
-#      }
-#
-#      save(MCMCresult, file= paste(resultpath,"/selected.vars.",Species,".rda",sep=""))
-#      rm(MCMCresult)
-#         gc()
-#   }
-# }
+exclude2 <- c()
+
+  for(Species in Data.table$species){
+  print(Species)
+  nsites <- split.data(species = Species,
+             indata.path = Outpath,
+             iterations_path= iterations_path)
+
+  if(nsites[1]<5 | nsites[2]<5){
+    exclude2<- rbind(exclude2, c(Species, nsites[1],nsites[2]))
+  }
+}
+exclude2.index <- match(exclude2[,1],Data.table$species)
+exclude <- union(exclude, exclude2.index)
+##################################################################
+## Run MCMC  the function will prepare data and execute.
+##################################################################
+# note to self exclude3 <- c(8,20,23,27,42,44,46,47,50, 53, 57, 58,62, 64, 65,68, 69,70,71,72,73,74,75,76,77,78,79 ,80) #Mnemiopsis leidyi,Halothrix lumbricalis,Haloa japonicaCelleporaria brunnea,Apionsoma misakianum,
+# Pleurosira laevis,Fenestrulina delicia Gonionemus vertens Smittoidea prolifica Corambe obscura Haminella solitaria Sinelobus vanhaareni Cephalothrix simula
+#Torquigener flavimaculosus Boccardia proboscidea Paracerceis sculpta Oithona davisae Pseudodiaptomus marinus Polydora websteri Xenostrobus securis Aurelia solida,
+#Evadne anonyx Parathalestris harpactoides Stylochus ellipticus Marenzelleria neglecta Marenzelleria arctia Aporrectodea caliginosa Polycerella emertoni
+#intersect(exclude, exclude3) #exclude 3 == exclude...
+#exclude3 <- c(8,20,23,27,42,44,46,47,50, 53, 57, 58,62, 64, 65,68, 69,70,71,72,73,74,75,76,77,78,79 ,80)
+#exclude <- union(exclude, exclude3)
+
+mcmc <- T
+if(mcmc){
+  require("rmcfs")
+  #for j48 trees
+  require("RWeka")
+  require("parallel")
+  #Species <-Data.table$species[5]){
+  lista.rda<- Sys.glob(paste(iterations_path,"*.rda",sep="/"))
+ # for(Species in Data.table$species[-c(1:20, 22,23,24,25,26)]){
+    for(Species in Data.table$species[-exclude]){
+    #  for(Species in Data.table$species[-c(1:79)]){
+
+    indata.path = Outpath
+    lista.csv<- Sys.glob(paste(indata.path,"*.csv",sep="/"))
+    my.data <- read.csv(lista.csv[grep(Species,lista.csv)],header=T)
+    my.data$RANDOMVAR <- runif(length(my.data$ID),0,1)
+    my.data$RANDOMVAR2 <- runif(length(my.data$ID),0,1)
+    my.data$RANDOMVAR3 <- runif(length(my.data$ID),0,1)
+
+    print(paste(Species, "n.abs=", length(which(my.data$occurrenceStatus == "absent")),
+    ":n.pos=" ,length(which(my.data$occurrenceStatus == "present"))))
+    unique(my.data$occurrenceStatus )
+##    We are using occurrence iters in this project, not NUTS iters
+     use.site.inters <- TRUE
+    if(use.site.inters){
+      load(lista.rda[
+        intersect(grep("occurance.iters_",lista.rda),grep(Species,lista.rda))
+      ])
+    }
+     # get info from iterations data structure
+     nrep <- length(all.occurance.iters)
+     CV.level <- length(all.occurance.iters[[1]])
+     process <- seq(1,nrep*CV.level)
+     rep <- sort(rep(seq(1,nrep),CV.level))
+     iter <- rep(seq(1,CV.level),nrep)
+     process.plan <- cbind(process,rep,iter)
+    # initiate MCMC
+     ptm2 <- proc.time()
+     no_cores <- detectCores() -1
+     no_cores <- min(no_cores, length(iter))
+     cl <- makeCluster(no_cores)
+     #clusterExport(cl,"dummy.process")
+     #result <- parLapply(cl,1:60,function(i) dummy.process(i))
+     clusterExport(cl,c("MCMC.process", "my.data", "all.occurance.iters","process.plan"))
+     #clusterEvalQ(cl,library(randomForest))
+     clusterEvalQ(cl,library(rmcfs))
+
+     ## start parallell execution
+     MCMCresult <- try(parLapply(cl,1:length(process.plan[,1]),
+                             function(i) MCMC.process(.mydata =my.data,
+                                                      .iters =all.occurance.iters,
+                                                      .process.plan = process.plan,
+                                                      .process.ID = i)))
+     stopCluster(cl)
+     time.to.complete2 <- proc.time()-ptm2
+     print(time.to.complete2)
+   #
+  #
+     if(length(grep("Error",MCMCresult))>0){
+       print("Error - fallback")
+       myreturn <- list()
+       for(prid in 1:25){
+   myreturn[[prid]] <- MCMC.process(.mydata =my.data,
+                   .iters =all.occurance.iters,
+                  .process.plan = process.plan,
+                   .process.ID = prid)
+     }
+     MCMCresult <- myreturn
+     }
+
+     save(MCMCresult, file= paste(resultpath,"/selected.vars.",Species,".rda",sep=""))
+     rm(MCMCresult)
+        gc()
+  }
+}
 #
 # #Neogobius fluviatilis n.abs= 1469 :n.pos= 329"#
 # # Error in gzfile(file) : invalid 'description' argument
