@@ -1,4 +1,74 @@
-#invasive.data.masterscript.r
+#############################################################
+################### split data for cross validation  ############
+##################################################################
+###
+split.data.local <- function(species,indata.path,iterations.path){
+  lista.csv<- Sys.glob(paste(indata.path,"*.csv",sep="/"))
+  files_to_read <- lista.csv[grep(species, lista.csv)]
+  print(paste("files_to_read: ", files_to_read))
+if (length(files_to_read) == 0) {
+  stop(paste("No CSV file found for species:", species))
+}
+  my.data <- read.csv2(lista.csv[grep(species,lista.csv)],header=T)
+  print(paste("loaded data for species:", species))
+  #  names(my.data)
+  #my.data$Lat
+  #my.data$Lon
+  #Define in what ICES statistical rectangle the sample is in
+  #recatangles are 1 degree longitude, 0.5 degree latitude
+  lonmin <-   floor(my.data$Lon)
+  lonmax <-   ceiling(my.data$Lon)
+  latmin <-   floor(2*my.data$Lat)/2
+  latmax <-   ceiling(2*my.data$Lat)/2
+ # define in which ICES statistical rectangle the datapoint is
+  ICESrec <- paste(paste(lonmin,lonmax,sep="_"),paste(latmin,latmax,sep="_"), sep="&")
+  ## identify positive and negative findings at each ICESrec
+  site.occurance <- cbind(ICESrec,sapply(1:length(ICESrec),function(t)
+    length(which(ICESrec == ICESrec[t] & my.data$occurrenceStatus == "present"))
+  )
+  )
+  pos.sites <- site.occurance[which(!site.occurance[,2] == "0"),1]
+  neg.sites <- site.occurance[which(site.occurance[,2] == "0"),1]
+
+  all.site.iters.pos<- list()
+  all.site.iters.neg<- list()
+  all.site.iters.tot<- list()
+
+  set.seed(1)
+  #split dataset in five. Repeat the process in five iterations (to check repeatability)
+  n.repeat <- 5
+  CV.level <- 5
+
+  # The number of positive and negative sites (ICES rectangles) are shuffled independently to make sure that there are presences and absences in all datasets
+  for(r in 1:n.repeat){
+    shuffle.pos <- sample(pos.sites, length(pos.sites), replace = FALSE, prob = NULL)
+    shuffle.neg <- sample(neg.sites, length(neg.sites), replace = FALSE, prob = NULL)
+    all.site.iters.pos[[r]] <- split(shuffle.pos,  rep(seq(1:CV.level), ceiling(length(pos.sites)/CV.level) )[1:length(pos.sites)]  )
+    all.site.iters.neg[[r]] <- split(shuffle.neg,  rep(seq(1:CV.level), ceiling(length(neg.sites)/CV.level) )[1:length(neg.sites)]  )
+  }
+  all.site.iters.tot <- try(lapply(1:n.repeat,function(r)
+    lapply(1:CV.level,function(i)
+      union(all.site.iters.pos[[r]][[i]],all.site.iters.neg[[r]][[i]])
+    )
+  ),silent = TRUE)
+  ## get the corresponding occurances
+  #length(unlist(all.site.iters.tot[[1]]))
+  all.occurance.iters <- try(lapply(1:n.repeat,function(r)
+    lapply(1:CV.level,function(i)
+      unlist( sapply(1:length(all.site.iters.tot[[r]][[i]]),function(s)
+        unlist(my.data$ID[grep(
+          all.site.iters.tot[[r]][[i]][s], ICESrec
+        )
+        ]
+        )))
+    )
+  ),silent = TRUE)
+
+  save("all.site.iters.tot",all.site.iters.tot, file= paste(iterations.path,"/site.iters_",species,".rda",sep=""))
+  if(length(grep("Error",all.occurance.iters ))==0){
+    save("all.occurance.iters", all.occurance.iters, file= paste(iterations.path,"/occurance.iters_",species,".rda",sep=""))
+  }
+}
 require(raster)
 #require(rgdal)
 require(zip)
@@ -83,8 +153,8 @@ stringsAsFactors = F
 #Folder with the original rasterdata
 
 outputs_path = "/mnt/outputs/"
-Speciespath <- paste(outputs_path, "invasive_species/", sep="")
-if (!dir.exists(Speciespath)) dir.create(Speciespath, recursive = TRUE)
+speciespath <- paste(outputs_path, "invasive_species/", sep="")
+if (!dir.exists(speciespath)) dir.create(speciespath, recursive = TRUE)
 
 #This folder contains files describing the cross validation scheme for each species
 
@@ -120,6 +190,10 @@ if (!dir.exists(mappath)) dir.create(mappath, recursive = TRUE)
 rastermappath <- paste(outputs_path, "Rastermaps/" , sep="")
 if (!dir.exists(rastermappath)) dir.create(rastermappath, recursive = TRUE)
 
+
+exclude_species = paste("/mnt/outputs/exclude_species",suffix,".rda",sep="")
+stats_csv = paste("/mnt/outputs/exclude_species",suffix,".csv",sep="")
+
 # read in the region map used in the plots, and transfor to WGS84 - World Geodetic System 1984
 # actually the map will not be needed until later. Readin git could be omitted here to save memory.
 #shape2 <- readOGR(dsn="H:/R gruppen/Kartor/NUTS_shapefile",layer="nutsByHand")
@@ -138,7 +212,7 @@ which(duplicated(Data.table))
 names(Data.table)[1] <- "species" # just to check
 
 # select one species to try out the code. Not used in the loop.
-Species = Data.table$species[2] # Ficopomatus enigmaticus  "Neogobius melanostomus"
+species = Data.table$species[2] # Ficopomatus enigmaticus  "Neogobius melanostomus"
 # Define which stack to used when extracting environmental data-
 # not using alternative rasterstacks
 biooracle_filled_layers = paste(Stackpath,"/Biooracle.filled.layers.global",".tif", sep="")
@@ -189,17 +263,17 @@ if (!file.exists(layernames_path)) {
     file.remove(destfile)
 }
 
-SpeciespathRaw <- paste(inputs_path ,"speciesIndata", sep ="/")
-if (!dir.exists(SpeciespathRaw)) {
-    SpeciespathRaw_url=args$SpeciespathRaw_url
-    print(paste("Downloading species data from:", SpeciespathRaw_url))
-    destfile = paste0(SpeciespathRaw, ".zip")
-    download.file(SpeciespathRaw_url, destfile = destfile)
+speciespathRaw <- paste(inputs_path ,"speciesIndata", sep ="/")
+if (!dir.exists(speciespathRaw)) {
+    speciespathRaw_url=args$speciespathRaw_url
+    print(paste("Downloading species data from:", speciespathRaw_url))
+    destfile = paste0(speciespathRaw, ".zip")
+    download.file(speciespathRaw_url, destfile = destfile)
     before <- list.files(inputs_path, full.names = FALSE, recursive = FALSE)
     unzip(destfile, exdir = inputs_path)
     after <- list.files(inputs_path, full.names = FALSE, recursive = FALSE)
     new_folder <- setdiff(after, before)
-    file.rename(paste0(inputs_path,new_folder), SpeciespathRaw)
+    file.rename(paste0(inputs_path,new_folder), speciespathRaw)
     file.remove(destfile)
 }
 
@@ -211,47 +285,59 @@ names(Stack) <- layernames
 stringsAsFactors= FALSE
 
 stats <- c()
-for(Species in Data.table$species[-1]){
-    print(paste("Processing species:", Species))
+species.stats = paste(outputs_path,"species.stats.rda", sep="")
+for(i in seq_along(Data.table$species[-1])) {
+    species <- Data.table$species[-1][i]
+    print(paste("Processing species:", species))
+    species_indata_file =  paste(Outpath,species,"_indata.csv", sep="")
+    if (file.exists(species_indata_file)) {
+        print(paste("File already exists:", species_indata_file))
+        next
+    }
     # Read in present absent and pseudoabsent points,
     #convert these points to spatial coordinates and extract environmental variables from rasterstack
     species.data.list <-  read.and.extract(data.table = Data.table,
-                                   species = Species,
+                                   species = species,
                                    stack = Stack,
-                                   speciespath = SpeciespathRaw,
+                                   speciespath = speciespathRaw,
                                    stackpath = Stackpath,
                                    plotpath = Plotpath,
                                    outpath = Outpath)
-     species.data <- species.data.list[["complete.points"]]
-     stats.temp <- c(Species,species.data.list[["stats"]])
-     stats <- rbind(stats, stats.temp)
-     ## Check that there are no erroneous entries in the files.
-     # the most common synonyms for "present" and "absent" are identified and entries harmonized.
+    species.data <- species.data.list[["complete.points"]]
+    stats.temp <- c(species,species.data.list[["stats"]])
+    stats <- rbind(stats, stats.temp)
+    ## Check that there are no erroneous entries in the files.
+    # the most common synonyms for "present" and "absent" are identified and entries harmonized.
     #      For entires where status cannot be determiend the line is removed
-     # If data was checked in the earleir stage these lines should not find any mistakes
-     my.data <- species.data
-     print(paste(Species,paste(unique(my.data$occurrenceStatus) ))  )
-     my.data$occurrenceStatus <- as.character(my.data$occurrenceStatus)
-     present.synonyms <-  which(my.data$occurrenceStatus == "present"|my.data$occurrenceStatus == "Present"| my.data$occurrenceStatus == "established"| my.data$occurrenceStatus == "Established")
-     my.data$occurrenceStatus[present.synonyms] <- "present"
-     absent.synonyms <-  which(my.data$occurrenceStatus == "Absent"| my.data$occurrenceStatus == "")
+    # If data was checked in the earleir stage these lines should not find any mistakes
+    my.data <- species.data
+    print(paste(species,paste(unique(my.data$occurrenceStatus) ))  )
+    my.data$occurrenceStatus <- as.character(my.data$occurrenceStatus)
+    present.synonyms <-  which(my.data$occurrenceStatus == "present"|my.data$occurrenceStatus == "Present"| my.data$occurrenceStatus == "established"| my.data$occurrenceStatus == "Established")
+    my.data$occurrenceStatus[present.synonyms] <- "present"
+    absent.synonyms <-  which(my.data$occurrenceStatus == "Absent"| my.data$occurrenceStatus == "")
 
-     my.data$occurrenceStatus[absent.synonyms] <- "absent"
-     remove <- which(!my.data$occurrenceStatus == "absent"  & !my.data$occurrenceStatus == "present")
-     print(paste("remove: ",remove))# promt if lines are removed
-     if(length(remove > 0)){
-       my.data <- my.data[-remove,]
-     }
-     species.data <- my.data
-     # Save the species data with environmental variables in selected folder
-     print(paste(Species, "npos=", length(which(species.data$occurrenceStatus == "present")),
+    my.data$occurrenceStatus[absent.synonyms] <- "absent"
+    remove <- which(!my.data$occurrenceStatus == "absent"  & !my.data$occurrenceStatus == "present")
+    print(paste("remove: ",remove))# promt if lines are removed
+    if(length(remove > 0)){
+        my.data <- my.data[-remove,]
+    }
+    species.data <- my.data
+    # Save the species data with environmental variables in selected folder
+    print(paste(species, "npos=", length(which(species.data$occurrenceStatus == "present")),
                                           "nneg=", length(which(species.data$occurrenceStatus == "absent") )))
-     write.csv(species.data, file = paste(Outpath,"/",Species,"_indata.csv", sep=""),row.names=F)
+    print(paste("Writing to file:", species_indata_file))
+    write.csv(species.data, file = species_indata_file,row.names=F)
+    # save the stats variable
+    save(stats, file = species.stats)
+
 }
-colnames(stats)<- c("Species","npos","nabs", "npos.unique", "nabs.unique", "npos.unique.complete", "nabs.unique.complete")
+if (file.exists(species.stats)) load(species.stats)
+colnames(stats)<- c("species","npos","nabs", "npos.unique", "nabs.unique", "npos.unique.complete", "nabs.unique.complete")
 write.csv2(as.data.frame(stats),file =  paste(outputs_path,"species.stats",suffix,".csv", sep=""))
 
-###
+##
 stats <- as.data.frame(stats)
 exclude <-  union(which(as.numeric(stats$npos.unique.complete) <6),
            which(as.numeric(stats$nabs.unique.complete) <6))
@@ -259,17 +345,19 @@ exclude <-  union(which(as.numeric(stats$npos.unique.complete) <6),
 #exclude <- union(exclude, krasch)
 #stats[exclude,]
 #stats <- read.csv2(file = "stats.mar 2025.csv", sep=",")
-write.csv2(stats, file = paste("stats",suffix,"apr 2025.csv", sep=""))
-save(exclude, file = paste("exclude",suffix,".apr2025.csv",sep=""))
+write.csv2(stats, file = stats_csv)
+# save(exclude, file = exclude_species)
+
 
 Data.table$species[exclude]
+print(paste("Excluding species:", paste(Data.table$species[exclude], collapse = ", ")))
 #load(file = "excludemar2025.csv")
-load(file= paste("exclude",suffix,".apr2025.csv",sep=""))
+# load(file= exclude_species)
+################################################################
+## prepare iterations
 #################################################################
-### prepare iterations
-##################################################################
-
-
+#
+#
 #Call the split data function to generate a list object that describes which entries are
 # used as training data in each repetition and CV-fold in the cross-validation
 # the resutls is stored as a rda file in the folder defined in "iterations path"
@@ -283,81 +371,98 @@ load(file= paste("exclude",suffix,".apr2025.csv",sep=""))
 #
 exclude2 <- c()
 
-  for(Species in Data.table$species){
-    print(paste("Preparing iterations for species:", Species))
-    nsites <- split.data(species = Species,
+  for(species in Data.table$species){
+    lista.csv<- Sys.glob(paste(Outpath,"*.csv",sep="/"))
+    files_to_read <- lista.csv[grep(species, lista.csv)]
+    if (length(files_to_read) == 0) {
+        print(paste("No CSV file found for species:", species))
+        print("Skipping to next species")
+        next
+    }
+    nsites <- split.data(species = species,
                  indata.path = Outpath,
                  iterations.path= iterations_path)
     if(nsites[1]<5 | nsites[2]<5){
-        exclude2<- rbind(exclude2, c(Species, nsites[1],nsites[2]))
+        exclude2<- rbind(exclude2, c(species, nsites[1],nsites[2]))
     }
 }
-# exclude2.index <- match(exclude2[,1],Data.table$species)
-# exclude <- union(exclude, exclude2.index)
-# ##################################################################
-# ## Run MCMC  the function will prepare data and execute.
-# ##################################################################
-# # note to self exclude3 <- c(8,20,23,27,42,44,46,47,50, 53, 57, 58,62, 64, 65,68, 69,70,71,72,73,74,75,76,77,78,79 ,80) #Mnemiopsis leidyi,Halothrix lumbricalis,Haloa japonicaCelleporaria brunnea,Apionsoma misakianum,
-# # Pleurosira laevis,Fenestrulina delicia Gonionemus vertens Smittoidea prolifica Corambe obscura Haminella solitaria Sinelobus vanhaareni Cephalothrix simula
-# #Torquigener flavimaculosus Boccardia proboscidea Paracerceis sculpta Oithona davisae Pseudodiaptomus marinus Polydora websteri Xenostrobus securis Aurelia solida,
-# #Evadne anonyx Parathalestris harpactoides Stylochus ellipticus Marenzelleria neglecta Marenzelleria arctia Aporrectodea caliginosa Polycerella emertoni
-# #intersect(exclude, exclude3) #exclude 3 == exclude...
-# #exclude3 <- c(8,20,23,27,42,44,46,47,50, 53, 57, 58,62, 64, 65,68, 69,70,71,72,73,74,75,76,77,78,79 ,80)
-# #exclude <- union(exclude, exclude3)
-#
-# mcmc <- T
-# if(mcmc){
-#   require("rmcfs")
-#   #for j48 trees
-#   require("RWeka")
-#   require("parallel")
-#   #Species <-Data.table$species[5]){
-#   lista.rda<- Sys.glob(paste(iterations_path,"*.rda",sep="/"))
-#  # for(Species in Data.table$species[-c(1:20, 22,23,24,25,26)]){
-#     for(Species in Data.table$species[-exclude]){
-#     #  for(Species in Data.table$species[-c(1:79)]){
-#
-#     indata.path = Outpath
-#     lista.csv<- Sys.glob(paste(indata.path,"*.csv",sep="/"))
-#     my.data <- read.csv(lista.csv[grep(Species,lista.csv)],header=T)
-#     my.data$RANDOMVAR <- runif(length(my.data$ID),0,1)
-#     my.data$RANDOMVAR2 <- runif(length(my.data$ID),0,1)
-#     my.data$RANDOMVAR3 <- runif(length(my.data$ID),0,1)
-#
-#     print(paste(Species, "n.abs=", length(which(my.data$occurrenceStatus == "absent")),
-#     ":n.pos=" ,length(which(my.data$occurrenceStatus == "present"))))
-#     unique(my.data$occurrenceStatus )
-# ##    We are using occurrence iters in this project, not NUTS iters
-#      use.site.inters <- TRUE
-#     if(use.site.inters){
-#       load(lista.rda[
-#         intersect(grep("occurance.iters_",lista.rda),grep(Species,lista.rda))
-#       ])
-#     }
-#      # get info from iterations data structure
-#      nrep <- length(all.occurance.iters)
-#      CV.level <- length(all.occurance.iters[[1]])
-#      process <- seq(1,nrep*CV.level)
-#      rep <- sort(rep(seq(1,nrep),CV.level))
-#      iter <- rep(seq(1,CV.level),nrep)
-#      process.plan <- cbind(process,rep,iter)
-#     # initiate MCMC
-#      ptm2 <- proc.time()
-#      no_cores <- detectCores() -1
-#      no_cores <- min(no_cores, length(iter))
-#      cl <- makeCluster(no_cores)
-#      #clusterExport(cl,"dummy.process")
-#      #result <- parLapply(cl,1:60,function(i) dummy.process(i))
-#      clusterExport(cl,c("MCMC.process", "my.data", "all.occurance.iters","process.plan"))
-#      #clusterEvalQ(cl,library(randomForest))
-#      clusterEvalQ(cl,library(rmcfs))
-#
-#      ## start parallell execution
-#      MCMCresult <- try(parLapply(cl,1:length(process.plan[,1]),
-#                              function(i) MCMC.process(.mydata =my.data,
-#                                                       .iters =all.occurance.iters,
-#                                                       .process.plan = process.plan,
-#                                                       .process.ID = i)))
+exclude2.index <- match(exclude2[,1],Data.table$species)
+exclude <- union(exclude, exclude2.index)
+##################################################################
+## Run MCMC  the function will prepare data and execute.
+##################################################################
+# note to self exclude3 <- c(8,20,23,27,42,44,46,47,50, 53, 57, 58,62, 64, 65,68, 69,70,71,72,73,74,75,76,77,78,79 ,80) #Mnemiopsis leidyi,Halothrix lumbricalis,Haloa japonicaCelleporaria brunnea,Apionsoma misakianum,
+# Pleurosira laevis,Fenestrulina delicia Gonionemus vertens Smittoidea prolifica Corambe obscura Haminella solitaria Sinelobus vanhaareni Cephalothrix simula
+#Torquigener flavimaculosus Boccardia proboscidea Paracerceis sculpta Oithona davisae Pseudodiaptomus marinus Polydora websteri Xenostrobus securis Aurelia solida,
+#Evadne anonyx Parathalestris harpactoides Stylochus ellipticus Marenzelleria neglecta Marenzelleria arctia Aporrectodea caliginosa Polycerella emertoni
+#intersect(exclude, exclude3) #exclude 3 == exclude...
+#exclude3 <- c(8,20,23,27,42,44,46,47,50, 53, 57, 58,62, 64, 65,68, 69,70,71,72,73,74,75,76,77,78,79 ,80)
+#exclude <- union(exclude, exclude3)
+
+mcmc <- T
+if(mcmc){
+  require("rmcfs")
+  #for j48 trees
+  require("RWeka")
+  require("parallel")
+  #species <-Data.table$species[5]){
+  print(paste("Loading layer names from:", layernames_path))
+  lista.rda<- Sys.glob(paste(iterations_path,"*.rda",sep="/"))
+ # for(species in Data.table$species[-c(1:20, 22,23,24,25,26)]){
+    for(species in Data.table$species[-exclude]){
+#     #  for(species in Data.table$species[-c(1:79)]){
+
+    print(paste("Processing species:", species))
+    indata.path = Outpath
+    print(paste("Loading data from:", indata.path))
+    lista.csv<- Sys.glob(paste(indata.path,"*.csv",sep="/"))
+    if (length(lista.csv[grep(species,lista.csv)]) == 0) {
+        print(paste("No CSV file found for species:", species))
+        print("Skipping to next species")
+        next
+    }
+    my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
+    print("Loaded my.data")
+    my.data$RANDOMVAR <- runif(length(my.data$ID),0,1)
+    my.data$RANDOMVAR2 <- runif(length(my.data$ID),0,1)
+    my.data$RANDOMVAR3 <- runif(length(my.data$ID),0,1)
+
+    print(paste(species, "n.abs=", length(which(my.data$occurrenceStatus == "absent")),
+    ":n.pos=" ,length(which(my.data$occurrenceStatus == "present"))))
+    unique(my.data$occurrenceStatus )
+##    We are using occurrence iters in this project, not NUTS iters
+     use.site.inters <- TRUE
+    if(use.site.inters){
+      load(lista.rda[
+        intersect(grep("occurance.iters_",lista.rda),grep(species,lista.rda))
+      ])
+    }
+     # get info from iterations data structure
+     nrep <- length(all.occurance.iters)
+     CV.level <- length(all.occurance.iters[[1]])
+     process <- seq(1,nrep*CV.level)
+     rep <- sort(rep(seq(1,nrep),CV.level))
+     iter <- rep(seq(1,CV.level),nrep)
+     process.plan <- cbind(process,rep,iter)
+     print("Prepared process plan")
+    # initiate MCMC
+     ptm2 <- proc.time()
+     no_cores <- detectCores() -1
+     no_cores <- min(no_cores, length(iter))
+     cl <- makeCluster(no_cores)
+     #clusterExport(cl,"dummy.process")
+     #result <- parLapply(cl,1:60,function(i) dummy.process(i))
+     clusterExport(cl,c("MCMC.process", "my.data", "all.occurance.iters","process.plan"))
+     #clusterEvalQ(cl,library(randomForest))
+     clusterEvalQ(cl,library(rmcfs))
+
+     ## start parallell execution
+     print("start parallell execution")
+     MCMCresult <- try(parLapply(cl,1:length(process.plan[,1]),
+                             function(i) MCMC.process(.mydata =my.data,
+                                                      .iters =all.occurance.iters,
+                                                      .process.plan = process.plan,
+                                                      .process.ID = i)))
 #      stopCluster(cl)
 #      time.to.complete2 <- proc.time()-ptm2
 #      print(time.to.complete2)
@@ -375,11 +480,11 @@ exclude2 <- c()
 #      MCMCresult <- myreturn
 #      }
 #
-#      save(MCMCresult, file= paste(resultpath,"/selected.vars.",Species,".rda",sep=""))
+#      save(MCMCresult, file= paste(resultpath,"/selected.vars.",species,".rda",sep=""))
 #      rm(MCMCresult)
 #         gc()
-#   }
-# }
+  }
+}
 #
 # #Neogobius fluviatilis n.abs= 1469 :n.pos= 329"#
 # # Error in gzfile(file) : invalid 'description' argument
@@ -396,21 +501,21 @@ exclude2 <- c()
 # ##################################################################
 # #Plotpath
 # #resultpath
-# #Species <-Data.table$species[1]){
+# #species <-Data.table$species[1]){
 # lista.rda<- Sys.glob(paste(iterations_path,"*.rda",sep="/"))
 # lista.selection <- Sys.glob(paste(resultpath,"*.rda",sep="/"))
 # indata.path = Outpath
 # lista.csv<- Sys.glob(paste(indata.path,"*.csv",sep="/"))
 #
-# #for(Species in Data.table$species){
-#   for(Species in Data.table$species[-exclude]){
-#     #  for(Species in Data.table$species[-exclude][-c(4,7,9,10,12,13)]){
+# #for(species in Data.table$species){
+#   for(species in Data.table$species[-exclude]){
+#     #  for(species in Data.table$species[-exclude][-c(4,7,9,10,12,13)]){
 #
-#     my.data <- read.csv(lista.csv[grep(Species,lista.csv)],header=T, sep=",")
+#     my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T, sep=",")
 #   length(which(my.data$occurrenceStatus == "absent"))
 #   length(which(my.data$occurrenceStatus == "present"))
 #
-#   load(lista.selection[intersect(grep(Species,lista.selection),
+#   load(lista.selection[intersect(grep(species,lista.selection),
 #                                  grep("selected.vars",lista.selection))])
 #   all.attributes <- sort(MCMCresult[[1]]$RI$attribute.name)
 #
@@ -443,7 +548,7 @@ exclude2 <- c()
 #
 #
 #   #plot pdf selection
-#   plotname <- paste(Plotpath,"/","_",Species,"_seleced_variables",".png",sep="")
+#   plotname <- paste(Plotpath,"/","_",species,"_seleced_variables",".png",sep="")
 #   png(plotname)  #to make file
 #   par(mar=c(14,2,2,2))
 #   #plot(seq(1:7),summary.order$RI.mean[seq(1:7)],ylim=c(0,max(summary.order$RI.max)),
@@ -458,11 +563,11 @@ exclude2 <- c()
 #     lines(c(i,i),c(summary.order$RI.min[i],summary.order$RI.max[i]))
 #   }
 #   lines( c(0,length(summary.order$RI.mean)),rep(as.numeric(RI_cutoff),2), col=2)
-#   title( Species)
+#   title( species)
 #   dev.off()# close plotfile
 #
 #   # plot pdf var distribution
-#   pdf(paste(Plotpath,"/var_distribution",Species,".pdf", sep=""), paper = "a4r")# height= 11.7 , width= 16.6)#paper = "a4r"
+#   pdf(paste(Plotpath,"/var_distribution",species,".pdf", sep=""), paper = "a4r")# height= 11.7 , width= 16.6)#paper = "a4r"
 #
 #   random <- grep("RANDOM",raw.labels )
 #   if(length(random) >0){ raw.labels <- raw.labels[-random]}
@@ -511,7 +616,7 @@ exclude2 <- c()
 #
 #     plot(table[,"meanx"],table[,"meany"]*100, xlim= c(min(table[,"minx"]), max(table[,"maxx"]) ), ylim=c(0,ymax),
 #          xlab= "", ylab="presence (%)", axes = F)
-#     title(main= paste(Species,my.var), cex.main = 0.7)
+#     title(main= paste(species,my.var), cex.main = 0.7)
 #     box()
 #     axis(side = 1, at = xbreaks, labels = FALSE, las=0, cex=0.7)
 #     axis(side = 2, at = seq(0,ymax, length.out = 6), labels = seq(0,ymax, length.out = 6))
@@ -545,13 +650,13 @@ exclude2 <- c()
 # #rlimit_as(1e12)  #increases to ~12GB
 # #rlimit_stack(100000000)
 #
-# #for(Species in Data.table$species){
-#  for(Species in Data.table$species[-exclude]){
-#     #for(Species in Data.table$species[-c(7 ,9,10,16,18 ,20, 22,23,24,25,26)]){
-#   #Species <-  Data.table$species[6]
-# #for(Species in Data.table$species[-c(1:18, 20, 22,23,24,25,26)]){
+# #for(species in Data.table$species){
+#  for(species in Data.table$species[-exclude]){
+#     #for(species in Data.table$species[-c(7 ,9,10,16,18 ,20, 22,23,24,25,26)]){
+#   #species <-  Data.table$species[6]
+# #for(species in Data.table$species[-c(1:18, 20, 22,23,24,25,26)]){
 #   # the object "rf.output.list contains all resutls from random forests as a list object
-#   rf.output.list <- run.random.forests(species = Species ,
+#   rf.output.list <- run.random.forests(species = species ,
 #                 selvar = "all",
 #                 indata.path = Outpath,
 #                 iterations_path= iterations_path)
@@ -571,9 +676,9 @@ exclude2 <- c()
 #  # print(rf.output$"response.sel")
 #
 #   #save cross validation results for later calculation of ROC
-#   save(rf.output.cv, file= paste(Modelpath,"/RF.model.and.predictions.CV.eur.wt.",Species,".rda",sep=""))
+#   save(rf.output.cv, file= paste(Modelpath,"/RF.model.and.predictions.CV.eur.wt.",species,".rda",sep=""))
 #   #save the random forest model for late prediction of maps
-#   save(rf.output, file= paste(Modelpath,"/RF.model.and.predictions.eur.wt.",Species,".rda",sep=""))
+#   save(rf.output, file= paste(Modelpath,"/RF.model.and.predictions.eur.wt.",species,".rda",sep=""))
 #   #remove the large object generated to make space for the next species
 #   rm(rf.output.list)
 #   rm(rf.output.cv)
@@ -583,13 +688,13 @@ exclude2 <- c()
 # }
 # ####################
 # # try C50 rules
-# #for(Species in Data.table$species){
-#   for(Species in Data.table$species[-exclude]){
+# #for(species in Data.table$species){
+#   for(species in Data.table$species[-exclude]){
 #
 #   #for(i in Data.table$species[-c(7 ,10,16,18, 20, 22,23,24,25,26)]){
-# #Species <-  i #Data.table$species[1]
-# lista.csv<- Sys.glob(paste(Speciespath,"*.csv",sep="/"))
-# my.data <- read.csv(lista.csv[grep(Species,lista.csv)],header=T)
+# #species <-  i #Data.table$species[1]
+# lista.csv<- Sys.glob(paste(speciespath,"*.csv",sep="/"))
+# my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
 # head(my.data)
 # names(my.data)
 # #vars <- c("SST_.AMP", "SST_.MIN", "SST_.MAX", "SST_.MEAN", "CHLORA_.MAX",    "SALINITY")
@@ -598,8 +703,8 @@ exclude2 <- c()
 #
 # rule_mod <- C5.0(x = my.data[, vars], y = as.factor(my.data$occurrenceStatus), rules = TRUE)
 #
-# sink(paste(Modelpath,"/C50 rules.",Species,".txt",sep=""))
-# print(Species)
+# sink(paste(Modelpath,"/C50 rules.",species,".txt",sep=""))
+# print(species)
 # print("/n")
 # print(summary(rule_mod))
 # sink()
@@ -609,16 +714,16 @@ exclude2 <- c()
 # ##################################################################
 #
 # all.AUC <- c()
-# for(Species in Data.table$species[-exclude]){
-#   #for(Species in Data.table$species){
+# for(species in Data.table$species[-exclude]){
+#   #for(species in Data.table$species){
 #
-#   #for(Species in Data.table$species[-c(7 ,9,10,16,18 ,20, 22,23,24,25,26)]){
-#   #Species <-  Data.table$species[2]
-#   load(paste(Modelpath,"/RF.model.and.predictions.CV.eur.wt.",Species,".rda",sep=""))
-#   load(paste(iterations_path,"/occurance.iters_",Species,".rda",sep=""))
+#   #for(species in Data.table$species[-c(7 ,9,10,16,18 ,20, 22,23,24,25,26)]){
+#   #species <-  Data.table$species[2]
+#   load(paste(Modelpath,"/RF.model.and.predictions.CV.eur.wt.",species,".rda",sep=""))
+#   load(paste(iterations_path,"/occurance.iters_",species,".rda",sep=""))
 #
 #   lista.csv<- Sys.glob(paste(Outpath,"*.csv",sep="/"))
-#   my.data <- read.csv(lista.csv[grep(Species,lista.csv)],header=T)
+#   my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
 #
 #   .true.class <-my.data$occurrenceStatus
 #
@@ -649,7 +754,7 @@ exclude2 <- c()
 #
 #     #Plot the ROC cuve in the dedicated folder
 #  mean.AUC <-  plot.ROC(.ROC_path=ROC_path,
-#            .my.species = Species,
+#            .my.species = species,
 #            .mean.ROC = mean.ROC,
 #            .all.ROC =all.ROC)
 #   #remove objects t make list for next run
@@ -658,7 +763,7 @@ exclude2 <- c()
 #     rm(all.ROC)
 #     rm(mean.ROC)
 #     gc()
-#     all.AUC <- rbind(all.AUC, c(Species,mean.AUC))
+#     all.AUC <- rbind(all.AUC, c(species,mean.AUC))
 # }
 # write.csv2(as.data.frame(all.AUC),file =  paste(path,"/data/all.AUC",suffix,".csv", sep=""))
 # ##################################################################
@@ -713,24 +818,24 @@ exclude2 <- c()
 # bar <- Stack# stack(var2)
 # #plot(bar[[1]])
 #
-# # Species  <- Data.table$species[1]
+# # species  <- Data.table$species[1]
 #
 # #call the function to predict the species distribution at raster level.
 # #The function return the prediction as a raster object but also make plots as .png
 # # the lines between png() and dev.off() may be removed/inactivated if the png plots are not wanted.
-# #for(Species in Data.table$species){
-#   for(Species in Data.table$species[-exclude]){
-#     print(Species)
-# #  for(Species in Data.table$species[-c(7 ,9,10,16,18 ,20, 22,23,24,25,26)]){
+# #for(species in Data.table$species){
+#   for(species in Data.table$species[-exclude]){
+#     print(species)
+# #  for(species in Data.table$species[-c(7 ,9,10,16,18 ,20, 22,23,24,25,26)]){
 #     #predict.maps <- function(species,indata.path,modelpath){
 #
-#     map <-  predict.maps(species = Species,
+#     map <-  predict.maps(species = species,
 #             modelpath = Modelpath
 #             )
 #     # save predicted probabilities as rasterfiles.
 #     #plot(map)
-#     #newfile <- paste(rastermappath,"/linear.prob.",Species,sep="")
-#     newfile <- paste(rastermappath,"/linear.prob.global.",Species,sep="")
+#     #newfile <- paste(rastermappath,"/linear.prob.",species,sep="")
+#     newfile <- paste(rastermappath,"/linear.prob.global.",species,sep="")
 #     #print(paste(file, newfile , sep="###########"))
 #     writeRaster(map, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
 #
@@ -775,12 +880,12 @@ exclude2 <- c()
 # # Plotpath <- "~/Dokument/Projekt/HAV2025/Plots.marine.new.base.global"
 # if(!dir.exists(Plotpath)){dir.create(Plotpath)}
 #
-# for(Species in Data.table$species[-exclude]){
+# for(species in Data.table$species[-exclude]){
 #     #plot.maps <- function(.map,.plotpath, .colors,.brk,.shape){
 #
-#   rastermap <- lista.ras[grep(Species,lista.ras)]
+#   rastermap <- lista.ras[grep(species,lista.ras)]
 #
-#   plot.maps(.Species=Species,
+#   plot.maps(.species=species,
 #             indata.path = Outpath,
 #             .rastermap=rastermap,
 #             .plotpath=Plotpath,
@@ -795,7 +900,7 @@ exclude2 <- c()
 #             .lwd2 = 0.3
 #             )
 #
-#   #save(map, file= paste(mappath,"/predicted.map.",Species,".rda",sep=""))
+#   #save(map, file= paste(mappath,"/predicted.map.",species,".rda",sep=""))
 #  #plot(map)
 # }
 # ######################################################################################################################################
@@ -821,8 +926,8 @@ exclude2 <- c()
 # for(sel.sen in c(2,3,5,6,7)){
 #   scenario <- scenarios[[sel.sen]]
 #
-# for(Species in Data.table$species[-exclude]){
-# #Species <- Data.table$species[-exclude][10]
+# for(species in Data.table$species[-exclude]){
+# #species <- Data.table$species[-exclude][10]
 #
 #
 #
@@ -835,7 +940,7 @@ exclude2 <- c()
 #     #  outdir <- paste(dir,"datalayer.nc/",scenario,dec,"/",sep="")
 #
 # cases <- union(grep("baseline",listatiff),grep(scenario,listatiff))
-# my.rasterfiles<- listatiff[ intersect(grep(Species,listatiff), cases)  ]
+# my.rasterfiles<- listatiff[ intersect(grep(species,listatiff), cases)  ]
 #
 # my.stack <- try(stack(my.rasterfiles))
 # r <- 1
@@ -864,7 +969,7 @@ exclude2 <- c()
 # brk <- c(seq(0, 1,by=0.1),1.05)
 # brk2 <- c(seq(-1, 1,by=0.1),1.05)
 #
-# png(paste(Plotpath2,"/",Species, ".",scenario,".png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
+# png(paste(Plotpath2,"/",species, ".",scenario,".png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
 #
 # par(mfrow=c(2,2))
 # par(mar=c(2,2,2,6))
@@ -879,7 +984,7 @@ exclude2 <- c()
 #
 #   plot(map2, col=my.colors, breaks = brk)
 #   if(i == 1){
-#     title(main = Species)}else{
+#     title(main = species)}else{
 #   title(main = names(my.stack)[i])
 #     }
 # }
@@ -896,7 +1001,7 @@ exclude2 <- c()
 # ### ###################################################################Plot logmaps
 # #####################################################################################################################################
 # ######################################################################################################################################
-# #Species  <- Data.table$species[1]
+# #species  <- Data.table$species[1]
 #
 # colorsBrBG <- c(rev(divPalette(n=12, name = c( "BrBG") ) ),"lightgrey","lightgrey","lightgrey")
 # colorsBlue <- c(seqPalette(n=,12, name = c( "Blues") ),"lightgrey","lightgrey","lightgrey" )
@@ -914,14 +1019,14 @@ exclude2 <- c()
 # lista.ras <- Sys.glob(paste(rastermappath,"*linear.prob.*",sep="/"))
 # predvar<-stack(lista.ras)
 # plot(mean(predvar))
-# for(Species in Data.table$species){
-#   #for(Species in Data.table$species[-exclude]){
+# for(species in Data.table$species){
+#   #for(species in Data.table$species[-exclude]){
 #
-#     rastermap <- lista.ras[grep(Species,lista.ras)]
+#     rastermap <- lista.ras[grep(species,lista.ras)]
 #     map<-raster(rastermap)
 #  #map[is.na(mean(bar))]<- 0.000001
 #   lista.csv<- Sys.glob(paste(Outpath,"*.csv",sep="/"))
-#   my.data <- read.csv(lista.csv[grep(Species,lista.csv)],header=T)
+#   my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
 #
 #   # prepare a rasterlayer with the 10-log of the predicted probability of presence.
 #   # An arbitrary small number is added, as log10(0) is not defined
@@ -929,13 +1034,13 @@ exclude2 <- c()
 #
 #   # an arbitrary large number is inserted at locations where presence is undefined, in other words land.
 #  logmap[is.na(mean(bar))]<- 0.24
-#  # save(logmap, file= paste(mappath,"/predicted.map.log.",Species,".rda",sep="") )
+#  # save(logmap, file= paste(mappath,"/predicted.map.log.",species,".rda",sep="") )
 #
 #  # map[is.na(map)]<- -0.1
 #
 #  # plot maps at Eurpean and Swedish scale this presence points added.
 #  # Plot without indicating xlim and ylim. This gives a plot area defined by the raster extent
-#   png(paste(Plotpath,"/",Species, ".logprob.Eur.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
+#   png(paste(Plotpath,"/",species, ".logprob.Eur.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
 #   plot(logmap,col=colorsBr, breaks=brk.log)
 #   plot(shape2$geometry,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
 #   points(my.data$Lon[which(my.data$occurrenceStatus == "absent")],
@@ -945,7 +1050,7 @@ exclude2 <- c()
 #   dev.off()
 #   ### same for Sweden
 #   # make the plot using the xlim and ylim defined earlier.
-#   png(paste(Plotpath,"/",Species, ".logprob.Swe.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
+#   png(paste(Plotpath,"/",species, ".logprob.Swe.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
 #   plot(logmap,col=colorsBr, breaks=brk.log , xlim=xlim, ylim=ylim )
 #   plot(shape2$geometry,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
 #   points(my.data$Lon[which(my.data$occurrenceStatus == "absent")],
@@ -957,13 +1062,13 @@ exclude2 <- c()
 #
 #
 #   # save predicted probabilities as rasterfiles.
-#  # newfile <- paste(rastermappath,"/linear.prob.",Species,sep="")
+#  # newfile <- paste(rastermappath,"/linear.prob.",species,sep="")
 #   #print(paste(file, newfile , sep="###########"))
 #  # writeRaster(map, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
 #
 #     writelograster <- F
 #     if(writelograster){
-#  newfile <- paste(rastermappath,"/log.prob.",Species,sep="")
+#  newfile <- paste(rastermappath,"/log.prob.",species,sep="")
 #   #print(paste(file, newfile , sep="###########"))
 #   writeRaster(logmap, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
 #     }
@@ -1179,13 +1284,13 @@ exclude2 <- c()
 #  plot(plots[[2]],xlim=xlim, ylim=ylim)
 #  plot(plots[[3]],xlim=xlim, ylim=ylim)
 # ####### obtain oub prediction performance
-#  for(Species in Data.table$species){
-#    file <-  paste(Modelpath,"/RF.model.and.predictions.eur.wt.",Species,".rda",sep="")
+#  for(species in Data.table$species){
+#    file <-  paste(Modelpath,"/RF.model.and.predictions.eur.wt.",species,".rda",sep="")
 #    #print(file)
 #    load(file)
 #    print("########################")
 #    print("")
-#    print(Species)
+#    print(species)
 #    print(rf.output$"RF.selected"$"confusion")
 #
 #  }
