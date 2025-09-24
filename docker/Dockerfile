@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -y \
     python3 \
     libnlopt-dev \
     cmake \
+    default-jdk \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -37,7 +38,9 @@ COPY renv.lock ./
 # Install renv and restore packages
 RUN R -e "install.packages('renv'); renv::restore(lockfile = 'renv.lock', clean = TRUE)"
 RUN R -e "install.packages('rmcfs')"
+RUN which java
 RUN R -e "install.packages('rJava')"
+RUN R -e "library(rJava)"
 RUN R -e "install.packages('RWeka')"
 RUN mkdir /wrp
 COPY functions/ /wrp/functions

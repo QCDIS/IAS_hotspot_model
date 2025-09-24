@@ -456,16 +456,15 @@ if(mcmc){
      #clusterEvalQ(cl,library(randomForest))
      clusterEvalQ(cl,library(rmcfs))
 
-     ## start parallell execution
-     print("start parallell execution")
+     # start parallell execution
      MCMCresult <- try(parLapply(cl,1:length(process.plan[,1]),
                              function(i) MCMC.process(.mydata =my.data,
                                                       .iters =all.occurance.iters,
                                                       .process.plan = process.plan,
                                                       .process.ID = i)))
-#      stopCluster(cl)
-#      time.to.complete2 <- proc.time()-ptm2
-#      print(time.to.complete2)
+     stopCluster(cl)
+     time.to.complete2 <- proc.time()-ptm2
+     print(time.to.complete2)
 #    #
 #   #
 #      if(length(grep("Error",MCMCresult))>0){
