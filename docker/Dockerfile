@@ -38,6 +38,7 @@ COPY renv.lock ./
 RUN R -e "install.packages('renv'); renv::restore(lockfile = 'renv.lock', clean = TRUE)"
 RUN R -e "install.packages('rmcfs')"
 RUN R -e "install.packages('rJava')"
+RUN R -e "install.packages('RWeka')"
 RUN mkdir /wrp
 COPY functions/ /wrp/functions
 RUN mkdir /wrp/utils
