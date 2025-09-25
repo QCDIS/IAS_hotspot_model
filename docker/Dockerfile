@@ -28,6 +28,8 @@ RUN apt-get update && apt-get install -y \
     python3 \
     libnlopt-dev \
     cmake \
+    libglpk-dev \
+    libglpk-java \
     default-jdk \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
