@@ -1,74 +1,64 @@
-#############################################################
-################### split data for cross validation  ############
-##################################################################
-###
-split.data.local <- function(species,indata.path,iterations.path){
-  lista.csv<- Sys.glob(paste(indata.path,"*.csv",sep="/"))
-  files_to_read <- lista.csv[grep(species, lista.csv)]
-  print(paste("files_to_read: ", files_to_read))
-if (length(files_to_read) == 0) {
-  stop(paste("No CSV file found for species:", species))
-}
-  my.data <- read.csv2(lista.csv[grep(species,lista.csv)],header=T)
-  print(paste("loaded data for species:", species))
-  #  names(my.data)
-  #my.data$Lat
-  #my.data$Lon
-  #Define in what ICES statistical rectangle the sample is in
-  #recatangles are 1 degree longitude, 0.5 degree latitude
-  lonmin <-   floor(my.data$Lon)
-  lonmax <-   ceiling(my.data$Lon)
-  latmin <-   floor(2*my.data$Lat)/2
-  latmax <-   ceiling(2*my.data$Lat)/2
- # define in which ICES statistical rectangle the datapoint is
-  ICESrec <- paste(paste(lonmin,lonmax,sep="_"),paste(latmin,latmax,sep="_"), sep="&")
-  ## identify positive and negative findings at each ICESrec
-  site.occurance <- cbind(ICESrec,sapply(1:length(ICESrec),function(t)
-    length(which(ICESrec == ICESrec[t] & my.data$occurrenceStatus == "present"))
-  )
-  )
-  pos.sites <- site.occurance[which(!site.occurance[,2] == "0"),1]
-  neg.sites <- site.occurance[which(site.occurance[,2] == "0"),1]
 
-  all.site.iters.pos<- list()
-  all.site.iters.neg<- list()
-  all.site.iters.tot<- list()
+MCMC.process.local = function(.mydata, .iters, .process.plan,.process.ID){
+  iter.ID <- .iters[[.process.plan[.process.ID,2]
+  ]][[.process.plan[.process.ID,3]
+  ]]
+ iter.nr <-  unlist(sapply(1:length(iter.ID),function(i)
+grep(paste("A",iter.ID[i],"A"),paste("A",.mydata$ID,"A"))
+ ))
 
-  set.seed(1)
-  #split dataset in five. Repeat the process in five iterations (to check repeatability)
-  n.repeat <- 5
-  CV.level <- 5
+# length(iter.ID)
+# length(iter.nr)
+  train <- seq(1:length(.mydata$occurrenceStatus))[-iter.nr ]
+  #ncol <- length(names(mydata))# value is the last column
+  # temp <- try(randomForest(.mydata[train,-c(ncol)], mydata[train,ncol], prox=TRUE))
 
-  # The number of positive and negative sites (ICES rectangles) are shuffled independently to make sure that there are presences and absences in all datasets
-  for(r in 1:n.repeat){
-    shuffle.pos <- sample(pos.sites, length(pos.sites), replace = FALSE, prob = NULL)
-    shuffle.neg <- sample(neg.sites, length(neg.sites), replace = FALSE, prob = NULL)
-    all.site.iters.pos[[r]] <- split(shuffle.pos,  rep(seq(1:CV.level), ceiling(length(pos.sites)/CV.level) )[1:length(pos.sites)]  )
-    all.site.iters.neg[[r]] <- split(shuffle.neg,  rep(seq(1:CV.level), ceiling(length(neg.sites)/CV.level) )[1:length(neg.sites)]  )
-  }
-  all.site.iters.tot <- try(lapply(1:n.repeat,function(r)
-    lapply(1:CV.level,function(i)
-      union(all.site.iters.pos[[r]][[i]],all.site.iters.neg[[r]][[i]])
+  # make sure that class is the ast column
+  class <- .mydata$occurrenceStatus
+  remove.col <- unlist( sapply(c("ID" ,"Lat", "Lon", "occurrenceStatus" ),function(i)
+    grep(i,names(.mydata))
+  ))
+  .mydata$class <- class
+ # length(class)
+  #unique(class)
+  d <- .mydata[train,-remove.col]
+  #dim(d)
+  #length(train)
+#   for(i in 1:length(names(d))){
+#     print(names(d)[i])
+#     print(unique(d[,i]))
+#   }
+  attribute.names <- names(d)
+  names(d) <- c( paste("nr",seq(1,length(d[1,])-1 ),sep="_"),"class")
+  d$class <- factor(d$class)
+  n.attributes <- length(names(d))-1
+    # R
+    temp <- try(
+      mcfs(class ~ ., d,
+           projections = 600,
+           projection.size = min(2, n.attributes),
+           cutoff.permutations = 20,
+           threads.number = 8)
     )
-  ),silent = TRUE)
-  ## get the corresponding occurances
-  #length(unlist(all.site.iters.tot[[1]]))
-  all.occurance.iters <- try(lapply(1:n.repeat,function(r)
-    lapply(1:CV.level,function(i)
-      unlist( sapply(1:length(all.site.iters.tot[[r]][[i]]),function(s)
-        unlist(my.data$ID[grep(
-          all.site.iters.tot[[r]][[i]][s], ICESrec
-        )
-        ]
-        )))
-    )
-  ),silent = TRUE)
 
-  save("all.site.iters.tot",all.site.iters.tot, file= paste(iterations.path,"/site.iters_",species,".rda",sep=""))
-  if(length(grep("Error",all.occurance.iters ))==0){
-    save("all.occurance.iters", all.occurance.iters, file= paste(iterations.path,"/occurance.iters_",species,".rda",sep=""))
-  }
+    if (inherits(temp, "try-error")) {
+      print("MCFS failed")
+      return(NULL)
+    }
+  print(paste(" temp: ",temp))
+  cutoff <- temp$cutoff_value
+  RI <- temp$RI
+  RI$attribute.name <- attribute.names[ sapply(1:length(RI$attribute),function(i)
+    as.numeric( strsplit(RI$attribute[i],"_")[[1]][2]))]
+
+  selected.nr <- as.numeric( rownames(temp$RI)[seq(1,temp$cutoff_value)])
+ if(length(selected.nr)>0){
+   selected <- attribute.names[selected.nr]
+ }else{
+     selected <- NA}
+  return(list("cutoff" = cutoff, "RI"=RI,"selected"=selected,"selected.nr"=selected.nr))
 }
+
 require(raster)
 #require(rgdal)
 require(zip)
@@ -465,19 +455,21 @@ if(mcmc){
      stopCluster(cl)
      time.to.complete2 <- proc.time()-ptm2
      print(time.to.complete2)
-#    #
-#   #
-#      if(length(grep("Error",MCMCresult))>0){
-#        print("Error - fallback")
-#        myreturn <- list()
-#        for(prid in 1:25){
-#    myreturn[[prid]] <- MCMC.process(.mydata =my.data,
-#                    .iters =all.occurance.iters,
-#                   .process.plan = process.plan,
-#                    .process.ID = prid)
-#      }
-#      MCMCresult <- myreturn
-#      }
+
+     if(length(grep("Error",MCMCresult))>0){
+       print("Error - fallback")
+       myreturn <- list()
+       for(prid in 1:25){
+           print(paste(" my.data len: ", length(my.data$ID)))
+           print(paste(" all.occurance.iters len: ", length(all.occurance.iters)))
+           print(paste(" process.plan len: ", length(process.plan[,1])))
+           myreturn[[prid]] <- MCMC.process(.mydata = my.data,
+                                            .iters = all.occurance.iters,
+                                            .process.plan = process.plan,
+                                            .process.ID = prid)
+     }
+     MCMCresult <- myreturn
+     }
 #
 #      save(MCMCresult, file= paste(resultpath,"/selected.vars.",species,".rda",sep=""))
 #      rm(MCMCresult)
