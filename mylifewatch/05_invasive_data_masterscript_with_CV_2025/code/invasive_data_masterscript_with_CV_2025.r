@@ -562,14 +562,14 @@ print("RI.max")
   summary <- cbind(summary,RI.min)
   summary <- cbind(summary,RI.max)
   summary.order <- summary[rev(order(RI.mean)),]
-  print(paste("summary:", summary))
+
   raw.labels=summary.order$all.attributes#[1:24]
 
   nrow <- ceiling(length(raw.labels)/6)
 
-
   #plot pdf selection
   plotname <- paste(Plotpath,"/","_",species,"_seleced_variables",".png",sep="")
+
   png(plotname)  #to make file
   par(mar=c(14,2,2,2))
   #plot(seq(1:7),summary.order$RI.mean[seq(1:7)],ylim=c(0,max(summary.order$RI.max)),
@@ -598,98 +598,107 @@ print("RI.max")
 #     # plot(c(),c(),xlim=c(0,1), ylim=c(0,1))
 #     #}
 #
-#     my.var <- as.character(raw.labels[l])# names(my.data)[24]
-#     # my.var <- "bio_10"
-#     predictor <- my.data[,my.var]
-#     # my.data[,"bio_1"][which(is.na(my.data[,"bio_1"]))]
-#     response <- as.factor(my.data$occurrenceStatus)
-#     #hist(predictor)
-#     unique(response)
-#    #temptab <- cbind(predictor,response)# old version, gives wrong order of classes
-#     temptab <- cbind(predictor,ifelse(response== "present",1,2))# new puts "present" as class 1
-#     colnames(temptab)[2]<- "response"# add colname
-#     temptab[,"response"]
-#
-#     temptab <- as.data.frame(temptab)
-#     temptab[,"response"] <- gsub(2,0,  temptab[,"response"])
-#     #head(temptab)
-#
-#     temptab <- temptab[order(temptab$predictor),]
-#     nsplit <- 5
-#     chunks <- cut(seq(1:length(temptab[,1])),nsplit, labels = F)
-#     summary(chunks)
+    my.var <- as.character(raw.labels[l])# names(my.data)[24]
+    # my.var <- "bio_10"
+    predictor <- my.data[,my.var]
+    # my.data[,"bio_1"][which(is.na(my.data[,"bio_1"]))]
+    response <- as.factor(my.data$occurrenceStatus)
+
+    #hist(predictor)
+    unique(response)
+   #temptab <- cbind(predictor,response)# old version, gives wrong order of classes
+    temptab <- cbind(predictor,ifelse(response== "present",1,2))# new puts "present" as class 1
+    colnames(temptab)[2]<- "response"# add colname
+    temptab[,"response"]
+
+    temptab <- as.data.frame(temptab)
+    temptab[,"response"] <- gsub(2,0,  temptab[,"response"])
+    #head(temptab)
+
+    temptab <- temptab[order(temptab$predictor),]
+    nsplit <- 5
+    chunks <- cut(seq(1:length(temptab[,1])),nsplit, labels = F)
+    summary(chunks)
+    print(paste("Processing variable:", my.var))
 #     # i <- 1
 #     # temptab[which(chunks == i),]
-#     table <- c()
-#     for(i in 1: nsplit){
-#       meanp <- mean(as.numeric(temptab$predictor[which(chunks == i)]))
-#       maxp <- max(as.numeric(temptab$predictor[which(chunks == i)]))
-#       minp <- min(as.numeric(temptab$predictor[which(chunks == i)]))
-#       meanr <- mean(as.numeric(temptab$response[which(chunks == i)]) )
-#       table <- rbind(table,c(minp, maxp,meanp,meanr))
-#     }
-#     colnames(table)<- c("minx","maxx","meanx", "meany")
-#     ymax <- ceiling(20* max(table[,"meany"]))*5
-#
-#     xbreaks <- c(table[,"minx"], max(table[,"maxx"])  )
-#     betweenbreaks <- unlist( sapply(1:(length(xbreaks)-1), function(b) mean(xbreaks[b:(b+1)])) )
-#     breaklabels <-   unlist( sapply(1:(length(xbreaks)-1), function(b) paste(round(xbreaks[b:(b+1)],1), collapse = "-"   )  ) )
-#
-#     plot(table[,"meanx"],table[,"meany"]*100, xlim= c(min(table[,"minx"]), max(table[,"maxx"]) ), ylim=c(0,ymax),
-#          xlab= "", ylab="presence (%)", axes = F)
-#     title(main= paste(species,my.var), cex.main = 0.7)
-#     box()
-#     axis(side = 1, at = xbreaks, labels = FALSE, las=0, cex=0.7)
-#     axis(side = 2, at = seq(0,ymax, length.out = 6), labels = seq(0,ymax, length.out = 6))
-#     # axis(side = 2)
-#     #  text(x=xbreaks, y=par()$usr[3]-0.05*(par()$usr[4]-par()$usr[3]),
-#     #      labels=xbreaks, srt=90, adj=1, xpd=TRUE)
-#     for(i in 1:length(xbreaks)){
-#       lines(rep(xbreaks[i],2),c(0, ymax), lty=2, col="grey")
-#     }
-#     text(x=betweenbreaks, y=par()$usr[3]-0.02*(par()$usr[4]-par()$usr[3]),
-#          labels=breaklabels, srt=45, adj=1, xpd=TRUE, cex=0.8)
-#     #text(x=c(min(table[,"minx"]), max(table[,"maxx"]) ), y=par()$usr[3]-0.02*(par()$usr[4]-par()$usr[3]),
-#     #     labels=c(min(table[,"minx"]), max(table[,"maxx"]) ), srt=45, adj=1, xpd=TRUE, cex=0.7)
-#
-#     lines(table[,"meanx"],table[,"meany"]*100, lty=2)
+    table <- c()
+    for(i in 1: nsplit){
+      meanp <- mean(as.numeric(temptab$predictor[which(chunks == i)]))
+      maxp <- max(as.numeric(temptab$predictor[which(chunks == i)]))
+      minp <- min(as.numeric(temptab$predictor[which(chunks == i)]))
+      meanr <- mean(as.numeric(temptab$response[which(chunks == i)]) )
+      table <- rbind(table,c(minp, maxp,meanp,meanr))
+    }
+    colnames(table)<- c("minx","maxx","meanx", "meany")
+    ymax <- ceiling(20* max(table[,"meany"]))*5
+
+    xbreaks <- c(table[,"minx"], max(table[,"maxx"])  )
+    betweenbreaks <- unlist( sapply(1:(length(xbreaks)-1), function(b) mean(xbreaks[b:(b+1)])) )
+    breaklabels <-   unlist( sapply(1:(length(xbreaks)-1), function(b) paste(round(xbreaks[b:(b+1)],1), collapse = "-"   )  ) )
+
+    plot(table[,"meanx"],table[,"meany"]*100, xlim= c(min(table[,"minx"]), max(table[,"maxx"]) ), ylim=c(0,ymax),
+         xlab= "", ylab="presence (%)", axes = F)
+    title(main= paste(species,my.var), cex.main = 0.7)
+    box()
+    axis(side = 1, at = xbreaks, labels = FALSE, las=0, cex=0.7)
+    axis(side = 2, at = seq(0,ymax, length.out = 6), labels = seq(0,ymax, length.out = 6))
+    # axis(side = 2)
+    #  text(x=xbreaks, y=par()$usr[3]-0.05*(par()$usr[4]-par()$usr[3]),
+    #      labels=xbreaks, srt=90, adj=1, xpd=TRUE)
+    for(i in 1:length(xbreaks)){
+      lines(rep(xbreaks[i],2),c(0, ymax), lty=2, col="grey")
+    }
+    text(x=betweenbreaks, y=par()$usr[3]-0.02*(par()$usr[4]-par()$usr[3]),
+         labels=breaklabels, srt=45, adj=1, xpd=TRUE, cex=0.8)
+    #text(x=c(min(table[,"minx"]), max(table[,"maxx"]) ), y=par()$usr[3]-0.02*(par()$usr[4]-par()$usr[3]),
+    #     labels=c(min(table[,"minx"]), max(table[,"maxx"]) ), srt=45, adj=1, xpd=TRUE, cex=0.7)
+
+    lines(table[,"meanx"],table[,"meany"]*100, lty=2)
   }
   dev.off()
 }
-#
-# ##################################################################
-#   ## Run random forests. the function will prepare data and execute.
-# ##################################################################
-# rm(Stack)
-# rm(map)
-# rm(my.map)
-# rm(my.maps)
-# rm(mystack)
-# rm(my.data)
-# gc()
-# #rlimit_all()
-# #rlimit_as(1e12)  #increases to ~12GB
-# #rlimit_stack(100000000)
-#
-# #for(species in Data.table$species){
-#  for(species in Data.table$species[-exclude]){
-#     #for(species in Data.table$species[-c(7 ,9,10,16,18 ,20, 22,23,24,25,26)]){
-#   #species <-  Data.table$species[6]
-# #for(species in Data.table$species[-c(1:18, 20, 22,23,24,25,26)]){
-#   # the object "rf.output.list contains all resutls from random forests as a list object
-#   rf.output.list <- run.random.forests(species = species ,
-#                 selvar = "all",
-#                 indata.path = Outpath,
-#                 iterations_path= iterations_path)
-#
-#   # run a garbage collection to free memory
-#   gc()
-#   # the rf.output.cv object contains the results from the cross validations analysis.
-#   #Predictions for each entrie are stored for each repeat and cv-fold. The random forest model is not saved, to save memory
-#   rf.output.cv <- rf.output.list[["RF.results.CV"]]
-#   # this object contains the random forests model obtainied when all indata is used as trainingset.
-#   # the predicted probability of being present is stored for each data poing
-#   rf.output <- rf.output.list[["RF.results.alldata"]]
+
+##################################################################
+  ## Run random forests. the function will prepare data and execute.
+##################################################################
+rm(Stack)
+rm(map)
+rm(my.map)
+rm(my.maps)
+rm(mystack)
+rm(my.data)
+gc()
+#rlimit_all()
+#rlimit_as(1e12)  #increases to ~12GB
+#rlimit_stack(100000000)
+
+# for(species in Data.table$species){
+ for(species in Data.table$species[-exclude]){
+    #for(species in Data.table$species[-c(7 ,9,10,16,18 ,20, 22,23,24,25,26)]){
+  #species <-  Data.table$species[6]
+#for(species in Data.table$species[-c(1:18, 20, 22,23,24,25,26)]){
+  # the object "rf.output.list contains all resutls from random forests as a list object
+    print(paste("Processing species:", species))
+    file_to_load <- paste(indata.path, species, "_indata.csv", sep="")
+    if (!file.exists(file_to_load)) {
+        print(paste("No CSV file found for species:", species))
+        print("Skipping to next species")
+        next
+    }
+    rf.output.list <- run.random.forests(species = species ,
+                selvar = "all",
+                indata.path = Outpath,
+                iterations.path = iterations_path)
+
+  # run a garbage collection to free memory
+  gc()
+  # the rf.output.cv object contains the results from the cross validations analysis.
+  #Predictions for each entrie are stored for each repeat and cv-fold. The random forest model is not saved, to save memory
+  rf.output.cv <- rf.output.list[["RF.results.CV"]]
+  # this object contains the random forests model obtainied when all indata is used as trainingset.
+  # the predicted probability of being present is stored for each data poing
+  rf.output <- rf.output.list[["RF.results.alldata"]]
 #
 #   #print results to see progression
 #   names(rf.output)
@@ -706,7 +715,7 @@ print("RI.max")
 #   rm(rf.output)
 #   gc()
 #
-# }
+}
 # ####################
 # # try C50 rules
 # #for(species in Data.table$species){
