@@ -533,67 +533,68 @@ for(species in Data.table$species[-exclude]){
     selection_file <- lista.selection[selection_indices]
     print(paste("Loading selection file:", selection_file))
     load(selection_file)
-    print(paste("MCMCresult length: ", length(MCMCresult)))
-    print(paste("MCMCresult summary: ", summary(MCMCresult)))
 
     all.attributes <- sort(MCMCresult[[1]]$RI$attribute.name)
-#
-#
-#   cutoffs <- mean(sapply(1:length(MCMCresult), function(x) MCMCresult[[x]]$cutoff))
-#   RI_cutoff <- mean( sapply(1:length(MCMCresult), function(x) MCMCresult[[x]]$RI$RI[  as.numeric(MCMCresult[[x]]$cutoff)] ) )
-#
-#   selection <- as.data.frame(all.attributes)
-#   selection<- cbind(selection,
-#                     sapply(1:length(MCMCresult),function(i)
-#                       as.numeric(MCMCresult[[i]]$RI[ order(MCMCresult[[i]]$RI$attribute.name),c("RI")]
-#                       ))
-# )
-#   selection <- as.data.frame(selection)
-#   selection[,-1]<- sapply(2:(length(MCMCresult)+1),function(i)
-#     as.numeric(selection[,i]))
-#   RI.mean <- rowMeans(selection[,-1])
-#   RI.min <- sapply(1:length(selection[,1]),function(i)
-#     min(selection[i,-1]))
-#   RI.max <- sapply(1:length(selection[,1]),function(i)
-#     max(selection[i,-1]))
-#   summary <- as.data.frame(all.attributes)
-#   summary <- as.data.frame(cbind(summary,RI.mean))
-#   summary <- cbind(summary,RI.min)
-#   summary <- cbind(summary,RI.max)
-#   summary.order <- summary[rev(order(RI.mean)),]
-#
-#   raw.labels=summary.order$all.attributes#[1:24]
-#
-#   nrow <- ceiling(length(raw.labels)/6)
-#
-#
-#   #plot pdf selection
-#   plotname <- paste(Plotpath,"/","_",species,"_seleced_variables",".png",sep="")
-#   png(plotname)  #to make file
-#   par(mar=c(14,2,2,2))
-#   #plot(seq(1:7),summary.order$RI.mean[seq(1:7)],ylim=c(0,max(summary.order$RI.max)),
-#    #    axes=F,  xlab = "")
-#   plot(seq(1:length(summary.order$RI.mean)),summary.order$RI.mean,ylim=c(-0.1*(max(summary.order$RI.max)),max(summary.order$RI.max)),
-#            axes=F,  xlab = "")
-#   box()
-#   axis(side=1, at=seq(1:length(summary.order$RI.mean)),
-#        labels=summary.order$all.attributes[1:length(summary.order$RI.mean)],las=2,cex.axis=0.7)
-#   axis(side = 2)
-#   for(i in 1:length(summary.order$RI.mean)){
-#     lines(c(i,i),c(summary.order$RI.min[i],summary.order$RI.max[i]))
-#   }
-#   lines( c(0,length(summary.order$RI.mean)),rep(as.numeric(RI_cutoff),2), col=2)
-#   title( species)
-#   dev.off()# close plotfile
-#
-#   # plot pdf var distribution
-#   pdf(paste(Plotpath,"/var_distribution",species,".pdf", sep=""), paper = "a4r")# height= 11.7 , width= 16.6)#paper = "a4r"
-#
-#   random <- grep("RANDOM",raw.labels )
-#   if(length(random) >0){ raw.labels <- raw.labels[-random]}
-#   par(mfrow= c(nrow,3))
-#   par(mar=c(4,2,2,0))
-#   for(l in 1:length(raw.labels)){
+
+    cutoffs <- mean(sapply(1:length(MCMCresult), function(x) MCMCresult[[x]]$cutoff))
+    RI_cutoff <- mean( sapply(1:length(MCMCresult), function(x) MCMCresult[[x]]$RI$RI[  as.numeric(MCMCresult[[x]]$cutoff)] ) )
+
+  selection <- as.data.frame(all.attributes)
+  selection<- cbind(selection,
+                    sapply(1:length(MCMCresult),function(i)
+                      as.numeric(MCMCresult[[i]]$RI[ order(MCMCresult[[i]]$RI$attribute.name),c("RI")]
+                      )))
+
+  selection <- as.data.frame(selection)
+  print("selection as.data.frame")
+  selection[,-1]<- sapply(2:(length(MCMCresult)+1),function(i)
+    as.numeric(selection[,i]))
+    print("selection as.numeric")
+  RI.mean <- rowMeans(selection[,-1])
+  print("RI.mean")
+  RI.min <- sapply(1:length(selection[,1]),function(i)
+    min(selection[i,-1]))
+  RI.max <- sapply(1:length(selection[,1]),function(i)
+    max(selection[i,-1]))
+print("RI.max")
+  summary <- as.data.frame(all.attributes)
+  summary <- as.data.frame(cbind(summary,RI.mean))
+  summary <- cbind(summary,RI.min)
+  summary <- cbind(summary,RI.max)
+  summary.order <- summary[rev(order(RI.mean)),]
+  print(paste("summary:", summary))
+  raw.labels=summary.order$all.attributes#[1:24]
+
+  nrow <- ceiling(length(raw.labels)/6)
+
+
+  #plot pdf selection
+  plotname <- paste(Plotpath,"/","_",species,"_seleced_variables",".png",sep="")
+  png(plotname)  #to make file
+  par(mar=c(14,2,2,2))
+  #plot(seq(1:7),summary.order$RI.mean[seq(1:7)],ylim=c(0,max(summary.order$RI.max)),
+   #    axes=F,  xlab = "")
+  plot(seq(1:length(summary.order$RI.mean)),summary.order$RI.mean,ylim=c(-0.1*(max(summary.order$RI.max)),max(summary.order$RI.max)),
+           axes=F,  xlab = "")
+  box()
+  axis(side=1, at=seq(1:length(summary.order$RI.mean)),
+       labels=summary.order$all.attributes[1:length(summary.order$RI.mean)],las=2,cex.axis=0.7)
+  axis(side = 2)
+  for(i in 1:length(summary.order$RI.mean)){
+    lines(c(i,i),c(summary.order$RI.min[i],summary.order$RI.max[i]))
+  }
+  lines( c(0,length(summary.order$RI.mean)),rep(as.numeric(RI_cutoff),2), col=2)
+  title( species)
+  dev.off()# close plotfile
+
+  # plot pdf var distribution
+  pdf(paste(Plotpath,"/var_distribution",species,".pdf", sep=""), paper = "a4r")# height= 11.7 , width= 16.6)#paper = "a4r"
+
+  random <- grep("RANDOM",raw.labels )
+  if(length(random) >0){ raw.labels <- raw.labels[-random]}
+  par(mfrow= c(nrow,3))
+  par(mar=c(4,2,2,0))
+  for(l in 1:length(raw.labels)){
 #     # plot(c(),c(),xlim=c(0,1), ylim=c(0,1))
 #     #}
 #
@@ -653,8 +654,8 @@ for(species in Data.table$species[-exclude]){
 #
 #     lines(table[,"meanx"],table[,"meany"]*100, lty=2)
   }
-#   dev.off()
-# }
+  dev.off()
+}
 #
 # ##################################################################
 #   ## Run random forests. the function will prepare data and execute.
