@@ -699,22 +699,23 @@ gc()
   # this object contains the random forests model obtainied when all indata is used as trainingset.
   # the predicted probability of being present is stored for each data poing
   rf.output <- rf.output.list[["RF.results.alldata"]]
-#
-#   #print results to see progression
-#   names(rf.output)
-#   print(rf.output$"RF.selected")
-#  # print(rf.output$"response.sel")
-#
-#   #save cross validation results for later calculation of ROC
-#   save(rf.output.cv, file= paste(Modelpath,"/RF.model.and.predictions.CV.eur.wt.",species,".rda",sep=""))
-#   #save the random forest model for late prediction of maps
-#   save(rf.output, file= paste(Modelpath,"/RF.model.and.predictions.eur.wt.",species,".rda",sep=""))
-#   #remove the large object generated to make space for the next species
-#   rm(rf.output.list)
-#   rm(rf.output.cv)
-#   rm(rf.output)
-#   gc()
-#
+
+  #print results to see progression
+  names(rf.output)
+  print(rf.output$"RF.selected")
+ # print(rf.output$"response.sel")
+
+  #save cross validation results for later calculation of ROC
+  cross_validation_file = paste(Modelpath,"/RF.model.and.predictions.CV.eur.wt.",species,".rda",sep="")
+  save(rf.output.cv, file= cross_validation_file)
+  #save the random forest model for late prediction of maps
+  random_forest_model = paste(Modelpath,"/RF.model.and.predictions.eur.wt.",species,".rda",sep="")
+  save(rf.output, file= random_forest_model)
+  #remove the large object generated to make space for the next species
+  rm(rf.output.list)
+  rm(rf.output.cv)
+  rm(rf.output)
+  gc()
 }
 # ####################
 # # try C50 rules
@@ -749,7 +750,8 @@ gc()
 #
 #   #for(species in Data.table$species[-c(7 ,9,10,16,18 ,20, 22,23,24,25,26)]){
 #   #species <-  Data.table$species[2]
-#   load(paste(Modelpath,"/RF.model.and.predictions.CV.eur.wt.",species,".rda",sep=""))
+#     cross_validation_file = paste(Modelpath,"/RF.model.and.predictions.CV.eur.wt.",species,".rda",sep="")
+#   load(cross_validation_file)
 #   load(paste(iterations_path,"/occurance.iters_",species,".rda",sep=""))
 #
 #   lista.csv<- Sys.glob(paste(Outpath,"*.csv",sep="/"))
