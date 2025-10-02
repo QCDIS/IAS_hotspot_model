@@ -2,7 +2,7 @@
 require(randomForest)
 
 require(raster)
-require(rgdal)
+#require(rgdal)
 require(fBasics)
 #############################################################
 ################### read and extract rasterdata  ############
@@ -140,7 +140,7 @@ run.random.forests <- function(species, selvar, indata.path,iterations.path){
   lista.csv<- Sys.glob(paste(indata.path,"*.csv",sep="/"))
   # load the information about iterations and cross validation for species in question
   load(paste(iterations.path,"/occurance.iters_",species,".rda",sep=""))
-  
+
   ## remove corrupt data
   my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
   print(paste(species,paste(unique(my.data$occurrenceStatus) ))  )
@@ -148,26 +148,26 @@ run.random.forests <- function(species, selvar, indata.path,iterations.path){
   present.synonyms <-  which(my.data$occurrenceStatus == "present"|my.data$occurrenceStatus == "Present"| my.data$occurrenceStatus == "established"| my.data$occurrenceStatus == "Established")
  my.data$occurrenceStatus[present.synonyms] <- "present"
  absent.synonyms <-  which(my.data$occurrenceStatus == "Absent"| my.data$occurrenceStatus == "")
- 
+
  my.data$occurrenceStatus[absent.synonyms] <- "absent"
  remove <- which(!my.data$occurrenceStatus == "absent"  & !my.data$occurrenceStatus == "present")
  print(paste("remove",remove))
  if(length(remove > 0)){
-   my.data <- my.data[-remove,]                
+   my.data <- my.data[-remove,]
  }
- 
+
  ###
   print(paste(species,paste(unique(my.data$occurrenceStatus) ))  )
   my.data$occurrenceStatus <- as.character(my.data$occurrenceStatus)
   #make process plan based on iterations file...
-  
+
   nrep <- length(all.occurance.iters)
   CV.level <- length(all.occurance.iters[[1]])
   process <- seq(1,nrep*CV.level)
   repeats <- sort(rep(seq(1,nrep),CV.level))
   iters <- rep(seq(1,CV.level),nrep)
   #process.plan <- cbind(process,rep,iter)
-  
+
   ##################################
   ### run random forests in cross validation
   #####################################
@@ -179,10 +179,10 @@ run.random.forests <- function(species, selvar, indata.path,iterations.path){
   # i <- 1
     iter <- iters[i]
     rep <- repeats[i]
-      
+
   process.ID <-NA
   my.control <- list()
- 
+
   #we may want to include a feature selection step. this this option
    if(selvar == "all"){
      my.control[["sel.var"]] <- colnames(my.data)[-c(1:4)]  }
@@ -198,17 +198,17 @@ run.random.forests <- function(species, selvar, indata.path,iterations.path){
  iter.ID <- all.occurance.iters[[rep]][[iter]]
  #iter.nr <-  unlist(sapply(1:length(iter.ID),function(i)
  #  grep(paste("A",iter.ID[i],"A"),paste("A",.mydata$ID,"A"))
- #))    
+ #))
  #which(my.data$ID %in% iter.ID)
- 
+
 .temptrain <- my.data$ID[- which(my.data$ID %in% iter.ID) ]
  ##
  my.control[["train"]] <-  unlist( .temptrain ) ###all.occurance.iters[[rep]][[iter]]
- 
+
  # for(r in 1:5){print(length( all.occurance.iters[[rep]][[r]] ))}
   RF.results[[rep]][[iter]] <-  RF.process(.mydata =my.data,
                            .my.control =my.control,
-                          .iter = iter, 
+                          .iter = iter,
                           .process.ID = process.ID,
                           .store.model=FALSE)
   }
@@ -331,49 +331,18 @@ RF.process = function(.mydata, .my.control, .iter, .process.ID, .store.model=FAL
 }
 
 #############################################################
-################### predict and plot the maps  ############
+################### predict the maps  ############
 ##################################################################
 ### 
-plot.maps <- function(species,indata.path,modelpath,plotpath, colors,brk){
-  lista.csv<- Sys.glob(paste(indata.path,"*.csv",sep="/"))
-  my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
+predict.maps <- function(species,modelpath){
+  #my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
   
   load(paste(modelpath,"/RF.model.and.predictions.eur.wt.",species,".rda",sep=""))
   model <- rf.output$RF.selected
   map<-predict(bar, model, type="prob")
   map <- 1-map # to get probability of presence
   
-  map2 <- map
-  map2[is.na(map2)]<- 1.005
-  colors <- c(colors,"lightgrey")
-  
-  xlim=c(0,30)# for swe
-  ylim = c(50,70)#for swe
-  
-  # linear Europe
-  png(paste(plotpath,"/",species, ".lin.trainpoints.world.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
-  plot(map2,col=colors, breaks = brk)
-  plot(shape2,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
-  # points(my.data$Lon, my.data$Lat, col = ifelse(my.data$occurrenceStatus == "absent", 1,2),
-  #        pch=ifelse(my.data$occurrenceStatus == "absent", ".","."))
-  points(my.data$Lon[which(my.data$occurrenceStatus == "absent")],
-         my.data$Lat[which(my.data$occurrenceStatus == "absent")], col=4,  pch=1, cex=0.05, lwd=0.05)
-  points(my.data$Lon[which(my.data$occurrenceStatus == "present")],
-         my.data$Lat[which(my.data$occurrenceStatus == "present")], col=2,  pch=1, cex=0.05, lwd=0.05)
-  
-  dev.off()
-  #### linear Sweden
-  png(paste(plotpath,"/",species, ".lin.trainpoints.Swe.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
-  plot(map2,col=colors, breaks = brk, xlim=xlim, ylim=ylim)
-  plot(shape2,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
-  # points(my.data$Lon, my.data$Lat, col = ifelse(my.data$occurrenceStatus == "absent", 1,2),
-  #        pch=ifelse(my.data$occurrenceStatus == "absent", ".","."))
-  points(my.data$Lon[which(my.data$occurrenceStatus == "absent")],
-         my.data$Lat[which(my.data$occurrenceStatus == "absent")], col=4,  pch=2, cex=0.3, lwd=0.25)
-  points(my.data$Lon[which(my.data$occurrenceStatus == "present")],
-         my.data$Lat[which(my.data$occurrenceStatus == "present")], col=2,  pch=2, cex=0.3, lwd=0.25)
-  
-  dev.off()
+
   
  # png(paste(plotpath,"/",species, "B.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
  # plot(map2,col=colors, breaks = brk)
@@ -388,10 +357,56 @@ plot.maps <- function(species,indata.path,modelpath,plotpath, colors,brk){
    return(map)
 }
 #############################################################
+################### plot the maps  ############
+##################################################################
+### 
+plot.maps <- function(.Species,indata.path,.rastermap,.plotpath, .colors,.brk,.shape,xlim,ylim){
+
+  map<-raster(.rastermap)
+ # plot(map)
+  
+map2 <- map
+map2[is.na(map2)]<- 1.005
+.colors <- c(.colors,"lightgrey")
+#plot(map2)
+lista.csv<- Sys.glob(paste(indata.path,"*.csv",sep="/"))
+my.data <- read.csv(lista.csv[grep(.Species,lista.csv)],header=T)
+
+# linear Europe
+png(paste(.plotpath,"/",.Species, ".lin.trainpoints.world.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
+plot(map2,col=.colors, breaks = .brk)
+plot(.shape$geometry ,add = TRUE, border = 1, lwd = 0.1)
+# points(my.data$Lon, my.data$Lat, col = ifelse(my.data$occurrenceStatus == "absent", 1,2),
+#        pch=ifelse(my.data$occurrenceStatus == "absent", ".","."))
+points(my.data$Lon[which(my.data$occurrenceStatus == "absent")],
+       my.data$Lat[which(my.data$occurrenceStatus == "absent")], col=4,  pch=1, cex=0.5, lwd=0.5)
+points(my.data$Lon[which(my.data$occurrenceStatus == "present")],
+       my.data$Lat[which(my.data$occurrenceStatus == "present")], col=2,  pch=1, cex=0.5, lwd=0.5)
+
+dev.off()
+#### linear Sweden
+png(paste(.plotpath,"/",.Species, ".lin.trainpoints.Swe.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
+plot(map2,col=.colors, breaks = brk, xlim=xlim, ylim=ylim)
+plot(.shape$geometry ,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
+# points(my.data$Lon, my.data$Lat, col = ifelse(my.data$occurrenceStatus == "absent", 1,2),
+#        pch=ifelse(my.data$occurrenceStatus == "absent", ".","."))
+points(my.data$Lon[which(my.data$occurrenceStatus == "absent")],
+       my.data$Lat[which(my.data$occurrenceStatus == "absent")], col=4,  pch=2, cex=0.3, lwd=0.25)
+points(my.data$Lon[which(my.data$occurrenceStatus == "present")],
+       my.data$Lat[which(my.data$occurrenceStatus == "present")], col=2,  pch=2, cex=0.3, lwd=0.25)
+
+dev.off()
+}
+#############################################################
 ################### split data for cross validation  ############
 ##################################################################
 ### 
 split.data <- function(species,indata.path,iterations.path){
+  
+ # species <- Species
+  #indata.path <- Outpath
+  #iterations.path <- Iterations.path
+  
   lista.csv<- Sys.glob(paste(indata.path,"*.csv",sep="/"))
   my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
   
@@ -470,7 +485,7 @@ split.data <- function(species,indata.path,iterations.path){
 
 
 calc.ROC <- function(.RF.result,.true.class){
-  #..    RF.result[[rep]][["predict.allvar"]]  
+  #..    RF.result[[rep]][["predict.allvar"]]
   # .RF.result <-  rf.output.cv[[curr.rep]]
    #.true.class <-.true.class
   #.method <-method
@@ -571,28 +586,19 @@ grep(paste("A",iter.ID[i],"A"),paste("A",.mydata$ID,"A"))
   d <- .mydata[train,-remove.col]
   #dim(d)
   #length(train)
-#   for(i in 1:length(names(d))){
-#     print(names(d)[i])
-#     print(unique(d[,i]))
-#   }
+  for(i in 1:length(names(d))){
+    print(names(d)[i])
+    print(unique(d[,i]))
+  }
   attribute.names <- names(d)
   names(d) <- c( paste("nr",seq(1,length(d[1,])-1 ),sep="_"),"class")
   d$class <- factor(d$class)
   n.attributes <- length(names(d))-1
-    # R
-    temp <- try(
-      mcfs(class ~ ., d,
-           projections = 600,
-           projection.size = min(2, n.attributes),
-           cutoff.permutations = 20,
-           threads.number = 8)
-    )
 
-    if (inherits(temp, "try-error")) {
-      print("MCFS failed")
-      return(NULL)
-    }
-  print(paste(" temp: ",temp))
+  #temp <- try(MCMFresult <- mcfs(class~., d, mcfs.projections=60, mcfs.projectionSize=min(2,n.attributes), mcfs.cutoffPermutations=5, mcfs.threadsNumber=8)
+  #)
+  temp <- try(MCMFresult <- mcfs(class~., d, projections="auto", projectionSize="auto", cutoffMethod = "permutations",cutoffPermutations=20, threadsNumber=8)
+  )
   cutoff <- temp$cutoff_value
   RI <- temp$RI
   RI$attribute.name <- attribute.names[ sapply(1:length(RI$attribute),function(i)

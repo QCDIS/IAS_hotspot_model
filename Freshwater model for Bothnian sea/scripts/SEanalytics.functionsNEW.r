@@ -571,28 +571,17 @@ grep(paste("A",iter.ID[i],"A"),paste("A",.mydata$ID,"A"))
   d <- .mydata[train,-remove.col]
   #dim(d)
   #length(train)
-#   for(i in 1:length(names(d))){
-#     print(names(d)[i])
-#     print(unique(d[,i]))
-#   }
+  for(i in 1:length(names(d))){
+    print(names(d)[i])
+    print(unique(d[,i]))
+  }
   attribute.names <- names(d)
   names(d) <- c( paste("nr",seq(1,length(d[1,])-1 ),sep="_"),"class")
   d$class <- factor(d$class)
   n.attributes <- length(names(d))-1
-    # R
-    temp <- try(
-      mcfs(class ~ ., d,
-           projections = 600,
-           projection.size = min(2, n.attributes),
-           cutoff.permutations = 20,
-           threads.number = 8)
-    )
 
-    if (inherits(temp, "try-error")) {
-      print("MCFS failed")
-      return(NULL)
-    }
-  print(paste(" temp: ",temp))
+  temp <- try(MCMFresult <- mcfs(class~., d, mcfs.projections=600, mcfs.projectionSize=min(2,n.attributes), mcfs.cutoffPermutations=20, mcfs.threadsNumber=8)
+  )
   cutoff <- temp$cutoff_value
   RI <- temp$RI
   RI$attribute.name <- attribute.names[ sapply(1:length(RI$attribute),function(i)

@@ -400,6 +400,11 @@ if(mcmc){
   lista.rda<- Sys.glob(paste(iterations_path,"*.rda",sep="/"))
  # for(species in Data.table$species[-c(1:20, 22,23,24,25,26)]){
     for(species in Data.table$species[-exclude]){
+        selected_vars = paste(resultpath,"/selected.vars.",species,".rda",sep="")
+        if (file.exists(selected_vars)) {
+            print(paste("Selected vars file already exists:", selected_vars))
+            next
+        }
 #     #  for(species in Data.table$species[-c(1:79)]){
 
     print(paste("Processing species:", species))
@@ -470,45 +475,69 @@ if(mcmc){
      }
      MCMCresult <- myreturn
      }
-#
-#      save(MCMCresult, file= paste(resultpath,"/selected.vars.",species,".rda",sep=""))
-#      rm(MCMCresult)
-#         gc()
+     # Check if MCMCresult is NULL or empty
+        if (is.null(MCMCresult) || length(MCMCresult) == 0) {
+            print(paste("MCMCresult is NULL or empty for species:", species))
+            print("Skipping to next species")
+            next
+        }
+
+     selected_vars = paste(resultpath,"/selected.vars.",species,".rda",sep="")
+     save(MCMCresult, file= selected_vars)
+     rm(MCMCresult)
+     gc()
   }
 }
+
+#Neogobius fluviatilis n.abs= 1469 :n.pos= 329"#
+# Error in gzfile(file) : invalid 'description' argument
+"Ponticola kessleri n.abs= 1469 :n.pos= 116"
+#Error in gzfile(file) : invalid 'description' argument
+#Corbicula fluminalis n.abs= 1469 :n.pos= 32"
+#Error in gzfile(file) : invalid 'description' argument
+#[1] "Dikerogammarus villosus n.abs= 1474 :n.pos= 43"
+#Error in gzfile(file) : invalid 'description' argument
+#[1] "Faxonius rusticus n.abs= 1469 :n.pos= 217"
+#Error in gzfile(file) : invalid 'description' argument
+##################################################################
+## plot selected variables
+##################################################################
+#Plotpath
+#resultpath
+#species <-Data.table$species[1]){
+lista.rda<- Sys.glob(paste(iterations_path,"*.rda",sep="/"))
+lista.selection <- Sys.glob(paste(resultpath,"*.rda",sep="/"))
+indata.path = Outpath
+lista.csv<- Sys.glob(paste(indata.path,"*.csv",sep="/"))
+
+#for(species in Data.table$species){
+for(species in Data.table$species[-exclude]){
+    print(paste("Processing species:", species))
+
+    #  for(species in Data.table$species[-exclude][-c(4,7,9,10,12,13)]){
+    if (length(lista.selection[intersect(grep(species,lista.selection),
+                                       grep("selected.vars",lista.selection))]) == 0) {
+        print(paste("No selection rda file found for species:", species))
+        print("Skipping to next species")
+        next
+    }
+    my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T, sep=",")
+    absent_length = length(which(my.data$occurrenceStatus == "absent"))
+    present_length = length(which(my.data$occurrenceStatus == "present"))
+
+
+    selection_indices <- intersect(
+      grep(species, lista.selection),
+      grep("selected.vars", lista.selection)
+    )
+    selection_file <- lista.selection[selection_indices]
+    print(paste("Loading selection file:", selection_file))
+    load(selection_file)
+    print(paste("MCMCresult length: ", length(MCMCresult)))
+    print(paste("MCMCresult summary: ", summary(MCMCresult)))
+
+    all.attributes <- sort(MCMCresult[[1]]$RI$attribute.name)
 #
-# #Neogobius fluviatilis n.abs= 1469 :n.pos= 329"#
-# # Error in gzfile(file) : invalid 'description' argument
-# "Ponticola kessleri n.abs= 1469 :n.pos= 116"
-# #Error in gzfile(file) : invalid 'description' argument
-# #Corbicula fluminalis n.abs= 1469 :n.pos= 32"
-# #Error in gzfile(file) : invalid 'description' argument
-# #[1] "Dikerogammarus villosus n.abs= 1474 :n.pos= 43"
-# #Error in gzfile(file) : invalid 'description' argument
-# #[1] "Faxonius rusticus n.abs= 1469 :n.pos= 217"
-# #Error in gzfile(file) : invalid 'description' argument
-# ##################################################################
-# ## plot selected variables
-# ##################################################################
-# #Plotpath
-# #resultpath
-# #species <-Data.table$species[1]){
-# lista.rda<- Sys.glob(paste(iterations_path,"*.rda",sep="/"))
-# lista.selection <- Sys.glob(paste(resultpath,"*.rda",sep="/"))
-# indata.path = Outpath
-# lista.csv<- Sys.glob(paste(indata.path,"*.csv",sep="/"))
-#
-# #for(species in Data.table$species){
-#   for(species in Data.table$species[-exclude]){
-#     #  for(species in Data.table$species[-exclude][-c(4,7,9,10,12,13)]){
-#
-#     my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T, sep=",")
-#   length(which(my.data$occurrenceStatus == "absent"))
-#   length(which(my.data$occurrenceStatus == "present"))
-#
-#   load(lista.selection[intersect(grep(species,lista.selection),
-#                                  grep("selected.vars",lista.selection))])
-#   all.attributes <- sort(MCMCresult[[1]]$RI$attribute.name)
 #
 #   cutoffs <- mean(sapply(1:length(MCMCresult), function(x) MCMCresult[[x]]$cutoff))
 #   RI_cutoff <- mean( sapply(1:length(MCMCresult), function(x) MCMCresult[[x]]$RI$RI[  as.numeric(MCMCresult[[x]]$cutoff)] ) )
@@ -623,7 +652,7 @@ if(mcmc){
 #     #     labels=c(min(table[,"minx"]), max(table[,"maxx"]) ), srt=45, adj=1, xpd=TRUE, cex=0.7)
 #
 #     lines(table[,"meanx"],table[,"meany"]*100, lty=2)
-#   }
+  }
 #   dev.off()
 # }
 #
