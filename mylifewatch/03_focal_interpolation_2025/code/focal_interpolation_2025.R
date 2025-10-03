@@ -162,7 +162,7 @@ e <- extent(-25, 45, 30, 72) #xmin, xmax,ymin,ymax
 rasterstack.filled.layers.Europe.2025 <- crop(mystack, e)
 #plot(rasterstack.filled.layers.Europe.2025)
 
-filename <- paste(stackpath,"/","Biooracle.filled.layers.global.tif", sep="")
+filename <- paste(stackpath,"/","Biooracle.filled.layers.global2025.tif", sep="")
 print("save filled layers)")
 
 writeRaster(mystack, filename, format="GTiff",overwrite=TRUE)

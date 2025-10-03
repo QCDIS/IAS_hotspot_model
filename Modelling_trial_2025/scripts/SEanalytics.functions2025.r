@@ -534,7 +534,7 @@ calc.ROC <- function(.RF.result,.true.class){
 ##################################################################
 
 plot.ROC <- function(.ROC.path,.my.species,.mean.ROC,.all.ROC){
-  plotname <- paste(ROC.path,"/","plotROC_",.my.species,method,".png",sep="")
+  plotname <- paste(.ROC.path,"/","plotROC_",.my.species,method,".png",sep="")
   png(plotname)  #to make file
   par(mar = rep(2, 4))
 
