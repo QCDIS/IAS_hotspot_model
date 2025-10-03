@@ -805,42 +805,27 @@ for (sel.sen in 1:length(dataset_scenarios)) {
             print(paste("No raster stack file found:", Biooracle.filled.layers.global))
             next
         }
-#         Stack <- stack(Biooracle.filled.layers.global)
-#
-#         #rm(layernames)
-#         #load(paste(Biooracle_path,"/layernames",suffix,".rda" ,sep =""))
-#         Biooracle_path.base <- paste(path, c("data/Biooracle.download/rasterstacks/baseline"), sep="/")
-#
-#         load(paste(Biooracle_path.base,"/layernames",".rda" ,sep =""))
-#
-#         #load(paste(Biooracle_path,"layernames.filled",".rda" ,sep =""))
-#
-#         print("load layenames")
-#         names(Stack) <- layernames
-#         bar <- Stack# stack(var2)
-#         #plot(bar[[1]])
-#
-#         # Species  <- Data.table$species[1]
-#
-#         #call the function to predict the species distribution at raster level.
-#         #The function return the prediction as a raster object but also make plots as .png
-#         # the lines between png() and dev.off() may be removed/inactivated if the png plots are not wanted.
-#         #for(Species in Data.table$species){
-#         for(Species in Data.table$species[-exclude]){
-#             print(Species)
-#             #  for(Species in Data.table$species[-c(7 ,9,10,16,18 ,20, 22,23,24,25,26)]){
-#             #predict.maps <- function(species,indata.path,modelpath){
-#
-#             map <-  predict.maps(species = Species,
-#                     modelpath = Modelpath
-#                     )
-#             # save predicted probabilities as rasterfiles.
-#             #plot(map)
-#             #newfile <- paste(rastermappath,"/linear.prob.",Species,sep="")
-#             newfile <- paste(rastermappath,"/linear.prob.global.",Species,sep="")
-#             #print(paste(file, newfile , sep="###########"))
-#             writeRaster(map, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
-#         }
+        Stack <- stack(Biooracle.filled.layers.global)
+
+        Stackpath.base <- paste(biooracle_dir,"/baseline", sep="/")
+        layernames_path <- paste(Stackpath.base,"/layernames",".rda" ,sep ="")
+        load(layernames_path)
+        names(Stack) <- layernames
+        print("names(Stack)")
+        bar <- Stack# stack(var2)
+        print("bar <- Stack# stack(var2)")
+        #call the function to predict the species distribution at raster level.
+        #The function return the prediction as a raster object but also make plots as .png
+        # the lines between png() and dev.off() may be removed/inactivated if the png plots are not wanted.
+        for(Species in Data.table$species[-exclude]){
+            print(Species)
+            map <-  predict.maps(species = Species,
+                    modelpath = Modelpath
+                    )
+            # save predicted probabilities as rasterfiles.
+            newfile <- paste(rastermappath,"/linear.prob.global.",Species,sep="")
+            writeRaster(map, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
+        }
 }#end scenario
 
 # ######################################################################################################################################
