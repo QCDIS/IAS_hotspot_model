@@ -824,7 +824,7 @@ for (sel.sen in 1:length(dataset_scenarios)) {
                 print(paste("No random forest model file found for species:", Species))
                 next
             }
-            map <-  predict.maps.local(species = Species,
+            map <-  predict.maps(species = Species,
                     modelpath = model_file
                     )
             if (is.null(map)) {
