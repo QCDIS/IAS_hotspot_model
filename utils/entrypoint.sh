@@ -2,7 +2,7 @@
 
 
 for f in /mnt/inputs/*.zip; do
-  [ -e "$f" ] && echo "Unzipping $f" && unzip -o "$f" -d /mnt/inputs
+  [ -e "$f" ] && unzip -o "$f" -d /mnt/inputs
 done
 
 cd /wrp
@@ -12,9 +12,9 @@ Rscript --vanilla main.r "$@"
 
 cd /mnt/outputs
 for f in *; do
-  [ -f "$f" ] && echo "Zipping $f" && zip "${f%.*}.zip" "$f"
+  [ -f "$f" ] &&  zip -q "${f%.*}.zip" "$f"
   # If we have a folder zip it
-  [ -d "$f" ] && echo "Zipping $f" && zip -r "${f%.*}.zip" "$f"
+  [ -d "$f" ] &&  zip -rq "${f%.*}.zip" "$f"
 done
 
 cd /wrp

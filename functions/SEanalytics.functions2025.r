@@ -336,14 +336,19 @@ RF.process = function(.mydata, .my.control, .iter, .process.ID, .store.model=FAL
 ### 
 predict.maps <- function(species,modelpath){
   #my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
-  
-  load(paste(modelpath,"/RF.model.and.predictions.eur.wt.",species,".rda",sep=""))
+  if (!file.exists(modelpath)) {
+    msg = paste("Model file not found:", modelpath)
+    print(msg)
+    warning(msg)
+    return(NULL)
+  }
+  load(modelpath)
   model <- rf.output$RF.selected
   map<-predict(bar, model, type="prob")
   map <- 1-map # to get probability of presence
-  
 
-  
+
+
  # png(paste(plotpath,"/",species, "B.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
  # plot(map2,col=colors, breaks = brk)
  # plot(shape2,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
@@ -351,11 +356,12 @@ predict.maps <- function(species,modelpath){
   #png(paste(plotpath,"/C.",species, ".png",sep=""),  width = 180, height = 180, units = "mm", res=6000)
   # plot(map,col=colors)
   # plot(shape.ecoregions,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
-   
+
    #dev.off()
-   
+
    return(map)
 }
+
 #############################################################
 ################### plot the maps  ############
 ##################################################################
@@ -534,7 +540,7 @@ calc.ROC <- function(.RF.result,.true.class){
 ##################################################################
 
 plot.ROC <- function(.ROC.path,.my.species,.mean.ROC,.all.ROC){
-  plotname <- paste(ROC.path,"/","plotROC_",.my.species,method,".png",sep="")
+  plotname <- paste(.ROC.path,"/","plotROC_",.my.species,method,".png",sep="")
   png(plotname)  #to make file
   par(mar = rep(2, 4))
 
@@ -554,7 +560,7 @@ plot.ROC <- function(.ROC.path,.my.species,.mean.ROC,.all.ROC){
     lines(1-all.ROC[[r]]$spec,all.ROC[[r]]$sens,lty=2,col=r+1)
     text(0.05+(r/12),0.05,paste(round(all.ROC[[r]]$AUC,3)),cex=0.65,col=1)
   }
-  dev.off() 
+  dev.off()
   return(sapply(1:length(all.ROC), function(r)round(all.ROC[[r]]$AUC,3)))
 }
 ############################################################

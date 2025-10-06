@@ -1,26 +1,29 @@
-plot.ROC.local <- function(.ROC.path,.my.species,.mean.ROC,.all.ROC){
-  plotname <- paste(.ROC.path,"/","plotROC_",.my.species,method,".png",sep="")
-  png(plotname)  #to make file
-  par(mar = rep(2, 4))
-
-  plot(c(0,0),c(0,-1),xlim=c(0,1),ylim=c(0,1))
-##polygon(c((1-mean.spec),1,1),c(mean.sense,1,0),lty=2,lwd=0.2,density=20)
-  polygon(c((1-mean.ROC$spec),1,1),c(mean.ROC$sens,1,0),lty=2,lwd=0.2,col=3,border=NA)
-
-  lines(c((1-mean.ROC$spec),1,1,0),c(mean.ROC$sens,1,0,0),lty=2,lwd=3)
-
-  lines(1-mean.ROC$spec,mean.ROC$sens,lty=2,lwd=3)
-  #plot(1-spec,sens,xlim=c(0,1),ylim=c(0,1))
-  lines(c(0,1),c(0,1))
-  # text(0.5,0.95,strsplit(speciesfile,"/")[[1]][2])
-  text(0.25,0.9,paste("Mean AUC=",round(mean.ROC$AUC,3)),cex=0.75)
-  text(0.5,0.1,"AUC from repetitions",cex=0.75)
-  for(r in all.rep){
-    lines(1-all.ROC[[r]]$spec,all.ROC[[r]]$sens,lty=2,col=r+1)
-    text(0.05+(r/12),0.05,paste(round(all.ROC[[r]]$AUC,3)),cex=0.65,col=1)
+predict.maps.local <- function(species,modelpath){
+  #my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
+  if (!file.exists(modelpath)) {
+    msg = paste("Model file not found:", modelpath)
+    print(msg)
+    warning(msg)
+    return(NULL)
   }
-  dev.off()
-  return(sapply(1:length(all.ROC), function(r)round(all.ROC[[r]]$AUC,3)))
+  load(modelpath)
+  model <- rf.output$RF.selected
+  map<-predict(bar, model, type="prob")
+  map <- 1-map # to get probability of presence
+
+
+
+ # png(paste(plotpath,"/",species, "B.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
+ # plot(map2,col=colors, breaks = brk)
+ # plot(shape2,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
+ #  dev.off()
+  #png(paste(plotpath,"/C.",species, ".png",sep=""),  width = 180, height = 180, units = "mm", res=6000)
+  # plot(map,col=colors)
+  # plot(shape.ecoregions,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
+
+   #dev.off()
+
+   return(map)
 }
 
 require(raster)
@@ -473,8 +476,6 @@ lista.csv<- Sys.glob(paste(indata.path,"*.csv",sep="/"))
 
 #for(species in Data.table$species){
 for(species in Data.table$species[-exclude]){
-    print(paste("Processing species:", species))
-
     #  for(species in Data.table$species[-exclude][-c(4,7,9,10,12,13)]){
     if (length(lista.selection[intersect(grep(species,lista.selection),
                                        grep("selected.vars",lista.selection))]) == 0) {
@@ -755,7 +756,7 @@ for(species in Data.table$species[-exclude]){
     #rf.output.cv[[curr.rep]][[i]]$predict.selected[1,]
 
     #Plot the ROC cuve in the dedicated folder
-    mean.AUC <-  plot.ROC.local(.ROC.path = ROC_path,
+    mean.AUC <-  plot.ROC(.ROC.path = ROC_path,
                         .my.species = species,
                         .mean.ROC = mean.ROC,
                         .all.ROC = all.ROC)
@@ -799,7 +800,7 @@ for (sel.sen in 1:length(dataset_scenarios)) {
         if (!dir.exists(rastermappath_scenario)) dir.create(rastermappath_scenario)
 
         Biooracle_scenario_path <- paste(biooracle_dir,"/",scenario,"/",sep="")
-        Biooracle.filled.layers.global = paste(Biooracle_scenario_path,"/Biooracle.filled.layers.global2025",".tif", sep="")
+        Biooracle.filled.layers.global = paste(Biooracle_scenario_path,"Biooracle.filled.layers.global2025",".tif", sep="")
         print(paste("Loading raster stack from:", Biooracle.filled.layers.global))
         if (!file.exists(Biooracle.filled.layers.global)) {
             print(paste("No raster stack file found:", Biooracle.filled.layers.global))
@@ -818,10 +819,18 @@ for (sel.sen in 1:length(dataset_scenarios)) {
         #The function return the prediction as a raster object but also make plots as .png
         # the lines between png() and dev.off() may be removed/inactivated if the png plots are not wanted.
         for(Species in Data.table$species[-exclude]){
-            print(Species)
-            map <-  predict.maps(species = Species,
-                    modelpath = Modelpath
+            model_file = paste(Modelpath,"RF.model.and.predictions.eur.wt.",species,".rda",sep="")
+            if (!file.exists(model_file)) {
+                print(paste("No random forest model file found for species:", Species))
+                next
+            }
+            map <-  predict.maps.local(species = Species,
+                    modelpath = model_file
                     )
+            if (is.null(map)) {
+                print(paste("Prediction map is NULL for species:", Species))
+                exit()
+            }
             # save predicted probabilities as rasterfiles.
             newfile <- paste(rastermappath,"/linear.prob.global.",Species,sep="")
             writeRaster(map, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
