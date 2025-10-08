@@ -333,8 +333,6 @@ exclude2 <- c()
     lista.csv<- Sys.glob(paste(Outpath,"*.csv",sep="/"))
     files_to_read <- lista.csv[grep(species, lista.csv)]
     if (length(files_to_read) == 0) {
-        print(paste("No CSV file found for species:", species))
-        print("Skipping to next species")
         next
     }
     nsites <- split.data(species = species,
@@ -378,7 +376,6 @@ if(mcmc){
 #     print(paste("Loading data from:", indata.path))
     lista.csv<- Sys.glob(paste(indata.path,"*.csv",sep="/"))
     if (length(lista.csv[grep(species,lista.csv)]) == 0) {
-        print(paste("No CSV file found for species:", species))
         next
     }
     my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
@@ -639,11 +636,7 @@ gc()
 #         print(paste("Random forest model and cross validation file already exist for species:", species))
         next
     }
-    #for(species in Data.table$species[-c(7 ,9,10,16,18 ,20, 22,23,24,25,26)]){
-  #species <-  Data.table$species[6]
-#for(species in Data.table$species[-c(1:18, 20, 22,23,24,25,26)]){
-  # the object "rf.output.list contains all resutls from random forests as a list object
-    print(paste("Processing species:", species))
+
     file_to_load <- paste(indata.path, species, "_indata.csv", sep="")
     if (!file.exists(file_to_load)) {
 #         print(paste("No CSV file found for species:", species))
@@ -711,10 +704,13 @@ for(species in Data.table$species[-exclude]){
 # ##################################################################
 all.AUC <- c()
 for(species in Data.table$species[-exclude]){
-    #for(species in Data.table$species){
 
-    #for(species in Data.table$species[-c(7 ,9,10,16,18 ,20, 22,23,24,25,26)]){
-    #species <-  Data.table$species[2]
+    plotname <- paste(ROC_path,"/","plotROC_",species,"allvars",".png",sep="")
+    if (file.exists(plotname)) {
+#         print(paste("ROC plot already exists for species:", species))
+        next
+    }
+
     cross_validation_file = paste(Modelpath,"/RF.model.and.predictions.CV.eur.wt.",species,".rda",sep="")
     if (!file.exists(cross_validation_file)) {
 #       print(paste("No cross validation file:", cross_validation_file))
@@ -886,13 +882,24 @@ ylim = c(50,70)#for swe
 #xlim=c(-180,180)
 #ylim=c(-90,90)
 
-rastermappath <- paste(outputs_path, "Rastermaps/" , dataset_scenarios[2],sep="")
-lista.ras <- Sys.glob(paste(rastermappath,"*linear.prob.global*",sep="/"))
-print(paste("Found", length(lista.ras), "raster maps in", rastermappath))
-
-predvar<-stack(lista.ras)
-plot(mean(predvar))
 if(!dir.exists(Plotpath)){dir.create(Plotpath)}
+
+probability.all.species.file = paste(Plotpath,"mean.probability.all.species.png",sep="")
+print(paste("Looking Mean probability plot:", probability.all.species.file))
+if (file.exists(probability.all.species.file)) {
+    print(paste("Mean probability plot already exists:", probability.all.species.file))
+} else {
+    rastermappath_scenario <- paste(rastermappath,dataset_scenarios[2],sep ="")
+    lista.ras <- Sys.glob(paste(rastermappath_scenario,"*linear.prob.global*",sep="/"))
+    print(paste("Found", length(lista.ras), "raster maps in", rastermappath_scenario))
+
+    predvar<-stack(lista.ras)
+    png(filename = probability.all.species.file, width = 800, height = 600)
+    plot(mean(predvar))
+    dev.off()
+    rm(predvar)
+    gc()
+}
 
 for(species in Data.table$species[-exclude]){
     plot_file_Swe = paste(Plotpath,"/",Species, ".lin.trainpoints.Swe.png",sep="")
@@ -924,7 +931,8 @@ if(!dir.exists(Plotpath2)){dir.create(Plotpath2)}
 listatiff <- c()
 # scenarios <- c( "baseline" ,"ssp119" ,  "ssp126"  , "ssp245"   ,"ssp370" ,  "ssp460"  , "ssp585"  )
 # dec.vec <- c("", "dec50", "dec100")
-for(Scenario in dataset_scenarios){
+for (sel.sen in 1:length(dataset_scenarios)) {
+    scenario <- dataset_scenarios[[sel.sen]]
     rastermappath_scenario <- paste(rastermappath,scenario,sep ="")
     if(dir.exists(rastermappath_scenario)){
         print(paste("checking",rastermappath_scenario))
@@ -932,41 +940,42 @@ for(Scenario in dataset_scenarios){
         listatiff <- c(listatiff,lista.tif.temp)
         print(paste("Found", length(lista.tif.temp), "tiff files in", rastermappath_scenario))
     }else{
-        print(paste("no dir",rastermappath))
+        print(paste("no dir",rastermappath_scenario))
     }
 }
 
+print(paste("Total tiff files found:", length(listatiff)))
 
 for (sel.sen in 1:length(dataset_scenarios)) {
     scenario <- dataset_scenarios[[sel.sen]]
     for(species in Data.table$species[-exclude]){
-    #get files for scenario
+        #get files for scenario
+        print(paste("Processing scenario:", scenario, "species:", species))
 
+        cases <- union(grep("baseline",listatiff),grep(scenario,listatiff))
+        print(paste("Found", length(cases), "files for scenario:", scenario))
+        my.rasterfiles<- listatiff[ intersect(grep(species,listatiff), cases)  ]
 
-    print(paste("Processing scenario:", scenario, "species:", species))
+        my.stack <- try(stack(my.rasterfiles))
+        r <- 1
 
-    cases <- union(grep("baseline",listatiff),grep(scenario,listatiff))
-    print(paste("Found", length(cases), "files for scenario:", scenario))
-    my.rasterfiles<- listatiff[ intersect(grep(species,listatiff), cases)  ]
-#
-# my.stack <- try(stack(my.rasterfiles))
-# r <- 1
-#
-# my.layernames <- sapply(1:length(my.rasterfiles), function(r)
-#   strsplit(strsplit( my.rasterfiles[r],"Rastermaps")[[1]][2],"/")[[1]][1])
-# names(my.stack)<- my.layernames
-#
-# my.change <- my.stack[[3]]- my.stack[[1]]
-#
-# if(length(grep("Error",my.stack[1]))<1 ){
-#   print(paste(names(my.stack), "stack success"))
-#   par(mfrow=c(3,1))
-# #  plot(my.stack)
-#   #success <- TRUE
-# }else{
-#   print(paste(names(my.stack), "stack fail"))
-#   break
-# }    #########################
+        my.layernames <- sapply(1:length(my.rasterfiles), function(r)
+        strsplit(strsplit( my.rasterfiles[r],"Rastermaps")[[1]][2],"/")[[1]][1])
+        names(my.stack)<- my.layernames
+
+        if (nlayers(my.stack) >= 3) {
+            my.change <- my.stack[[3]] - my.stack[[1]]
+        } else {
+            warning("Not enough layers in my.stack to compute change.")
+            next
+        }
+        if(length(grep("Error",my.stack[1]))<1 ){
+          print(paste(names(my.stack), "stack success"))
+    #       par(mfrow=c(3,1))
+        }else{
+          print(paste(names(my.stack), "stack fail"))
+          break
+        }
 # colorsBrBG2 <- rev(divPalette(n=19, name = c( "BrBG") ) )
 # colorsBrBG3 <- rev(divPalette(n=10, name = c( "BrBG") ) )
 #
@@ -1002,7 +1011,7 @@ for (sel.sen in 1:length(dataset_scenarios)) {
 #   plot(map2, col=my.colors, breaks = brk2)
 #   title(main = "dec100 - base")
 #   dev.off()
-#   }
+  }
 }# end sel.sen species
 # ######################################################################################################################################
 # ### ###################################################################Plot logmaps
