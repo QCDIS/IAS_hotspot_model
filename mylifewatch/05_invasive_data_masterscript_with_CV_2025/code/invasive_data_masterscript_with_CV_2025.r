@@ -811,132 +811,143 @@ for (sel.sen in 1:length(dataset_scenarios)) {
         Stackpath.base <- paste(biooracle_dir,"/baseline", sep="/")
         layernames_path <- paste(Stackpath.base,"/layernames",".rda" ,sep ="")
         load(layernames_path)
-        names(Stack) <- layernames
-        print("names(Stack)")
-        bar <- Stack# stack(var2)
-        print("bar <- Stack# stack(var2)")
+        # Check lengths before assignment
+
+
+        if (length(layernames) == nlayers(Stack)) {
+          names(Stack) <- layernames
+          print(length(layernames))
+        print(nlayers(Stack))
+        } else {
+          warning("Length of layernames does not match number of layers in Stack. Names not assigned.")
+          print(length(layernames))
+          print(nlayers(Stack))
+          next
+        }
+        bar <- Stack
         #call the function to predict the species distribution at raster level.
         #The function return the prediction as a raster object but also make plots as .png
         # the lines between png() and dev.off() may be removed/inactivated if the png plots are not wanted.
         for(Species in Data.table$species[-exclude]){
+            newfile <- paste(rastermappath_scenario,"/linear.prob.global.",Species,'.tif',sep="")
+            print(paste("Looking for  map:", newfile))
+            if (file.exists(newfile)) {
+                print(paste("Prediction map already exists:", newfile))
+                next
+            }
             model_file = paste(Modelpath,"RF.model.and.predictions.eur.wt.",species,".rda",sep="")
+            print(paste("Loading model from:", model_file))
             if (!file.exists(model_file)) {
                 print(paste("No random forest model file found for species:", Species))
                 next
             }
+            print(paste("Predicting map for species:", Species))
             map <-  predict.maps(species = Species,
                     modelpath = model_file
                     )
             if (is.null(map)) {
                 print(paste("Prediction map is NULL for species:", Species))
-                exit()
+                next
             }
             # save predicted probabilities as rasterfiles.
-            newfile <- paste(rastermappath,"/linear.prob.global.",Species,sep="")
-            writeRaster(map, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
+            print(paste("Writing raster to:", newfile))
+            writeRaster(map, filename= newfile, format = "GTiff", overwrite=TRUE)
         }
 }#end scenario
 
-# ######################################################################################################################################
-# #####################################################################################################################################
-# ## ###################################################################plot maps
-# ##################################################################
-# ######################################################################################################################################
-#
-# #restore path
-# #rastermappath <- paste(path,"/data/Rastermaps", suffix,sep ="")
-# rastermappath <- paste(path,"/data/Rastermaps",scenarios[1],dec.vec[1],sep ="")
-#
-#
-# #colorsBrBG <- rev(divPalette(n=12, name = c( "BrBG") ) )
-# colorsBrBG2 <- rev(divPalette(n=19, name = c( "BrBG") ) )
-#
-# plot(seq(1:25), seq(1:25), col=colorsBrBG2, pch=16)
-# colorsBr <- c("white",colorsBrBG2[11:19])
-# colorsBlue <- seqPalette(n=,12, name = c( "Blues") )
-# #shape.ecoregions <- readOGR(dsn=ICESecopath,
-# #                            layer="ICES_ecoregions_20171207_erase_ESRI",encoding="UTF-8")
-# shape.ecoregions <- st_read(paste(ICESecopath,"/ICES_ecoregions_20171207_erase_ESRI.shp",sep=""), )
-# #plot(shape.ecoregions$geometry)
-#
-# brk <- c(seq(0, 1,by=0.1),1.05)
-# # temporary solution
-# shape2 <-shape.ecoregions
-# xlim=c(0,30)# for swe
-# ylim = c(50,70)#for swe
-# #xlim=c(-180,180)
-# #ylim=c(-90,90)
-#
-# #lista.ras <- Sys.glob(paste(rastermappath,"*linear.prob.*",sep="/"))
-# lista.ras <- Sys.glob(paste(rastermappath,"*linear.prob.global*",sep="/"))
-#
-# predvar<-stack(lista.ras)
-# plot(mean(predvar))
-#
-# # Plotpath <- "~/Dokument/Projekt/HAV2025/Plots.marine.new.base.global"
-# if(!dir.exists(Plotpath)){dir.create(Plotpath)}
-#
-# for(species in Data.table$species[-exclude]){
-#     #plot.maps <- function(.map,.plotpath, .colors,.brk,.shape){
-#
-#   rastermap <- lista.ras[grep(species,lista.ras)]
-#
-#   plot.maps(.species=species,
-#             indata.path = Outpath,
-#             .rastermap=rastermap,
-#             .plotpath=Plotpath,
-#             .colors=colorsBr,
-#             .brk=brk,
-#             .shape=shape2,
-#             xlim=xlim,
-#             ylim= ylim,
-#             .cex1 = 0.1,
-#             .cex2 = 0.25,
-#             .lwd1 = 0.2,
-#             .lwd2 = 0.3
-#             )
-#
-#   #save(map, file= paste(mappath,"/predicted.map.",species,".rda",sep=""))
-#  #plot(map)
-# }
-# ######################################################################################################################################
-# ###################################################plot futire scenarios#########################################################
-# Plotpath2 <- gsub( ".marine","ssp",Plotpath)
-# if(!dir.exists(Plotpath2)){dir.create(Plotpath2)}
-#
-# listatiff <- c()
+######################################################################################################################################
+#####################################################################################################################################
+## ###################################################################plot maps
+##################################################################
+######################################################################################################################################
+
+#restore path
+#rastermappath <- paste(path,"/data/Rastermaps", suffix,sep ="")
+
+
+
+#colorsBrBG <- rev(divPalette(n=12, name = c( "BrBG") ) )
+colorsBrBG2 <- rev(divPalette(n=19, name = c( "BrBG") ) )
+
+plot(seq(1:25), seq(1:25), col=colorsBrBG2, pch=16)
+colorsBr <- c("white",colorsBrBG2[11:19])
+colorsBlue <- seqPalette(n=,12, name = c( "Blues") )
+#shape.ecoregions <- readOGR(dsn=ICESecopath,
+#                            layer="ICES_ecoregions_20171207_erase_ESRI",encoding="UTF-8")
+shape.ecoregions <- st_read(paste(ICESecopath,"/ICES_ecoregions_20171207_erase_ESRI.shp",sep=""), )
+print("Loaded ecoregions shapefile")
+#plot(shape.ecoregions$geometry)
+
+brk <- c(seq(0, 1,by=0.1),1.05)
+# temporary solution
+shape2 <-shape.ecoregions
+xlim=c(0,30)# for swe
+ylim = c(50,70)#for swe
+#xlim=c(-180,180)
+#ylim=c(-90,90)
+
+rastermappath <- paste(outputs_path, "Rastermaps/" , dataset_scenarios[2],sep="")
+lista.ras <- Sys.glob(paste(rastermappath,"*linear.prob.global*",sep="/"))
+print(paste("Found", length(lista.ras), "raster maps in", rastermappath))
+
+predvar<-stack(lista.ras)
+plot(mean(predvar))
+if(!dir.exists(Plotpath)){dir.create(Plotpath)}
+
+for(species in Data.table$species[-exclude]){
+    plot_file_Swe = paste(Plotpath,"/",Species, ".lin.trainpoints.Swe.png",sep="")
+    plot_file_world = paste(Plotpath,"/",Species, ".lin.trainpoints.world.png",sep="")
+    if (file.exists(plot_file_Swe) & file.exists(plot_file_world)) {
+        print(paste("Plot file already exists:", plot_file_Swe))
+        next
+    }
+    print(paste("Plotting map for species:", species))
+    rastermap <- lista.ras[grep(species,lista.ras)]
+    print(paste("Loading raster from:", rastermap))
+
+    plot.maps(.Species=Species,
+            indata.path = Outpath,
+            .rastermap=rastermap,
+            .plotpath=Plotpath,
+            .colors=colorsBr,
+            .brk=brk,
+            .shape=shape2,
+            xlim=xlim,
+            ylim= ylim
+            )
+}
+######################################################################################################################################
+###################################################plot futire scenarios#########################################################
+Plotpath2 <- gsub( ".marine","ssp",Plotpath)
+if(!dir.exists(Plotpath2)){dir.create(Plotpath2)}
+
+listatiff <- c()
 # scenarios <- c( "baseline" ,"ssp119" ,  "ssp126"  , "ssp245"   ,"ssp370" ,  "ssp460"  , "ssp585"  )
 # dec.vec <- c("", "dec50", "dec100")
-# for(Scenario in scenarios){
-#   for (dec in dec.vec){
-#
-# rastermappath <- paste(path,"/data/Rastermaps",Scenario,dec,sep ="")
-# if(dir.exists(rastermappath)){
-#   print(paste("checking",rastermappath))
-# lista.tif.temp<- Sys.glob(paste(rastermappath,"/","*.tif",sep=""))
-# listatiff <- c(listatiff,lista.tif.temp)
-# }else{print(paste("no dir",rastermappath))}
-#   }}
-#
-#
-# for(sel.sen in c(2,3,5,6,7)){
-#   scenario <- scenarios[[sel.sen]]
-#
-# for(species in Data.table$species[-exclude]){
-# #species <- Data.table$species[-exclude][10]
-#
-#
-#
-# #get files for scenario
-# #sel.sen <- 4
-#
-#
-# print(paste(scenario, dec))
-#     # indir <- paste(dir,"datalayer.nc/",dataset_scenarios[[1]][1],"/",sep="")
-#     #  outdir <- paste(dir,"datalayer.nc/",scenario,dec,"/",sep="")
-#
-# cases <- union(grep("baseline",listatiff),grep(scenario,listatiff))
-# my.rasterfiles<- listatiff[ intersect(grep(species,listatiff), cases)  ]
+for(Scenario in dataset_scenarios){
+    rastermappath_scenario <- paste(rastermappath,scenario,sep ="")
+    if(dir.exists(rastermappath_scenario)){
+        print(paste("checking",rastermappath_scenario))
+        lista.tif.temp<- Sys.glob(paste(rastermappath_scenario,"/","*.tif",sep=""))
+        listatiff <- c(listatiff,lista.tif.temp)
+        print(paste("Found", length(lista.tif.temp), "tiff files in", rastermappath_scenario))
+    }else{
+        print(paste("no dir",rastermappath))
+    }
+}
+
+
+for (sel.sen in 1:length(dataset_scenarios)) {
+    scenario <- dataset_scenarios[[sel.sen]]
+    for(species in Data.table$species[-exclude]){
+    #get files for scenario
+
+
+    print(paste("Processing scenario:", scenario, "species:", species))
+
+    cases <- union(grep("baseline",listatiff),grep(scenario,listatiff))
+    print(paste("Found", length(cases), "files for scenario:", scenario))
+    my.rasterfiles<- listatiff[ intersect(grep(species,listatiff), cases)  ]
 #
 # my.stack <- try(stack(my.rasterfiles))
 # r <- 1
@@ -992,7 +1003,7 @@ for (sel.sen in 1:length(dataset_scenarios)) {
 #   title(main = "dec100 - base")
 #   dev.off()
 #   }
-# }# end sel.sen species
+}# end sel.sen species
 # ######################################################################################################################################
 # ### ###################################################################Plot logmaps
 # #####################################################################################################################################
