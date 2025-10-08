@@ -949,6 +949,11 @@ print(paste("Total tiff files found:", length(listatiff)))
 for (sel.sen in 1:length(dataset_scenarios)) {
     scenario <- dataset_scenarios[[sel.sen]]
     for(species in Data.table$species[-exclude]){
+        plot_file = paste(Plotpath2,"/",species, ".",scenario,".png",sep="")
+        if (file.exists(plot_file)) {
+            print(paste("Plot file already exists:", plot_file))
+            next
+        }
         #get files for scenario
         print(paste("Processing scenario:", scenario, "species:", species))
 
@@ -962,48 +967,51 @@ for (sel.sen in 1:length(dataset_scenarios)) {
         my.layernames <- sapply(1:length(my.rasterfiles), function(r)
         strsplit(strsplit( my.rasterfiles[r],"Rastermaps")[[1]][2],"/")[[1]][1])
         names(my.stack)<- my.layernames
-
         if (nlayers(my.stack) >= 3) {
             my.change <- my.stack[[3]] - my.stack[[1]]
+        }else if (nlayers(my.stack) >= 2) {
+            my.change <- my.stack[[2]] - my.stack[[1]]
         } else {
             warning("Not enough layers in my.stack to compute change.")
+            print("Skipping to next species.")
             next
         }
         if(length(grep("Error",my.stack[1]))<1 ){
           print(paste(names(my.stack), "stack success"))
-    #       par(mfrow=c(3,1))
+          par(mfrow=c(3,1))
         }else{
           print(paste(names(my.stack), "stack fail"))
           break
         }
-# colorsBrBG2 <- rev(divPalette(n=19, name = c( "BrBG") ) )
-# colorsBrBG3 <- rev(divPalette(n=10, name = c( "BrBG") ) )
-#
-# #plot(seq(1:25), seq(1:25), col=colorsBrBG2, pch=16)
-# colorsBr <- c("white",colorsBrBG2[11:19])
-# colorsBlue <- seqPalette(n=,12, name = c( "Blues") )
-# brk <- c(seq(0, 1,by=0.1),1.05)
-# brk2 <- c(seq(-1, 1,by=0.1),1.05)
-#
-# png(paste(Plotpath2,"/",species, ".",scenario,".png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
-#
-# par(mfrow=c(2,2))
-# par(mar=c(2,2,2,6))
-#
-# for(i in 1:3){
-#   map<-my.stack[[i]]
-#   # plot(map)
-#
-#   map2 <- map
-#   map2[is.na(map2)]<- 1.005
-#   my.colors <- c(colorsBr,"lightgrey")
-#
-#   plot(map2, col=my.colors, breaks = brk)
-#   if(i == 1){
-#     title(main = species)}else{
-#   title(main = names(my.stack)[i])
-#     }
-# }
+        colorsBrBG2 <- rev(divPalette(n=19, name = c( "BrBG") ) )
+        colorsBrBG3 <- rev(divPalette(n=10, name = c( "BrBG") ) )
+
+
+        colorsBr <- c("white",colorsBrBG2[11:19])
+        colorsBlue <- seqPalette(n=,12, name = c( "Blues") )
+        brk <- c(seq(0, 1,by=0.1),1.05)
+        brk2 <- c(seq(-1, 1,by=0.1),1.05)
+
+        png(plot_file,  width = 180, height = 180, units = "mm", res=1200)
+        dev.off()
+
+        par(mfrow=c(2,2))
+        par(mar=c(2,2,2,6))
+
+        for(i in 1:3){
+        #   map<-my.stack[[i]]
+        #   # plot(map)
+        #
+        #   map2 <- map
+        #   map2[is.na(map2)]<- 1.005
+        #   my.colors <- c(colorsBr,"lightgrey")
+        #
+        #   plot(map2, col=my.colors, breaks = brk)
+        #   if(i == 1){
+        #     title(main = species)}else{
+        #   title(main = names(my.stack)[i])
+        #     }
+        }
 #   map<-my.change
 #   my.colors <- c("white",colorsBrBG2,"lightgrey")
 #   map2 <- map
