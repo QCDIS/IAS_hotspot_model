@@ -450,16 +450,6 @@ if(mcmc){
   }
 }
 
-#Neogobius fluviatilis n.abs= 1469 :n.pos= 329"#
-# Error in gzfile(file) : invalid 'description' argument
-"Ponticola kessleri n.abs= 1469 :n.pos= 116"
-#Error in gzfile(file) : invalid 'description' argument
-#Corbicula fluminalis n.abs= 1469 :n.pos= 32"
-#Error in gzfile(file) : invalid 'description' argument
-#[1] "Dikerogammarus villosus n.abs= 1474 :n.pos= 43"
-#Error in gzfile(file) : invalid 'description' argument
-#[1] "Faxonius rusticus n.abs= 1469 :n.pos= 217"
-#Error in gzfile(file) : invalid 'description' argument
 ##################################################################
 ## plot selected variables
 ##################################################################
@@ -905,7 +895,6 @@ for(species in Data.table$species[-exclude]){
     plot_file_Swe = paste(Plotpath,"/",Species, ".lin.trainpoints.Swe.png",sep="")
     plot_file_world = paste(Plotpath,"/",Species, ".lin.trainpoints.world.png",sep="")
     if (file.exists(plot_file_Swe) & file.exists(plot_file_world)) {
-        print(paste("Plot file already exists:", plot_file_Swe))
         next
     }
     print(paste("Plotting map for species:", species))
@@ -949,9 +938,8 @@ print(paste("Total tiff files found:", length(listatiff)))
 for (sel.sen in 1:length(dataset_scenarios)) {
     scenario <- dataset_scenarios[[sel.sen]]
     for(species in Data.table$species[-exclude]){
-        plot_file = paste(Plotpath2,"/",species, ".",scenario,".png",sep="")
+        plot_file = paste(Plotpath2,species, ".",scenario,".png",sep="")
         if (file.exists(plot_file)) {
-            print(paste("Plot file already exists:", plot_file))
             next
         }
         #get files for scenario
@@ -993,85 +981,93 @@ for (sel.sen in 1:length(dataset_scenarios)) {
         brk2 <- c(seq(-1, 1,by=0.1),1.05)
 
         png(plot_file,  width = 180, height = 180, units = "mm", res=1200)
-        dev.off()
 
         par(mfrow=c(2,2))
         par(mar=c(2,2,2,6))
 
-        for(i in 1:3){
-        #   map<-my.stack[[i]]
-        #   # plot(map)
-        #
-        #   map2 <- map
-        #   map2[is.na(map2)]<- 1.005
-        #   my.colors <- c(colorsBr,"lightgrey")
-        #
-        #   plot(map2, col=my.colors, breaks = brk)
-        #   if(i == 1){
-        #     title(main = species)}else{
-        #   title(main = names(my.stack)[i])
-        #     }
+        for(i in 1:nlayers(my.stack)){
+          map<-my.stack[[i]]
+          # plot(map)
+
+          map2 <- map
+          map2[is.na(map2)]<- 1.005
+          my.colors <- c(colorsBr,"lightgrey")
+
+          plot(map2, col=my.colors, breaks = brk)
+          if(i == 1){
+            title(main = species)}else{
+          title(main = names(my.stack)[i])
+            }
         }
-#   map<-my.change
-#   my.colors <- c("white",colorsBrBG2,"lightgrey")
-#   map2 <- map
-#   map2[is.na(map2)]<- 1.005
-#   plot(map2, col=my.colors, breaks = brk2)
-#   title(main = "dec100 - base")
-#   dev.off()
+      map<-my.change
+      my.colors <- c("white",colorsBrBG2,"lightgrey")
+      map2 <- map
+      map2[is.na(map2)]<- 1.005
+      plot(map2, col=my.colors, breaks = brk2)
+      title(main = "dec100 - base")
+      dev.off()
   }
 }# end sel.sen species
-# ######################################################################################################################################
-# ### ###################################################################Plot logmaps
-# #####################################################################################################################################
-# ######################################################################################################################################
-# #species  <- Data.table$species[1]
-#
-# colorsBrBG <- c(rev(divPalette(n=12, name = c( "BrBG") ) ),"lightgrey","lightgrey","lightgrey")
-# colorsBlue <- c(seqPalette(n=,12, name = c( "Blues") ),"lightgrey","lightgrey","lightgrey" )
-# colorsBrBG2 <- rev(divPalette(n=22, name = c( "BrBG") ) )
-#
-# #plot(seq(1:25), seq(1:23), col=colorsBrBG2, pch=16)
-# colorsBr <- c("white",colorsBrBG2[12:22], "lightgrey")
-# brk.log <- c(seq(-3, 0,by=0.25),0.25)
-# length(brk.log)
-# # define the area to plot. In this case the coordinates fro teh swedish map
-# xlim=c(0,30)
-# ylim = c(50,70)
-#
-#
-# lista.ras <- Sys.glob(paste(rastermappath,"*linear.prob.*",sep="/"))
-# predvar<-stack(lista.ras)
-# plot(mean(predvar))
-# for(species in Data.table$species){
-#   #for(species in Data.table$species[-exclude]){
-#
-#     rastermap <- lista.ras[grep(species,lista.ras)]
-#     map<-raster(rastermap)
-#  #map[is.na(mean(bar))]<- 0.000001
-#   lista.csv<- Sys.glob(paste(Outpath,"*.csv",sep="/"))
-#   my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
-#
-#   # prepare a rasterlayer with the 10-log of the predicted probability of presence.
-#   # An arbitrary small number is added, as log10(0) is not defined
-#   logmap <- log10(map+0.001) #log10(max(map , 0.001, na.rm=T))
-#
-#   # an arbitrary large number is inserted at locations where presence is undefined, in other words land.
-#  logmap[is.na(mean(bar))]<- 0.24
-#  # save(logmap, file= paste(mappath,"/predicted.map.log.",species,".rda",sep="") )
-#
-#  # map[is.na(map)]<- -0.1
-#
-#  # plot maps at Eurpean and Swedish scale this presence points added.
-#  # Plot without indicating xlim and ylim. This gives a plot area defined by the raster extent
-#   png(paste(Plotpath,"/",species, ".logprob.Eur.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
-#   plot(logmap,col=colorsBr, breaks=brk.log)
-#   plot(shape2$geometry,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
-#   points(my.data$Lon[which(my.data$occurrenceStatus == "absent")],
-#          my.data$Lat[which(my.data$occurrenceStatus == "absent")], col=4, pch=1, cex=0.3, lwd=0.2)
-#   points(my.data$Lon[which(my.data$occurrenceStatus == "present")],
-#          my.data$Lat[which(my.data$occurrenceStatus == "present")], col=2, pch=1, cex=0.3, lwd=0.2)
-#   dev.off()
+######################################################################################################################################
+### ###################################################################Plot logmaps
+#####################################################################################################################################
+######################################################################################################################################
+#species  <- Data.table$species[1]
+
+colorsBrBG <- c(rev(divPalette(n=12, name = c( "BrBG") ) ),"lightgrey","lightgrey","lightgrey")
+colorsBlue <- c(seqPalette(n=,12, name = c( "Blues") ),"lightgrey","lightgrey","lightgrey" )
+colorsBrBG2 <- rev(divPalette(n=22, name = c( "BrBG") ) )
+
+#plot(seq(1:25), seq(1:23), col=colorsBrBG2, pch=16)
+colorsBr <- c("white",colorsBrBG2[12:22], "lightgrey")
+brk.log <- c(seq(-3, 0,by=0.25),0.25)
+length(brk.log)
+# define the area to plot. In this case the coordinates fro teh swedish map
+xlim=c(0,30)
+ylim = c(50,70)
+
+
+lista.ras <- Sys.glob(paste(rastermappath,"*linear.prob.*",sep="/"))
+predvar<-stack(lista.ras)
+plot(mean(predvar))
+
+for(species in Data.table$species){
+    rastermap <- lista.ras[grep(species,lista.ras)]
+    if (length(rastermap) == 0) {
+        print(paste("No raster map found for species:", species))
+        print("Skipping to next species")
+        next
+    }
+    print(paste("Loading raster from:", rastermap))
+    map<-raster(rastermap)
+    lista.csv<- Sys.glob(paste(Outpath,"*.csv",sep="/"))
+    # Print all the filenames
+    print(lista.csv[grep(species,lista.csv)])
+    if (length(lista.csv[grep(species,lista.csv)]) == 0) {
+        next
+    }
+    my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
+    print(paste("Plotting log map for species:", species))
+
+    # prepare a rasterlayer with the 10-log of the predicted probability of presence.
+    # An arbitrary small number is added, as log10(0) is not defined
+    logmap <- log10(map+0.001) #log10(max(map , 0.001, na.rm=T))
+
+    # an arbitrary large number is inserted at locations where presence is undefined, in other words land.
+    logmap[is.na(mean(bar))]<- 0.24
+
+
+
+    # plot maps at Eurpean and Swedish scale this presence points added.
+    # Plot without indicating xlim and ylim. This gives a plot area defined by the raster extent
+    png(paste(Plotpath,"/",species, ".logprob.Eur.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
+    plot(logmap,col=colorsBr, breaks=brk.log)
+    plot(shape2$geometry,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
+    points(my.data$Lon[which(my.data$occurrenceStatus == "absent")],
+         my.data$Lat[which(my.data$occurrenceStatus == "absent")], col=4, pch=1, cex=0.3, lwd=0.2)
+    points(my.data$Lon[which(my.data$occurrenceStatus == "present")],
+         my.data$Lat[which(my.data$occurrenceStatus == "present")], col=2, pch=1, cex=0.3, lwd=0.2)
+    dev.off()
 #   ### same for Sweden
 #   # make the plot using the xlim and ylim defined earlier.
 #   png(paste(Plotpath,"/",species, ".logprob.Swe.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
@@ -1099,7 +1095,7 @@ for (sel.sen in 1:length(dataset_scenarios)) {
 #   rm(logmap)
 #   rm(map)
 #   gc()
-# }
+}
 # ######################################################################################################################################
 #
 # ###################################################################
