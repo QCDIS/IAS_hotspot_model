@@ -899,8 +899,6 @@ for(species in Data.table$species[-exclude]){
     }
     print(paste("Plotting map for species:", species))
     rastermap <- lista.ras[grep(species,lista.ras)]
-    print(paste("Loading raster from:", rastermap))
-
     plot.maps(.Species=Species,
             indata.path = Outpath,
             .rastermap=rastermap,
@@ -924,16 +922,12 @@ for (sel.sen in 1:length(dataset_scenarios)) {
     scenario <- dataset_scenarios[[sel.sen]]
     rastermappath_scenario <- paste(rastermappath,scenario,sep ="")
     if(dir.exists(rastermappath_scenario)){
-        print(paste("checking",rastermappath_scenario))
         lista.tif.temp<- Sys.glob(paste(rastermappath_scenario,"/","*.tif",sep=""))
         listatiff <- c(listatiff,lista.tif.temp)
-        print(paste("Found", length(lista.tif.temp), "tiff files in", rastermappath_scenario))
     }else{
         print(paste("no dir",rastermappath_scenario))
     }
 }
-
-print(paste("Total tiff files found:", length(listatiff)))
 
 for (sel.sen in 1:length(dataset_scenarios)) {
     scenario <- dataset_scenarios[[sel.sen]]
@@ -1029,16 +1023,17 @@ ylim = c(50,70)
 
 lista.ras <- Sys.glob(paste(rastermappath,"*linear.prob.*",sep="/"))
 predvar<-stack(lista.ras)
-plot(mean(predvar))
 
 for(species in Data.table$species){
-    rastermap <- lista.ras[grep(species,lista.ras)]
-    if (length(rastermap) == 0) {
-        print(paste("No raster map found for species:", species))
-        print("Skipping to next species")
+    plot_file_eu = paste(Plotpath,"/",species, ".logprob.Eur.png",sep="")
+    plot_file_sw = paste(Plotpath,"/",species, ".logprob.Swe.png",sep="")
+    if (file.exists(plot_file_eu) & file.exists(plot_file_sw)) {
         next
     }
-    print(paste("Loading raster from:", rastermap))
+    rastermap <- lista.ras[grep(species,lista.ras)]
+    if (length(rastermap) == 0) {
+        next
+    }
     map<-raster(rastermap)
     lista.csv<- Sys.glob(paste(Outpath,"*.csv",sep="/"))
     # Print all the filenames
@@ -1056,11 +1051,9 @@ for(species in Data.table$species){
     # an arbitrary large number is inserted at locations where presence is undefined, in other words land.
     logmap[is.na(mean(bar))]<- 0.24
 
-
-
-    # plot maps at Eurpean and Swedish scale this presence points added.
+    # plot maps at European and Swedish scale this presence points added.
     # Plot without indicating xlim and ylim. This gives a plot area defined by the raster extent
-    png(paste(Plotpath,"/",species, ".logprob.Eur.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
+    png(plot_file_eu,  width = 180, height = 180, units = "mm", res=1200)
     plot(logmap,col=colorsBr, breaks=brk.log)
     plot(shape2$geometry,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
     points(my.data$Lon[which(my.data$occurrenceStatus == "absent")],
@@ -1068,249 +1061,271 @@ for(species in Data.table$species){
     points(my.data$Lon[which(my.data$occurrenceStatus == "present")],
          my.data$Lat[which(my.data$occurrenceStatus == "present")], col=2, pch=1, cex=0.3, lwd=0.2)
     dev.off()
-#   ### same for Sweden
-#   # make the plot using the xlim and ylim defined earlier.
-#   png(paste(Plotpath,"/",species, ".logprob.Swe.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
-#   plot(logmap,col=colorsBr, breaks=brk.log , xlim=xlim, ylim=ylim )
-#   plot(shape2$geometry,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
-#   points(my.data$Lon[which(my.data$occurrenceStatus == "absent")],
-#          my.data$Lat[which(my.data$occurrenceStatus == "absent")], col=4, pch=1, cex=1, lwd=0.25)
-#   points(my.data$Lon[which(my.data$occurrenceStatus == "present")],
-#          my.data$Lat[which(my.data$occurrenceStatus == "present")], col=2, pch=1, cex=1, lwd=0.25)
-#     dev.off()
-#
-#
-#
-#   # save predicted probabilities as rasterfiles.
-#  # newfile <- paste(rastermappath,"/linear.prob.",species,sep="")
-#   #print(paste(file, newfile , sep="###########"))
-#  # writeRaster(map, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
-#
-#     writelograster <- F
-#     if(writelograster){
-#  newfile <- paste(rastermappath,"/log.prob.",species,sep="")
-#   #print(paste(file, newfile , sep="###########"))
-#   writeRaster(logmap, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
-#     }
-#   rm(logmap)
-#   rm(map)
-#   gc()
+  ### same for Sweden
+  # make the plot using the xlim and ylim defined earlier.
+  png(plot_file_sw,  width = 180, height = 180, units = "mm", res=1200)
+  plot(logmap,col=colorsBr, breaks=brk.log , xlim=xlim, ylim=ylim )
+  plot(shape2$geometry,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
+  points(my.data$Lon[which(my.data$occurrenceStatus == "absent")],
+         my.data$Lat[which(my.data$occurrenceStatus == "absent")], col=4, pch=1, cex=1, lwd=0.25)
+  points(my.data$Lon[which(my.data$occurrenceStatus == "present")],
+         my.data$Lat[which(my.data$occurrenceStatus == "present")], col=2, pch=1, cex=1, lwd=0.25)
+    dev.off()
+
+    writelograster <- F
+    if(writelograster){
+        newfile <- paste(rastermappath,"/log.prob.",species,sep="")
+        writeRaster(logmap, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
+    }
+  rm(logmap)
+  rm(map)
+  gc()
 }
-# ######################################################################################################################################
-#
-# ###################################################################
-# ### #################################################Plot combined maps
-# ##################################################################
-# ######################################################################################################################################
-# # define color palettes. White and lightgrey to incidate values outside range.
-# colorsBrBG <- c(rev(divPalette(n=12, name = c( "BrBG") ) ),"lightgrey","lightgrey","lightgrey")
-# colorsBlue <- c(seqPalette(n=,12, name = c( "Blues") ),"lightgrey","lightgrey","lightgrey" )
-# colorsBrBG2 <- rev(divPalette(n=22, name = c( "BrBG") ) )
-# #plot(seq(1:25), seq(1:23), col=colorsBrBG2, pch=16)
-# colorsBr <- c("white",colorsBrBG2[12:22], "lightgrey")
-# # the cutoffs to used in the color scale at log-scale
-# brk.log <- c(seq(-3, 0,by=0.25),0.25)
-#
-# ####### calculate average occurcence
-# #Find the predicted maps for the different species
-# lista.ras <- Sys.glob(paste(rastermappath,"*linear.prob.*",sep="/"))
-# predvar<-stack(lista.ras)
-# # calculate the mean probability of presence for all species, as a rasterlayer.
-# mean.predvar <- mean(predvar, na.rm=T)
-# plot(mean.predvar)
-# newfile <- paste(rastermappath,"/mean.prob.all.species.tif",sep="")
-# writeRaster(mean.predvar, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
-#
-# logpredvar <- log10(mean(predvar, na.rm=T) + 0.001)
-# writelograster <- F
-# if(writelograster){
-#   newfile <- paste(rastermappath,"/log 10 of mean.prob.all.species",sep="")
-#   writeRaster(logpredvar, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
-# }
-#
-#
-# ############################ ############################ ############################
-# ############################ plot mean with same colors as before ############################
-# ############################ ############################ ############################
-# #Plot mean of lin
-# colorsBrBG2 <- rev(divPalette(n=19, name = c( "BrBG") ) )
-# plot(seq(1:25), seq(1:25), col=colorsBrBG2, pch=16)
-# colorsBr <- c("white",colorsBrBG2[11:19])
-#
-# map2 <- mean.predvar
-# map2[is.na(map2)]<- 1.005
-#
-# #plot(seq(1:25), seq(1:23), col=colorsBrBG2, pch=16)
-# colorsBr <- c(colorsBr, "lightgrey","lightgrey")
-# brk <- c(seq(0, 1,by=0.1),1.05)
-#
-# logpredvar[is.na(mean(bar))]<- 0.25
-# xlim=c(-180,180)
-# ylim = c(-180,180)
-# png(paste(Plotpath,"/mean.all.eur", ".png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
-# plot(map2,col=colorsBr, breaks=brk)
-# plot(shape2$geometry,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
-#
-# dev.off()
-# xlim=c(0,30)
-# ylim = c(50,70)
-# png(paste(Plotpath,"/mean.all.Swe", ".png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
-# plot(map2,col=colorsBr, breaks=brk,xlim=xlim, ylim=ylim)
-# plot(shape2$geometry,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
-#
-# dev.off()
+######################################################################################################################################
+
+###################################################################
+### #################################################Plot combined maps
+##################################################################
+######################################################################################################################################
+# define color palettes. White and lightgrey to incidate values outside range.
+colorsBrBG <- c(rev(divPalette(n=12, name = c( "BrBG") ) ),"lightgrey","lightgrey","lightgrey")
+colorsBlue <- c(seqPalette(n=,12, name = c( "Blues") ),"lightgrey","lightgrey","lightgrey" )
+colorsBrBG2 <- rev(divPalette(n=22, name = c( "BrBG") ) )
+
+colorsBr <- c("white",colorsBrBG2[12:22], "lightgrey")
+# the cutoffs to used in the color scale at log-scale
+brk.log <- c(seq(-3, 0,by=0.25),0.25)
+
+####### calculate average occurcence
+#Find the predicted maps for the different species
+lista.ras <- Sys.glob(paste(rastermappath,"*linear.prob.*",sep="/"))
+predvar<-stack(lista.ras)
+# calculate the mean probability of presence for all species, as a rasterlayer.
+mean.predvar <- mean(predvar, na.rm=T)
+plot(mean.predvar)
+newfile <- paste(rastermappath,"mean.prob.all.species.tif",sep="")
+print(paste("newfile: ",newfile))
+logpredvar <- log10(mean(predvar, na.rm=T) + 0.001)
+if (file.exists(newfile)) {
+    print(paste("Mean probability raster already exists:", newfile))
+} else {
+    print(paste("Writing mean probability raster to:", newfile))
+    writeRaster(mean.predvar, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
+    writelograster <- F
+    if(writelograster){
+      newfile <- paste(rastermappath,"/log 10 of mean.prob.all.species",sep="")
+      writeRaster(logpredvar, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
+    }
+}
+
+############################ ############################ ############################
+############################ plot mean with same colors as before ############################
+############################ ############################ ############################
+#Plot mean of lin
+colorsBrBG2 <- rev(divPalette(n=19, name = c( "BrBG") ) )
+plot(seq(1:25), seq(1:25), col=colorsBrBG2, pch=16)
+colorsBr <- c("white",colorsBrBG2[11:19])
+
+map2 <- mean.predvar
+map2[is.na(map2)]<- 1.005
+colorsBr <- c(colorsBr, "lightgrey","lightgrey")
+brk <- c(seq(0, 1,by=0.1),1.05)
+
+logpredvar[is.na(mean(bar))]<- 0.25
+xlim=c(-180,180)
+ylim = c(-180,180)
+mean.all.eur = paste(Plotpath,"mean.all.eur", ".png",sep="")
+if (file.exists(mean.all.eur)) {
+    print(paste("Mean probability plot already exists:", mean.all.eur))
+} else {
+    png(mean.all.eur ,  width = 180, height = 180, units = "mm", res=1200)
+    plot(map2,col=colorsBr, breaks=brk)
+    plot(shape2$geometry,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
+    dev.off()
+}
+
+
+xlim=c(0,30)
+ylim = c(50,70)
+mean.all.Swe = paste(Plotpath,"mean.all.Swe", ".png",sep="")
+if (file.exists(mean.all.Swe)) {
+    print(paste("Mean probability plot already exists:", mean.all.Swe))
+} else {
+    png(mean.all.Swe,  width = 180, height = 180, units = "mm", res=1200)
+    plot(map2,col=colorsBr, breaks=brk,xlim=xlim, ylim=ylim)
+    plot(shape2$geometry,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
+    dev.off()
+}
 # ############################ ############################ ############################
 # ############################ Plot mean of log ############################
 # ############################ ############################ ############################
-# logpredvar[is.na(mean(bar))]<- 0.25
-# png(paste(Plotpath,"/logmean.all.eur", ".png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
-# plot(logpredvar,col=colorsBr, breaks=brk.log)
-# plot(shape2$geometry,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
-#
-# dev.off()
-# png(paste(Plotpath,"/logmean.all.Swe", ".png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
-# plot(logpredvar,col=colorsBr, breaks=brk.log,xlim=xlim, ylim=ylim)
-# plot(shape2$geometry,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
-#
-# dev.off()
-#
-# ### mean of log10 predvar
-# custom.pred <- log10(predvar[[1]]+0.001)
-# for(i in 2:length(names(predvar))){
-#   custom.pred <- custom.pred+ log10(predvar[[i]]+0.001)
-# }
-# plot(custom.pred)
-# newfile <- paste(rastermappath,"/sum of log10 prob all.species",sep="")
-# writeRaster(custom.pred, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
-# custom.pred <- custom.pred/length(names(predvar))
-# plot(custom.pred)
-# newfile <- paste(rastermappath,"/mean of log10 prob all.species",sep="")
-# writeRaster(custom.pred, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
-#
-#
-# #######################################
-# # customzed combined layers
-# ##################################
-#
-# ########## get filenames for traffic data and load as rasterstack
-#
-#
-# newfile <- paste(rastermappath,"/mean.prob.all.species.tif",sep="")
-# mean.predvar <- raster(newfile)
-#
-# lista.ras2 <- Sys.glob(paste(traffic_path,"*.tif",sep="/"))
-#
-# plotvar <- mean.predvar
-# shipvar <- raster(lista.ras2)
-# proj4string(shipvar)# chec projection
-# #shipvar <- projectRaster(shipvar,crs=CRS("+init=epsg:4326"))
-# #GDAL Message 1: +init=epsg:XXXX syntax is deprecated. It might return a CRS with a non-EPSG compliant axis order.
-#
-# shipvar <- projectRaster(shipvar,crs=4326)
-#
-# proj4string(shipvar)# chec projection
-#
-# # create two layers of same size
-# plotvar.crop<- crop(plotvar,shipvar)
-# shipvar<- crop(shipvar,plotvar.crop)
-# plotvar2 <- raster::resample(plotvar.crop,shipvar, method = "bilinear")
-#
-# extent(plotvar2)
-# extent(shipvar)
-# dim(plotvar2)
-# dim(shipvar)
-#
-# shipvar2 <- shipvar
-# shipvar2[shipvar>1000] <- 1000
-#
+logpredvar[is.na(mean(bar))]<- 0.25
+mean.all.eur = paste(Plotpath,"logmean.all.eur", ".png",sep="")
+if (file.exists(mean.all.eur)) {
+    print(paste("Mean log10 probability plot already exists:", mean.all.eur))
+} else {
+    png(mean.all.eur ,  width = 180, height = 180, units = "mm", res=1200)
+    plot(logpredvar,col=colorsBr, breaks=brk.log)
+    plot(shape2$geometry,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
+    dev.off()
+}
+logmean.all.Swe = paste(Plotpath,"logmean.all.Swe", ".png",sep="")
+if (file.exists(logmean.all.Swe)) {
+    print(paste("Mean log10 probability plot already exists:", logmean.all.Swe))
+} else {
+    png(logmean.all.Swe,  width = 180, height = 180, units = "mm", res=1200)
+    plot(logpredvar,col=colorsBr, breaks=brk.log,xlim=xlim, ylim=ylim)
+    plot(shape2$geometry,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
+    dev.off()
+}
+
+### mean of log10 predvar
+custom.pred <- log10(predvar[[1]]+0.001)
+for(i in 2:length(names(predvar))){
+  custom.pred <- custom.pred+ log10(predvar[[i]]+0.001)
+}
+plot(custom.pred)
+newfile <- paste(rastermappath,"sum of log10 prob all.species",sep="")
+if (file.exists(newfile)) {
+    print(paste("Sum of log10 probability raster already exists:", newfile))
+} else {
+    writeRaster(custom.pred, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
+}
+custom.pred <- custom.pred/length(names(predvar))
+plot(custom.pred)
+newfile <- paste(rastermappath,"mean of log10 prob all.species",sep="")
+if (file.exists(newfile)) {
+    print(paste("Mean of log10 probability raster already exists:", newfile))
+} else {
+    writeRaster(custom.pred, filename= newfile, format = "GTiff", suffix='.tif', overwrite=TRUE)
+}
+
+
+#######################################
+# customzed combined layers
+##################################
+
+########## get filenames for traffic data and load as rasterstack
+
+
+newfile <- paste(rastermappath,"/mean.prob.all.species.tif",sep="")
+mean.predvar <- raster(newfile)
+
+lista.ras2 <- Sys.glob(paste(traffic_path,"*.tif",sep="/"))
+print(paste("Found", length(lista.ras2), "traffic raster maps in", traffic_path))
+if (length(lista.ras2) == 0) {
+    print(paste("No traffic raster files found in:", traffic_path))
+} else {
+    print(paste("Using first traffic raster file:", lista.ras2[1]))
+}
+
+plotvar <- mean.predvar
+shipvar <- raster(lista.ras2)
+proj4string(shipvar)# chec projection
+#shipvar <- projectRaster(shipvar,crs=CRS("+init=epsg:4326"))
+#GDAL Message 1: +init=epsg:XXXX syntax is deprecated. It might return a CRS with a non-EPSG compliant axis order.
+
+shipvar <- projectRaster(shipvar,crs=4326)
+
+proj4string(shipvar)# chec projection
+
+# create two layers of same size
+plotvar.crop<- crop(plotvar,shipvar)
+shipvar<- crop(shipvar,plotvar.crop)
+plotvar2 <- raster::resample(plotvar.crop,shipvar, method = "bilinear")
+
+extent(plotvar2)
+extent(shipvar)
+dim(plotvar2)
+dim(shipvar)
+
+shipvar2 <- shipvar
+shipvar2[shipvar>1000] <- 1000
+
 # # create the combined data layer sing some mathematical expression
-# combivar <- plotvar2 + shipvar2/1000
-# #combivar[combivar > 3 ]<- 3
-# par(mfrow = c(1,1))
-# plot(combivar)
-#
-# combivar <- plotvar2 + shipvar2/5000
-#
-# colorsBlue <- seqPalette(n=,24, name = c( "Blues") )
-# colorsorange <- seqPalette(n=,24, name = c( "Oranges") )
-# colorsdiv <- divPalette(n=,24, name = c( "BrBG") )
-#
-# ####
-# #par(mfrow = c(1,3))
-# #par(mar=rep(1,4))
-# #plot(plotvar.crop)# the risk map
-# #plot(shipvar2)# the traffic map
-# #plot(combivar)
-#
-# ###
-# #par(mfrow = c(1,1))
-# #plot(plotvar.crop, col= colorsBlue)
-# #arg <- list(at=c(0,0), labels=c("NA","NA"))
-# #plot(shipvar2, add=T, col=colorsorange,alpha=0.5, legend=FALSE)
-# #plot(shape2,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
-#
-#
-# ############################## make plot as in old project   ############
-# newfile <- paste(Plotpath,"/combiplot.png",sep="")
-# png(newfile,  width = 360, height = 360, units = "mm", res=1200)
-#
-# par(mfrow=c(2,2))
-# par(mar=c(0,2,6,8))
-#
-# plot(plotvar2, col= colorsBlue)
-# title(main="mean risk")
-# plot(shape2$geometry, add=T, lwd=0.1, col=NA)
-#
-# plot(shipvar2, col= colorsorange)
-# title(main="traffic")
-# plot(shape2$geometry, add=T, lwd=0.1, col=NA)
-#
-# new.plotvar2 <- plotvar2
-# new.plotvar2[new.plotvar2>1.5]<-1.5
-# plot(new.plotvar2, col= colorsBlue)
-# #arg <- list(at=c(0,0), labels=c("NA","NA"))
-# plot(shipvar2, add=T, col=colorsorange,alpha=0.5, legend=FALSE)
-# title(main="superimposed")
-# plot(shape2$geometry, add=T, lwd=0.1, col=NA)
-#
-#
-# plot(combivar, col= colorsBlue)
-# title(main="added by function")
-# plot(shape2$geometry, add=T, lwd=0.1, col=NA)
-#
-#
-# dev.off()
-#
-# #######################################################################
-# #                              END                                         #####
-# #?#################################################################################
-# ### pca on rasters
-# #https://www.rdocumentation.org/packages/RStoolbox/versions/0.2.6/topics/rasterPCA
-# library(ggplot2)
-# library(reshape2)
-# library(RStoolbox)
-# #Just a test to run PCA on the rastetrlayers...
-# ## Run PCA
-# #rasterPCA(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE, maskCheck = TRUE, ...)
-# set.seed(25)
-# rpc <- rasterPCA(predvar,nComp = 3,spca= T)
-# summary(rpc$model)
-# loadings(rpc$model)
-#
-#
-# ggRGB(rpc$map,1,2,3, stretch="lin", q=0)
-#   plots <- lapply(1:3, function(x) ggR(rpc$map, x, geom_raster = TRUE))
-#  plot(plots[[1]],xlim=xlim, ylim=ylim)
-#  plot(plots[[2]],xlim=xlim, ylim=ylim)
-#  plot(plots[[3]],xlim=xlim, ylim=ylim)
-# ####### obtain oub prediction performance
-#  for(species in Data.table$species){
-#    file <-  paste(Modelpath,"/RF.model.and.predictions.eur.wt.",species,".rda",sep="")
-#    #print(file)
-#    load(file)
-#    print("########################")
-#    print("")
-#    print(species)
-#    print(rf.output$"RF.selected"$"confusion")
-#
-#  }
+combivar <- plotvar2 + shipvar2/1000
+#combivar[combivar > 3 ]<- 3
+par(mfrow = c(1,1))
+plot(combivar)
+
+combivar <- plotvar2 + shipvar2/5000
+
+colorsBlue <- seqPalette(n=,24, name = c( "Blues") )
+colorsorange <- seqPalette(n=,24, name = c( "Oranges") )
+colorsdiv <- divPalette(n=,24, name = c( "BrBG") )
+
+############################## make plot as in old project   ############
+newfile <- paste(Plotpath,"combiplot.png",sep="")
+if (file.exists(newfile)) {
+    print(paste("Combined plot already exists:", newfile))
+} else {
+    png(newfile,  width = 360, height = 360, units = "mm", res=1200)
+
+    par(mfrow=c(2,2))
+    par(mar=c(0,2,6,8))
+
+    plot(plotvar2, col= colorsBlue)
+    title(main="mean risk")
+    plot(shape2$geometry, add=T, lwd=0.1, col=NA)
+
+    plot(shipvar2, col= colorsorange)
+    title(main="traffic")
+    plot(shape2$geometry, add=T, lwd=0.1, col=NA)
+
+    new.plotvar2 <- plotvar2
+    new.plotvar2[new.plotvar2>1.5]<-1.5
+    plot(new.plotvar2, col= colorsBlue)
+    #arg <- list(at=c(0,0), labels=c("NA","NA"))
+    plot(shipvar2, add=T, col=colorsorange,alpha=0.5, legend=FALSE)
+    title(main="superimposed")
+    plot(shape2$geometry, add=T, lwd=0.1, col=NA)
+
+
+    plot(combivar, col= colorsBlue)
+    title(main="added by function")
+    plot(shape2$geometry, add=T, lwd=0.1, col=NA)
+
+
+    dev.off()
+}
+
+
+#######################################################################
+#                              END                                         #####
+#?#################################################################################
+### pca on rasters
+#https://www.rdocumentation.org/packages/RStoolbox/versions/0.2.6/topics/rasterPCA
+library(ggplot2)
+library(reshape2)
+library(RStoolbox)
+#Just a test to run PCA on the rastetrlayers...
+## Run PCA
+#rasterPCA(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE, maskCheck = TRUE, ...)
+set.seed(25)
+rpc <- rasterPCA(predvar,nComp = 3,spca= T)
+
+summary(rpc$model)
+print(paste("summary of PCA model"),summary(rpc$model))
+loadings(rpc$model)
+print(paste("loadings of PCA model"),loadings(rpc$model))
+
+
+ggRGB(rpc$map,1,2,3, stretch="lin", q=0)
+  plots <- lapply(1:3, function(x) ggR(rpc$map, x, geom_raster = TRUE))
+ plot(plots[[1]],xlim=xlim, ylim=ylim)
+ plot(plots[[2]],xlim=xlim, ylim=ylim)
+ plot(plots[[3]],xlim=xlim, ylim=ylim)
+####### obtain oub prediction performance
+ for(species in Data.table$species){
+   file <-  paste(Modelpath,"RF.model.and.predictions.eur.wt.",species,".rda",sep="")
+   #print(file)
+   load(file)
+   print("########################")
+   print("")
+   print(species)
+   print(rf.output$"RF.selected"$"confusion")
+
+ }
+
+print("All done")
+#######################################################################
