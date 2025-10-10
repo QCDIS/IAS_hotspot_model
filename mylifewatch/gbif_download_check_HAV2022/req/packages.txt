@@ -1,4 +1,0 @@
-cran:speciesgeocodeR
-cran:renv
-cran:rgdal
-cran:fBasics

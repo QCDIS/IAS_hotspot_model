@@ -1,0 +1,65 @@
+{
+  "name": "focal_interpolation_2025",
+  "label": "focal interpolation 2025",
+  "description": "focal interpolation 2025",
+  "type": "DataAnalysing",
+  "dockerImage": "focal_interpolation_2025",
+  "parameters": [
+  ],
+  "inputs": [
+    {
+      "name": "input_biooracle_dir",
+      "label": "input_biooracle_dir",
+      "description": "zip file containing biooracle layers in .nc format",
+      "type": "zip",
+      "path": "/mnt/inputs/biooracle.zip"
+    }
+  ],
+  "outputs": [
+    {
+      "type": "zip",
+      "name": "output_biooracle_dir",
+      "path": "/mnt/outputs/biooracle.zip",
+      "label": "output_biooracle_dir",
+      "description": "zip file containing biooracle layers after focal interpolation in .tif format"
+    },
+    {
+      "type": "zip",
+      "name": "plots_path",
+      "path": "/mnt/outputs/plots_path.zip",
+      "label": "plots path",
+      "description": "zip file containing plots of the layers before and after focal interpolation"
+    }
+  ],
+  "resources": {
+    "cores": 2,
+    "memory": 512,
+    "gpuNeeded": false,
+    "gpuMemory": 1024,
+    "estimatedTime": 4
+  },
+  "tags": [
+     "IAS hotspot model",
+     "MARCO-BOLO"
+  ],
+  "license": "GPL v3",
+  "version": "0.0.1",
+  "dependencies": [
+    {
+      "name": "r",
+      "license": "GPL v3",
+      "version": "4.2.2",
+      "author": "null",
+      "citation": null
+    }
+  ],
+  "publicationDate": "Thu, 30 June 2025 00:00:00 GMT",
+  "author": " Gunnar Andersson",
+  "bugs": {
+    "email": "gunnar.andersson@sva.se",
+    "url": "https://helpdesk.lifewatch.eu/"
+  },
+  "citation": null,
+  "testPath": "emptyUnitTest.sh",
+  "metaDataCatalogueUrl": "https://metadatacatalogue.lifewatch.eu/srv/eng/catalog.search#/metadata/<>"
+}

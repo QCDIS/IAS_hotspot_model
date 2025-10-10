@@ -42,6 +42,7 @@ RUN R -e "install.packages('renv'); renv::restore(lockfile = 'renv.lock', clean 
 RUN R -e "install.packages('rmcfs')"
 RUN R -e "library(rJava)"
 RUN R -e "install.packages('RWeka')"
+RUN R -e "install.packages('RStoolbox')"
 RUN mkdir /wrp
 COPY functions/ /wrp/functions
 RUN mkdir /wrp/utils

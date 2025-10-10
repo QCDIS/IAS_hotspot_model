@@ -11,7 +11,6 @@ library(dplyr)
 library(ggplot2)
 library(maps)
 
-setwd("C:/Users/Justine/OneDrive/Documents/PhD/biomod2_git")
 
 # --------- Data preparation ----------
 
