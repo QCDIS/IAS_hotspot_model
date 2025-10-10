@@ -69,8 +69,8 @@ ggplot() +
 layers.bio2 <- list_layers(simplify=F) #simplify=F if need more info
 
 # Download and load data layers of choice 
-dir <- "C:/Users/Justine/OneDrive/Documents/PhD/biomod2_git/layers"
-if (!dir.exists(dir)) dir.create(dir) 
+layers_dir <- "/mnt/outputs/layers"
+if (!dir.exists(layers_dir)) dir.create(layers_dir)
 
 constraints <- list(
   #latitude = c(25, 80),
@@ -174,10 +174,10 @@ for (dataset in c(datasets, datasets_depthmax)) {
   variables <- dataset$variables
   constraints <- dataset$constraints
   
-  download_layers(dataset_id, variables = variables, constraints = constraints, directory= dir)
+  download_layers(dataset_id, variables = variables, constraints = constraints, directory= layers_dir)
 }
 
-layers <- rast(paste0(dir,"/", list.files(dir)[]))
+layers <- rast(paste0(layers_dir,"/", list.files(layers_dir)[]))
 
 for (i in 1:nlyr(layers)) {  # nlyr(layer) returns the number of layers in the raster
   plot(layers[[i]], main = names(layers)[i])  # Adds a title with the layer name
