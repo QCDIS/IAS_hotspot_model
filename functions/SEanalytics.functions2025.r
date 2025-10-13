@@ -619,7 +619,6 @@ grep(paste("A",iter.ID[i],"A"),paste("A",.mydata$ID,"A"))
 }
 
 
-
 download_zip_data_if_not_present_and_unzip <- function(data_path, data_url, dest_path) {
     if(file.exists(data_path) || dir.exists(data_path)) {
         print(paste("Path", data_path, "already exists. Skipping download."))
