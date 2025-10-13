@@ -268,13 +268,17 @@ for (my.cathegory in cathegories[-5]) {
                              "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")
   xlim <- c(-180, 180)
   ylim <- c(-60, 84)
-  jpeg(paste(path, "/speciesplots/", "testplot.pseudoabsences.", my.cathegory, ".jpg", sep = ""),
+  test_plot_pseudoabsences = paste(path, "/speciesplots/", "testplot.pseudoabsences.", my.cathegory, ".jpg", sep = "")
+  print(paste("Plotting: ", test_plot_pseudoabsences))
+  jpeg(test_plot_pseudoabsences,
        width = 18 * (xlim[2] - xlim[1]), height = 18 * (ylim[2] - ylim[1]), pointsize = 4)
   plot(world1$geometry, xlim = xlim, ylim = ylim, col = "light grey")
   lines(boxxlim[c(1, 2, 2, 1, 1)], boxylim[c(1, 1, 2, 2, 1)])
   points(pseudoabsences$decimalLongitude, pseudoabsences$decimalLatitude, col = "red", pch = "*", cex = 5)
   dev.off()
-  write.csv(pseudoabsences, file = paste(speciespath, "pseudoabsences.marine.excludebox", my.cathegory, ".csv", sep = ""), row.names = FALSE)
+  pseudoabsences_marine_excludebox = paste(speciespath, "pseudoabsences.marine.excludebox", my.cathegory, ".csv", sep = "")
+  print(paste("wrote: ", pseudoabsences_marine_excludebox))
+  write.csv(pseudoabsences, file = pseudoabsences_marine_excludebox, row.names = FALSE)
   print(paste("wrote: ", speciespath, "/pseudoabsences.marine.excludebox", my.cathegory, ".csv", sep = ""))
 } # --- End category loop ---
 
