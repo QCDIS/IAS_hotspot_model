@@ -7,6 +7,8 @@ require(biooracler)
 
 # --- Define file paths and output folders ---
 inputs_path = "/mnt/inputs/"
+outputs_path <- "/mnt/outputs/"
+
 species_file <- paste(inputs_path,"0010903-240202131308920.csv")
 nis_list_path <- paste(inputs_path,"NIS_list_combined_Mar2025_v2.csv")
 if (!dir.exists(nis_list_path)) {
@@ -16,7 +18,7 @@ if (!dir.exists(nis_list_path)) {
     unzip(paste0(Stackpath, "/NIS_list_combined_Mar2025_v2.zip"), exdir = inputs_path)
 }
 
-specie_splots_dir <- "/mnt/outputs/speciesplots/"
+specie_splots_dir <- paste0(outputs_path,"speciesplots/")
 if (!dir.exists(specie_splots_dir)) dir.create(specie_splots_dir, recursive = TRUE)
 
 test_plot <- "test_plot.jpg"
@@ -25,7 +27,7 @@ filled_layers_plot <- paste(specie_splots_dir, "filled_layers_plot.jpg", sep = "
 
 testplot_cleanput_mars_2025 <- "testplot_cleanput_mars_2025.jpg"
 test_plot_cleanput_2024 <- "testplot_cleanput_mar2024.jpg"
-coordinates_output = "/mnt/outputs/cleaned_coordinates/"
+coordinates_output = paste0(outputs_path,"cleaned_coordinates/")
 if (!dir.exists(coordinates_output)) dir.create(coordinates_output, recursive = TRUE)
 filtered_clean_coordinates_output_mars_2025 <- paste(coordinates_output, "filtered_clean_coordinates_output_mars_2025.rda", sep = "")
 filtered_clean_coordinates_output_mars_2025_2 <- paste(coordinates_output, "filtered_clean_coordinates_output_mars_2025_2.rda", sep = "")
@@ -33,7 +35,7 @@ filtered_clean_marine_coordinates_output_mars_2025 <- paste(coordinates_output, 
 filtered_clean_coordinates_mars_2024_output <- paste(coordinates_output, "filtered_clean_coordinates_mars_2024_output.rda", sep = "")
 filled_layers_file <- paste(inputs_path,"filled_layers_new.tif")
 
-speciespath <- "/mnt/outputs/species/"
+speciespath <- paste0(outputs_path,"species/")
 if (!dir.exists(speciespath)) dir.create(speciespath, recursive = TRUE)
 
 cahche_dir <- paste(inputs_path,"cache/")
@@ -285,7 +287,9 @@ fac1 <- ceiling(factor / 10)
 fac2 <- factor - 10 * (fac1 - 1)
 xlim <- c(-110, 40)
 ylim <- c(-2, 68)
-jpeg(paste(path, "speciesplots/", "testplot.CLEANPUT.SMALLER.world.mar2025.jpg", sep = ""),
+testplot_file = paste(path, "speciesplots/", "testplot.CLEANPUT.SMALLER.world.mar2025.jpg", sep = "")
+print(paste("Plotting: ", testplot_file))
+jpeg(testplot_file,
      width = 10 * (xlim[2] - xlim[1]), height = 10 * (ylim[2] - ylim[1]), pointsize = 4)
 plot(world1, xlim = xlim, ylim = ylim, col = "light grey")
 points(filtered.cleanput$decimalLongitude, filtered.cleanput$decimalLatitude, col = fac2, pch = fac1)
