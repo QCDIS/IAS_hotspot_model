@@ -10,7 +10,7 @@
       "label": "och variables url",
       "description": "och variables url to download the variables xlsx file",
       "type": "String",
-      "defaultValue": "https://minio.lifewatch.eu/02de6973-cc46-4ec4-ba2f-5b40e0fba462/mylifewatch_datasets/IAS_hotspot_model/dataset%20och%20variabler%202025.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=miniouser-C7v6%21u5%2F20250918%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250918T105122Z&X-Amz-Expires=43200&X-Amz-SignedHeaders=host&X-Amz-Signature=25d1e253df686503de287b6a680397c5022a7f2b329c94fa530a657b284ab378"
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/xz0J1xVTQshfP3I/download"
     },
     {
       "name": "constraints_base_time_from",
@@ -74,8 +74,15 @@
   ],
   "outputs": [
     {
-      "name": "biooracle_output_dir",
-      "label": "biooracle_output_dir",
+        "name": "dataset_och_variabler",
+        "label": "dataset och variabler",
+        "description": "och variables",
+        "type": "zip",
+        "path": "/mnt/outputs/dataset_och_variabler.zip"
+    },
+    {
+      "name": "biooracle_output_path",
+      "label": "biooracle_output_path",
       "description": "zip biooracle output dir",
       "type": "zip",
       "path": "/mnt/outputs/biooracle.zip"

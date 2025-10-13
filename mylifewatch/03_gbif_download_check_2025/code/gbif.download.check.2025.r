@@ -6,13 +6,14 @@ require(raster)
 require(biooracler)
 
 # --- Define file paths and output folders ---
-species_file <- "/mnt/inputs/0010903-240202131308920.csv"
-nis_list <- "/mnt/inputs/NIS_list_combined_Mar2025_v2.csv"
-if (!dir.exists(nis_list)) {
+inputs_path = "/mnt/inputs/"
+species_file <- paste(inputs_path,"0010903-240202131308920.csv")
+nis_list_path <- paste(inputs_path,"NIS_list_combined_Mar2025_v2.csv")
+if (!dir.exists(nis_list_path)) {
     nis_list_url=args$nis_list_url
     download.file(nis_list_url,
                 destfile = paste0(Stackpath, "/NIS_list_combined_Mar2025_v2.zip"))
-    unzip(paste0(Stackpath, "/NIS_list_combined_Mar2025_v2.zip"), exdir = "/mnt/inputs/")
+    unzip(paste0(Stackpath, "/NIS_list_combined_Mar2025_v2.zip"), exdir = inputs_path)
 }
 
 specie_splots_dir <- "/mnt/outputs/speciesplots/"
@@ -30,12 +31,12 @@ filtered_clean_coordinates_output_mars_2025 <- paste(coordinates_output, "filter
 filtered_clean_coordinates_output_mars_2025_2 <- paste(coordinates_output, "filtered_clean_coordinates_output_mars_2025_2.rda", sep = "")
 filtered_clean_marine_coordinates_output_mars_2025 <- paste(coordinates_output, "filtered_clean_marine_coordinates_output_mars_2025.rda", sep = "")
 filtered_clean_coordinates_mars_2024_output <- paste(coordinates_output, "filtered_clean_coordinates_mars_2024_output.rda", sep = "")
-filled_layers_file <- "/mnt/inputs/filled_layers_new.tif"
+filled_layers_file <- paste(inputs_path,"filled_layers_new.tif")
 
 speciespath <- "/mnt/outputs/species/"
 if (!dir.exists(speciespath)) dir.create(speciespath, recursive = TRUE)
 
-cahche_dir <- "/mnt/inputs/cache/"
+cahche_dir <- paste(inputs_path,"cache/")
 if (!dir.exists(cahche_dir)) dir.create(cahche_dir, recursive = TRUE)
 cleanput_cache <- paste(cahche_dir, "cleaned_coordinates.rds", sep = "")
 shapefile_zip <- paste(cahche_dir, "shapefile.shp.zip", sep = "")
@@ -174,7 +175,7 @@ save(filtered.cleanput.marine, file = filtered_clean_marine_coordinates_output_m
 all.species <- unique(filtered.cleanput.marine$species)
 all.species <- c(all.species, "Asparagopsis armata")
 print("Prepare input files for species distribution modelling")
-selected.species <- read.csv2(nis_list, sep = ",")
+selected.species <- read.csv2(nis_list_path, sep = ",")
 cathegories <- unique(selected.species$category)
 tab <- c()
 print(paste("Number of species to process:", length(all.species)))
@@ -246,7 +247,7 @@ points(filtered.cleanput$decimalLongitude[-excludebox], filtered.cleanput$decima
 filtered.cleanput.unbox <- filtered.cleanput[-excludebox, ]
 
 # --- Define groups of species and generate pseudoabsences ---
-selected.species <- read.csv2(nis_list, sep = ",")
+selected.species <- read.csv2(nis_list_path, sep = ",")
 cathegories <- unique(selected.species$category)
 for (my.cathegory in cathegories[-5]) {
   my.species.list <- selected.species$Taxon.name[selected.species$category == my.cathegory]

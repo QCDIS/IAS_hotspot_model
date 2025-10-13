@@ -617,3 +617,18 @@ grep(paste("A",iter.ID[i],"A"),paste("A",.mydata$ID,"A"))
      selected <- NA}
   return(list("cutoff" = cutoff, "RI"=RI,"selected"=selected,"selected.nr"=selected.nr))
 }
+
+
+
+download_zip_data_if_not_present_and_unzip <- function(data_path, data_url, dest_path) {
+    if(file.exists(data_path) || dir.exists(data_path)) {
+        print(paste("Path", data_path, "already exists. Skipping download."))
+        return(NULL)
+    }
+    print(paste("Path", data_path, "does not exist. Downloading and unzipping data..."))
+    destfile <- paste0(data_path, ".zip")
+    download.file(data_url, destfile = destfile)
+    print(paste("Unzipping", destfile))
+    unzip(destfile, exdir = dest_path)
+    file.remove(destfile)
+}

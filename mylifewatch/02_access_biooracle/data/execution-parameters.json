@@ -1,0 +1,49 @@
+{
+  "parameters": [
+    {
+      "name": "och_variables_url",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/xz0J1xVTQshfP3I/download",
+      "value": "https://surfdrive.surf.nl/index.php/s/xz0J1xVTQshfP3I/download"
+    },
+    {
+      "name": "constraints_base_time_from",
+      "value": "2010-01-01T00:00:00Z",
+      "defaultValue": "2010-01-01T00:00:00Z"
+    },
+    {
+      "name": "constraints_base_time_to",
+      "value": "2010-01-01T00:00:00Z",
+      "defaultValue": "2010-01-01T00:00:00Z"
+    },
+    {
+      "name": "constraints_ssp_time_from",
+      "value": "2020-01-01T00:00:00Z",
+      "defaultValue": "2020-01-01T00:00:00Z"
+    },
+    {
+      "name": "constraints_ssp_time_to",
+      "value": "2020-01-01T00:00:00Z",
+      "defaultValue": "2020-01-01T00:00:00Z"
+    },
+    {
+      "name": "constraints_dec50_time_from",
+      "value": "2040-01-01T00:00:00Z",
+      "defaultValue": "2040-01-01T00:00:00Z"
+    },
+    {
+      "name": "constraints_dec50_time_to",
+      "value": "2040-01-01T00:00:00Z",
+      "defaultValue": "2040-01-01T00:00:00Z"
+    },
+    {
+      "name": "constraints_dec100_time_from",
+      "value": "2090-01-01T00:00:00Z",
+      "defaultValue": "2090-01-01T00:00:00Z"
+    },
+    {
+      "name": "constraints_dec100_time_to",
+      "value": "2090-01-01T00:00:00Z",
+      "defaultValue": "2090-01-01T00:00:00Z"
+    }
+  ]
+}

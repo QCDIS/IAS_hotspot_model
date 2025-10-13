@@ -8,24 +8,26 @@ library(rgbif) # for occ_download
 user=args$gbif_username
 pwd=args$gbif_password
 email=args$email
-
-
-nis_list <- "/mnt/inputs/NIS_list_combined_Mar2025_v2.csv"
-
-if (!dir.exists(nis_list)) {
-    nis_list_url=args$nis_list_url
-    download.file(nis_list_url,
-                destfile = paste0(Stackpath, "/NIS_list_combined_Mar2025_v2.zip"))
-    unzip(paste0(Stackpath, "/NIS_list_combined_Mar2025_v2.zip"), exdir = "/mnt/inputs/")
-}
-
-download_path <- "/mnt/outputs/"
 key <- args$key
+
+inputs_path = "/mnt/inputs/"
+outputs_path <- "/mnt/outputs/"
+download_file = paste0(outputs_path,key,".zip")
+nis_list_path <- paste0(inputs_path,"NIS_list_combined_Mar2025_v2.csv")
+dest_path =  paste0(nis_list_path, ".zip")
+print(paste("nis_list_path:", nis_list_path))
+print(paste("dest_path:", dest_path))
+download_zip_data_if_not_present_and_unzip(
+    data_path = nis_list_path,
+    data_url = args$nis_list_url,
+    dest_path = inputs_path
+    )
+
 
 
 ########################################
 gbif_taxon_keys <- 
-  readr::read_delim(nis_list, delim =",",na = c("", "NA"), comment = "",   col_names = TRUE,skip_empty_rows = TRUE)%>%
+  readr::read_delim(nis_list_path, delim =",",na = c("", "NA"), comment = "",   col_names = TRUE,skip_empty_rows = TRUE)%>%
   pull("Taxon name") %>% # use fewer names if you want to just test 
   name_backbone_checklist()  %>% # match to backbone
   filter(!matchType == "NONE") %>% # get matched names
@@ -42,5 +44,5 @@ occ_download(
 )
 
 ###########################
-d <- occ_download_get(key,path=download_path) %>%
+d <- occ_download_get(key,path=outputs_path) %>%
   occ_download_import()

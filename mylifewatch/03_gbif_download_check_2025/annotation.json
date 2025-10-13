@@ -71,7 +71,7 @@
       "path": "/mnt/inputs/240202131308920.zip"
     },
     {
-      "name": "nis_list",
+      "name": "nis_list_path",
       "label": "nis list file",
       "description": "zip nis list file",
       "type": "zip",

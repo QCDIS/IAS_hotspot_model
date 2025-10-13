@@ -13,17 +13,15 @@ library(maps)
 library(glue)
 library(readxl)# to rename files
 
-# Explore datasets in the package
-#list_datasets()
-
-# Explore layers in a dataset
-#list_layers() 
 
 
+inputs_path = "/mnt/inputs/"
+outputs_path <- "/mnt/outputs/"
 
-biooracle_output_dir <- "/mnt/outputs/biooracle/"
-if(!dir.exists(biooracle_output_dir)){
-  dir.create(biooracle_output_dir, recursive = TRUE)
+
+biooracle_output_path <- paste0(outputs_path,"biooracle/")
+if(!dir.exists(biooracle_output_path)){
+  dir.create(biooracle_output_path, recursive = TRUE)
 }
 
 
@@ -37,18 +35,14 @@ constraints_dec50_time_to = args$constraints_dec50_time_to
 constraints_dec100_time_from = args$constraints_dec100_time_from
 constraints_dec100_time_to = args$constraints_dec100_time_to
 
-dataset_och_variabler = "/mnt/inputs/dataset_och variabler_2025.xlsx"
-if(file.exists(dataset_och_variabler)){
-    print("File already exists, no need to download")
-}else{
-    print("Downloading file")
-    #download xlsx file with variable selection from och_variables_url
-    download.file(
-      url = och_variables_url,
-      destfile = dataset_och_variabler,
-      mode = "wb"
+dataset_och_variabler = paste0(inputs_path,"dataset_och_variabler_2025.xlsx")
+
+download_zip_data_if_not_present_and_unzip(
+    data_path = dataset_och_variabler,
+    data_url = och_variables_url,
+    dest_path = inputs_path
     )
-}
+
 ### BIO-ORACLE LAYERS
 # Explore environmental variables from Bio-Oracle
 layers.bio2 <- as.data.frame(list_layers(simplify=F) )#simplify=F if need more info
@@ -66,35 +60,14 @@ dataset_scenarios <- unique(lapply(layers.bio2$dataset_id, function(i)
   strsplit(i,"_")[[1]][2]
 ))
 
-print(paste("dataset_scenarios: ",length(dataset_scenarios)))
+print(paste("dataset_scenarios: ",dataset_scenarios))
 dataset_scenarios<- dataset_scenarios[-8]#remove mean
 dataset_scenarios_titles <- unique(layers.bio2$title)
-print(paste("dataset_scenarios_titles: ",length(dataset_scenarios_titles)))
+print(paste("dataset_scenarios_titles: "(dataset_scenarios_titles)))
 
 #get variables from par
 print("et variables from par")
 info_layer("par_mean_baseline_2000_2020_depthsurf")
-
-#layers.bio2$dataset_id[grep("_mean",layers.bio2$dataset_id)]
-
-#get variables from layer
-#layers.bio2[1,]
-#layers.bio2[1,c("title")]
-
-#testlayer <- layers.bio2$dataset_id[1]
-#testlayerspellout <- layers.bio2$title[1]
-
-
-###
-#scenario <- dataset_scenarios[1]
-#selected.datasets.nr <-grep(scenario,layers.bio2$dataset_id )
-#layers.bio2$dataset_id[selected.datasets.nr ]
-#for(i in selected.datasets.nr){
-#  print(paste(layers.bio2$title[i], layers.bio2$dataset_id[i], sep=";"))
- # print(paste(unlist(info_layer(layers.bio2$dataset_id[i])[["variables"]]["variable_name"]),collapse=";"))
-#}
-
-
 
 variable.selection <- read_excel(dataset_och_variabler)
 print(paste("variable.selection len: ",length(variable.selection)))
@@ -104,14 +77,12 @@ variable.selection <- variable.selection[!is.na(variable.selection$Final),]
 variable.selection <-variable.selection[-3,]# chl does not exist at depthmean ssp119
 print(paste("variable.selection len: ",length(variable.selection)))
 
-dec.vec <- c("", "dec50", "dec100")
+dec.vec <- c("baseline", "dec50", "dec100")
 # --- Outer scenario loop ---
-for (sel.sen in c(6:7)) {
-    scenario <- dataset_scenarios[[sel.sen]][1]
+for (scenario in dataset_scenarios){
+    print(paste("Scenario:", scenario))
     # --- Decadal loop ---
     for (dec in dec.vec[c(2, 3)]) {
-
-        ssp_scenarios <- list()
             constraints.base <- list(
             #latitude = c(25, 80),
             #longitude = c(-15, 40),
@@ -174,23 +145,20 @@ for (sel.sen in c(6:7)) {
             # --- Variable loop ---
             for (variable in strsplit(variables, ",")[[1]]) {
 #                 info_layer(dataset_id) # We get Error: 429 Too Many Requests
-                filename1_nc <- glue("{biooracle_output_dir}{dataset_id}_{variables}.nc")
-                outdir_datalayer_nc <- paste(biooracle_output_dir, "datalayer.nc/", scenario, dec, "/", sep = "")
+                filename1_nc <- glue("{biooracle_output_path}{dataset_id}_{variables}.nc")
+                outdir_datalayer_nc <- paste(biooracle_output_path, "datalayer.nc/", scenario, dec, "/", sep = "")
                 if (!dir.exists(outdir_datalayer_nc)) dir.create(outdir_datalayer_nc, recursive = TRUE)
-                outdir_datalayer_if <- paste(biooracle_output_dir, "datalayer.tif/", scenario, dec, "/", sep = "")
-                if (!dir.exists(outdir_datalayer_if)) dir.create(outdir_datalayer_if, recursive = TRUE)
                 depth <- strsplit(dataset_id, "_")[[1]][length(strsplit(dataset_id, "_")[[1]])]
-                filename_tif <- paste(outdir_datalayer_if, variable, "_", depth, ".tif", sep = "")
                 filename_nc <- paste(outdir_datalayer_nc, variable, "_", depth, ".nc", sep = "")
                 if (file.exists(filename_nc)) {
                     next
                 }
                 print(paste("file: ", filename_nc," does not exist, downloading..."))
-                a <- download_layers(dataset_id, variables = variable, constraints = constraints, directory = biooracle_output_dir)
+                a <- download_layers(dataset_id, variables = variable, constraints = constraints, directory = biooracle_output_path)
                 filename_with_ext <- basename(terra::sources(a))[1]
                 file.rename(
-                    from = glue("{biooracle_output_dir}{filename_with_ext}"),
-                    to = glue("{biooracle_output_dir}{dataset_id}_{variables}.nc")
+                    from = glue("{biooracle_output_path}{filename_with_ext}"),
+                    to = glue("{biooracle_output_path}{dataset_id}_{variables}.nc")
                 )
                 print(paste("Renaming ", filename1_nc, " to ", filename_nc))
                 file.rename(filename1_nc, filename_nc)
@@ -212,9 +180,9 @@ for (sel.sen in c(2:7)) {
     scenario <- gsub(" ", "", scenario)
     # --- Decadal loop for copying ---
     for (dec in dec.vec[c(2, 3)]) {
-        indir <- paste(biooracle_output_dir, "datalayer.nc/", dataset_scenarios[[1]][1], "/", sep = "")
+        indir <- paste(biooracle_output_path, "datalayer.nc/", dataset_scenarios[[1]][1], "/", sep = "")
         indir <- gsub(" ", "", indir)
-        outdir <- paste(biooracle_output_dir, "datalayer.nc/", scenario, dec, "/", sep = "")
+        outdir <- paste(biooracle_output_path, "datalayer.nc/", scenario, dec, "/", sep = "")
 
         f_name_dest = paste(outdir, "par_mean_mean_depthsurf.nc", sep = "")
         f_name_source = paste(indir, "par_mean_mean_depthsurf.nc", sep = "")
@@ -237,8 +205,8 @@ for (sel.sen in c(2:7)) {
 # for (sel.sen in c(4:7)) {
 #     scenario <- dataset_scenarios[[sel.sen]][1]
 #     print(paste("Renaming files for scenario:", scenario))
-#     indir <- paste(biooracle_output_dir, "datalayer.nc/", scenario, dec, "/", sep = "")
-#     outdir <- paste(biooracle_output_dir, "datalayer.tiff/", scenario, dec, "/", sep = "")
+#     indir <- paste(biooracle_output_path, "datalayer.nc/", scenario, dec, "/", sep = "")
+#     outdir <- paste(biooracle_output_path, "datalayer.tiff/", scenario, dec, "/", sep = "")
 #     if (!dir.exists(outdir)) dir.create(outdir, recursive = TRUE)
 #     print(paste("outdir:", outdir))
 #     a <- list.files(indir, pattern = "*_1.tif")

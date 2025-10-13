@@ -1,7 +1,13 @@
 library(raster)
 
-output_biooracle_dir <- "/mnt/outputs/biooracle/"
-input_biooracle_dir <- "/mnt/inputs/biooracle/"
+
+inputs_path = "/mnt/inputs/"
+outputs_path <- "/mnt/outputs/"
+
+
+output_biooracle_dir <- paste0(outputs_path,"biooracle/")
+input_biooracle_dir <- paste0(inputs_path,"biooracle/")
+
 dataset_scenarios <- list.dirs(
   paste(input_biooracle_dir, "datalayer.nc", sep = ""),
   full.names = FALSE,
