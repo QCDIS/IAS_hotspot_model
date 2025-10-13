@@ -63,7 +63,7 @@ dataset_scenarios <- unique(lapply(layers.bio2$dataset_id, function(i)
 print(paste("dataset_scenarios: ",dataset_scenarios))
 dataset_scenarios<- dataset_scenarios[-8]#remove mean
 dataset_scenarios_titles <- unique(layers.bio2$title)
-print(paste("dataset_scenarios_titles: "(dataset_scenarios_titles)))
+print(paste("dataset_scenarios_titles: "(dataset_scenarios_titles))
 
 #get variables from par
 print("et variables from par")
