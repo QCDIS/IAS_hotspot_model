@@ -36,9 +36,8 @@ for (scenario in dataset_scenarios) {
 
   # Convert to a SpatVector:
   land_vect <- vect(land)
-  plot(land_vect)
-  # Save plot to file
   png(filename = paste(plots_path, "land_polygons.png", sep = ""), width = 800, height = 600)
+  plot(land_vect)
   dev.off()
 
   # Rasterize the land polygons onto the template.
