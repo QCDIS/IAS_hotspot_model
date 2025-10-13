@@ -25,7 +25,6 @@ for (scenario in dataset_scenarios) {
   rasterpath <- paste(input_dir, "datalayer.nc/", scenario, sep = "")
   stackpath <- paste(output_dir, "rasterstacks/", scenario, "/", sep = "")
   if (!dir.exists(stackpath)) dir.create(stackpath, recursive = TRUE)
-  print(paste("Crated stackpath:", stackpath))
 
   lista.ras <- Sys.glob(paste(rasterpath, "/*.nc", sep = ""))
   layers <- rast(lista.ras)
@@ -46,9 +45,6 @@ for (scenario in dataset_scenarios) {
   land_mask <- rasterize(land_vect, template, field = 1, background = NA)
   land_mask[!is.na(land_mask)] <- 1
 
-  # Check the unique values:
-  print(unique(values(land_mask)))
-
   masked_list <- lapply(1:nlyr(layers), function(i) {
     this_layer <- layers[[i]]
     mask(this_layer, land_mask, maskvalue = 1)
@@ -67,7 +63,6 @@ for (scenario in dataset_scenarios) {
   })
   filled_layers <- rast(filled_list)
 
-  print("write raster")
   summary(values(template))
   summary(values(filled_layers[[1]]))
   writeRaster(filled_layers, paste(stackpath, "filled_layers_new.tif", sep = ""), overwrite = TRUE, filetype = "GTiff")
@@ -85,14 +80,11 @@ for (scenario in dataset_scenarios) {
   rasterstack.filled.layers.Europe.2025 <- crop(mystack, e)
 
   filename <- paste(stackpath, "/", "Biooracle.filled.layers.global2025.tif", sep = "")
-  print("save filled layers)")
   writeRaster(mystack, filename, format = "GTiff", overwrite = TRUE)
-  print(filename)
 
   filename2 <- paste(stackpath, "/", "Biooracle.filled.layers.Europe2025.tif", sep = "")
   writeRaster(rasterstack.filled.layers.Europe.2025, filename2, format = "GTiff", overwrite = TRUE)
 
-  print("save layernames")
   layernames <- names(mystack)
   save(layernames, file = paste(stackpath, "/layernames.filled.rda", sep = ""))
   rm(mystack)
