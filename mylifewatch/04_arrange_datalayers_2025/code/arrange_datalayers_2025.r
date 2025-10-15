@@ -4,8 +4,12 @@ library(sf)
 require(fBasics)
 
 # Define directories
-biooracle_dir <- "/mnt/inputs/biooracle/"
-rasterstacks_outputs <- "/mnt/outputs/"
+# --- Define file paths and output folders ---
+inputs_path = "/mnt/inputs/"
+outputs_path <- "/mnt/outputs/"
+
+biooracle_dir <- paste0(inputs_path, "biooracle/")
+rasterstacks_outputs <- outputs_path
 
 datalayer_dir = "/datalayer.tif/"
 # Get scenario folders
@@ -33,7 +37,6 @@ for (sel.sen in 1:length(dataset_scenarios)) {
     mystack <- stack(lista.ras)
     for(i in lista.ras){
         print(i)
-       #plot(raster(i))
         gc()
     }
     filename <- paste(stackpath,"/","Biooracle.global.tif", sep="")
