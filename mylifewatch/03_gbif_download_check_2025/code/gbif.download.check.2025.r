@@ -9,8 +9,8 @@ require(biooracler)
 inputs_path = "/mnt/inputs/"
 outputs_path <- "/mnt/outputs/"
 
-species_file <- paste(inputs_path,"0010903-240202131308920.csv")
-nis_list_path <- paste(inputs_path,"NIS_list_combined_Mar2025_v2.csv")
+species_file <- paste0(inputs_path,"0010903-240202131308920.csv")
+nis_list_path <- paste0(inputs_path,"NIS_list_combined_Mar2025_v2.csv")
 if (!dir.exists(nis_list_path)) {
     nis_list_url=args$nis_list_url
     download.file(nis_list_url,
