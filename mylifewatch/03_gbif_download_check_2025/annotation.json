@@ -24,7 +24,7 @@
       "label": "bio oracle dataset id",
       "description": "bio oracle dataset id",
       "type": "string",
-      "defaultValue": "tas_baseline_2000_2020_depthsurf",
+      "defaultValue": "tas_baseline_2000_2020_depthsurf"
     },
     {
       "name": "bio_oracle_time_start",
