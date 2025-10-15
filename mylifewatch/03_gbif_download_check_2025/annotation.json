@@ -13,43 +13,15 @@
       "description": "zip biooracle dir",
       "type": "zip",
       "path": "/mnt/inputs/biooracle.zip"
-    },
+    }
+  ],
+  "outputs": [
     {
       "name": "rasterstacks_outputs",
       "label": "rasterstacks outputs",
       "description": "zip rasterstacks outputs",
       "type": "zip",
-      "path": "/mnt/inputs/NIS_list_combined_Mar2025_v2.zip"
-    }
-  ],
-  "outputs": [
-    {
-      "type": "zip",
-      "name": "specie_splots_dir",
-      "path": "/mnt/outputs/speciesplots.zip",
-      "label": "specie splots dir",
-      "description": "zip species plots"
-    },
-    {
-      "type": "zip",
-      "name": "coordinates_output",
-      "path": "/mnt/outputs/coordinates_output.zip",
-      "label": "coordinates output",
-      "description": "zip coordinates output"
-    },
-    {
-      "type": "zip",
-      "name": "speciespath",
-      "path": "/mnt/outputs/species.zip",
-      "label": "speciespath",
-      "description": "zip species path"
-    },
-    {
-      "type": "zip",
-      "name": "data_table_path",
-      "path": "/mnt/outputs/data_table.zip",
-      "label": "data table path",
-      "description": "zip biooracle data table"
+      "path": "/mnt/inputs/rasterstacks.zip"
     }
   ],
   "resources": {
