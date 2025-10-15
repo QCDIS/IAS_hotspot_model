@@ -17,7 +17,7 @@
       "label": "species file url",
       "description": "url to species file",
       "type": "String",
-      "defaultValue": "https://surfdrive.surf.nl/index.php/s/Sldu8bzFvdDwZSt"
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/Sldu8bzFvdDwZSt/download"
     },
     {
       "name": "nis_list_url",
