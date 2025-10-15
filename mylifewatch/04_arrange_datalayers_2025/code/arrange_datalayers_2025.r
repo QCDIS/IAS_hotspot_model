@@ -14,7 +14,7 @@ rasterstacks_outputs <- outputs_path
 datalayer_dir = "/datalayer.tif/"
 # Get scenario folders
 dataset_scenarios <- list.dirs(
-  paste(biooracle_dir, datalayer_dir, sep = ""),
+  paste(biooracle_dir, sep = ""),
   full.names = FALSE,
   recursive = FALSE
 )
