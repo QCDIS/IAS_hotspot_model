@@ -42,10 +42,8 @@ filled_layers_file <- paste(inputs_path,"filled_layers_new.tif")
 speciespath <- paste0(outputs_path,"species/")
 if (!dir.exists(speciespath)) dir.create(speciespath, recursive = TRUE)
 
-cahche_dir <- paste(inputs_path,"cache/")
-if (!dir.exists(cahche_dir)) dir.create(cahche_dir, recursive = TRUE)
-cleanput_cache <- paste(cahche_dir, "cleaned_coordinates.rds", sep = "")
-shapefile_zip <- paste(cahche_dir, "shapefile.shp.zip", sep = "")
+cleanput_cache <- paste(inputs_path, "cleaned_coordinates.rds", sep = "")
+shapefile_zip <- paste(inputs_path , "shapefile.shp.zip", sep = "")
 
 # --- Download and unzip shapefile if needed ---
 if (file.exists(shapefile_zip)) {
