@@ -5,75 +5,19 @@
   "type": "DataAnalysing",
   "dockerImage": "gbif_download_check_2025",
   "parameters": [
-    {
-      "name": "shapefile_link",
-      "label": "shapefile_link",
-      "defaultValue": "https://gisco-services.ec.europa.eu/distribution/v2/countries/shp/CNTR_RG_01M_2020_4326.shp.zip",
-      "type": "String",
-      "description": "shapefile link"
-    },
-    {
-      "name": "bio_oracle_dataset_id",
-      "label": "bio_oracle_dataset_id",
-      "defaultValue": "tas_baseline_2000_2020_depthsurf",
-      "type": "String",
-      "description": "bio oracle dataset id"
-    },
-    {
-      "name": "bio_oracle_time_start",
-      "label": "bio_oracle_time_start",
-      "defaultValue": "2001-01-01T00:00:00Z",
-      "type": "String",
-      "description": "bio oracle time start"
-    },
-    {
-      "name": "bio_oracle_time_end",
-      "label": "bio_oracle_time_end",
-      "defaultValue": "2010-01-01T00:00:00Z",
-      "type": "String",
-      "description": "bio oracle time end"
-    },
-    {
-      "name": "bio_oracle_latitude",
-      "label": "bio_oracle_latitude",
-      "defaultValue": "10, 20",
-      "description": "bio_oracle_latitude",
-      "type": "String"
-    },
-    {
-      "name": "bio_oracle_longitude",
-      "label": "bio_oracle_longitude",
-      "defaultValue": "120, 130",
-      "description": "bio_oracle_longitude",
-      "type": "String"
-    },
-    {
-      "name": "bio_oracle_variables",
-      "label": "bio_oracle_variables",
-      "defaultValue": "tas_max, tas_min",
-      "description": "bio_oracle_variables",
-      "type": "String"
-    },
-    {
-      "name": "buffer_distance_km",
-      "label": "buffer_distance_km",
-      "defaultValue": 100,
-      "type": "Number",
-      "description": "buffer distance in km"
-    }
   ],
   "inputs": [
     {
-      "name": "species_file",
-      "label": "species_file",
-      "description": "zip species_file",
+      "name": "biooracle_dir",
+      "label": "biooracle_dir",
+      "description": "zip biooracle dir",
       "type": "zip",
-      "path": "/mnt/inputs/240202131308920.zip"
+      "path": "/mnt/inputs/biooracle.zip"
     },
     {
-      "name": "nis_list_path",
-      "label": "nis list file",
-      "description": "zip nis list file",
+      "name": "rasterstacks_outputs",
+      "label": "rasterstacks outputs",
+      "description": "zip rasterstacks outputs",
       "type": "zip",
       "path": "/mnt/inputs/NIS_list_combined_Mar2025_v2.zip"
     }

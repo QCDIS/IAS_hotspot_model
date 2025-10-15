@@ -22,9 +22,7 @@ dataset_scenarios <- list.dirs(
 
 
 # --- Scenario loop ---
-for (sel.sen in 1:length(dataset_scenarios)) {
-    #sel.sen <- 1
-    scenario <- dataset_scenarios[[sel.sen]]
+for (scenario in dataset_scenarios) {
     print(paste("Processing scenario:", scenario))
     #  outdir <- paste(dir,datalayer_dir,scenario,"/",sep="")
 
