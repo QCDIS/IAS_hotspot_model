@@ -8,20 +8,48 @@
   ],
   "inputs": [
     {
-      "name": "biooracle_dir",
-      "label": "biooracle_dir",
-      "description": "zip biooracle dir",
+      "name": "species_file",
+      "label": "species file",
+      "description": "zip species file",
       "type": "zip",
-      "path": "/mnt/inputs/biooracle.zip"
+      "path": "/mnt/inputs/240202131308920.zip"
+    },
+    {
+      "name": "nis_list_path",
+      "label": "nis list path",
+      "description": "zip nis list path",
+      "type": "zip",
+      "path": "/mnt/inputs/NIS_list_combined_Mar2025_v2.zip"
+    },
+    {
+      "name": "filled_layers_file",
+      "label": "filled layers file",
+      "description": "zip filled layers file",
+      "type": "zip",
+      "path": "/mnt/inputs/filled_layers_new.zip"
     }
   ],
   "outputs": [
     {
-      "name": "rasterstacks_outputs",
-      "label": "rasterstacks outputs",
-      "description": "zip rasterstacks outputs",
+      "name": "speciesplots",
+      "label": "species plots",
+      "description": "zip species plots",
       "type": "zip",
-      "path": "/mnt/inputs/rasterstacks.zip"
+      "path": "/mnt/inputs/speciesplots.zip"
+    },
+    {
+      "name": "coordinates_output",
+      "label": "coordinates output",
+      "description": "zip cleaned coordinates",
+      "type": "zip",
+      "path": "/mnt/inputs/cleaned_coordinates.zip"
+    },
+    {
+      "name": "speciespath",
+      "label": "specie spath",
+      "description": "zip species path",
+      "type": "zip",
+      "path": "/mnt/inputs/species.zip"
     }
   ],
   "resources": {

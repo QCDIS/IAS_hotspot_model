@@ -20,15 +20,15 @@
       "type": "zip",
       "name": "output_biooracle_dir",
       "path": "/mnt/outputs/biooracle.zip",
-      "label": "output_biooracle_dir",
+      "label": "output biooracle dir",
       "description": "zip file containing biooracle layers after focal interpolation in .tif format"
     },
     {
       "type": "zip",
       "name": "plots_path",
-      "path": "/mnt/outputs/plots_path.zip",
+      "path": "/mnt/outputs/plots.zip",
       "label": "plots path",
-      "description": "zip file containing plots of the layers before and after focal interpolation"
+      "description": "zip file containing plots"
     }
   ],
   "resources": {
