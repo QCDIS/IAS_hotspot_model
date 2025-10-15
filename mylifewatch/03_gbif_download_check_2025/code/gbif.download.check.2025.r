@@ -39,7 +39,7 @@ filtered_clean_coordinates_output_mars_2025 <- paste(coordinates_output, "filter
 filtered_clean_coordinates_output_mars_2025_2 <- paste(coordinates_output, "filtered_clean_coordinates_output_mars_2025_2.rda", sep = "")
 filtered_clean_marine_coordinates_output_mars_2025 <- paste(coordinates_output, "filtered_clean_marine_coordinates_output_mars_2025.rda", sep = "")
 filtered_clean_coordinates_mars_2024_output <- paste(coordinates_output, "filtered_clean_coordinates_mars_2024_output.rda", sep = "")
-filled_layers_file <- paste(inputs_path,"filled_layers_new.tif")
+filled_layers_file <- paste0(inputs_path,"biooracle/rasterstacks/baselinedec50/filled_layers_new.tif")
 
 speciespath <- paste0(outputs_path,"species/")
 if (!dir.exists(speciespath)) dir.create(speciespath, recursive = TRUE)
