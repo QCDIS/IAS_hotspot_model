@@ -12,7 +12,7 @@ outputs_path <- "/mnt/outputs/"
 species_file <- paste0(inputs_path,"0010903-240202131308920.csv")
 if (!file.exists(species_file)) {
     species_file_url=args$species_file_url
-        download.file(nis_list_url,
+        download.file(species_file_url,
                 destfile = paste0(inputs_path, "/0010903-240202131308920.zip"))
     unzip(paste0(inputs_path, "/0010903-240202131308920.zip"), exdir = inputs_path)
 }
