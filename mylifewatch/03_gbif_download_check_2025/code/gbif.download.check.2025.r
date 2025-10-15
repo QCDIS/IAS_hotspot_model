@@ -10,6 +10,10 @@ inputs_path = "/mnt/inputs/"
 outputs_path <- "/mnt/outputs/"
 
 species_file <- paste0(inputs_path,"0010903-240202131308920.csv")
+if (!file.exists(species_file)) {
+    species_file_url=args$species_file_url
+    download.file(species_file_url, destfile = species_file)
+}
 nis_list_path <- paste0(inputs_path,"NIS_list_combined_Mar2025_v2.csv")
 if (!dir.exists(nis_list_path)) {
     nis_list_url=args$nis_list_url

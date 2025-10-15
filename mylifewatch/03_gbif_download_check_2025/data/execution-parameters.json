@@ -6,6 +6,11 @@
       "value": "https://gisco-services.ec.europa.eu/distribution/v2/countries/shp/CNTR_RG_01M_2020_4326.shp.zip"
     },
     {
+      "name": "species_file_url",
+        "defaultValue": "https://surfdrive.surf.nl/index.php/s/Sldu8bzFvdDwZSt",
+        "value": "https://surfdrive.surf.nl/index.php/s/Sldu8bzFvdDwZSt"
+    },
+    {
       "name": "nis_list_url",
       "value": "https://surfdrive.surf.nl/index.php/s/gYcd4HD3tw3zcQB/download",
       "defaultValue": "https://surfdrive.surf.nl/index.php/s/gYcd4HD3tw3zcQB/download"

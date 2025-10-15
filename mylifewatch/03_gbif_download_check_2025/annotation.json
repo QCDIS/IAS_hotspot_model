@@ -13,6 +13,13 @@
       "defaultValue": "https://surfdrive.surf.nl/index.php/s/gYcd4HD3tw3zcQB/download"
     },
     {
+      "name": "species_file_url",
+      "label": "species file url",
+      "description": "url to species file",
+      "type": "String",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/Sldu8bzFvdDwZSt"
+    },
+    {
       "name": "nis_list_url",
       "label": "nis list url",
       "description": "url to nis list",
