@@ -1,0 +1,44 @@
+{
+  "parameters": [
+    {
+      "name": "shapefile_link",
+      "defaultValue": "https://gisco-services.ec.europa.eu/distribution/v2/countries/shp/CNTR_RG_01M_2020_4326.shp.zip",
+      "value": "https://gisco-services.ec.europa.eu/distribution/v2/countries/shp/CNTR_RG_01M_2020_4326.shp.zip"
+    },
+    {
+      "name": "nis_list_url",
+      "value": "https://surfdrive.surf.nl/index.php/s/gYcd4HD3tw3zcQB/download",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/gYcd4HD3tw3zcQB/download"
+    },
+    {
+      "name": "bio_oracle_dataset_id",
+      "defaultValue": "tas_baseline_2000_2020_depthsurf",
+      "value": "tas_baseline_2000_2020_depthsurf"
+    },
+    {
+      "name": "bio_oracle_time_start",
+      "defaultValue": "2001-01-01T00:00:00Z",
+      "value": "2001-01-01T00:00:00Z"
+    },
+    {
+      "name": "bio_oracle_time_end",
+      "defaultValue": "2010-01-01T00:00:00Z",
+      "value": "2010-01-01T00:00:00Z"
+    },
+    {
+      "name": "bio_oracle_latitude",
+      "defaultValue": "10, 20",
+      "value": "10, 20"
+    },
+    {
+      "name": "bio_oracle_longitude",
+      "defaultValue": "120, 130",
+      "value": "120, 130"
+    },
+    {
+      "name": "bio_oracle_variables",
+      "defaultValue": "tas_max, tas_min",
+      "value": "tas_max, tas_min"
+    }
+  ]
+}
