@@ -5,6 +5,62 @@
   "type": "DataAnalysing",
   "dockerImage": "gbif_download_check_2025",
   "parameters": [
+    {
+      "name": "shapefile_link",
+      "label": "shapefile link",
+      "description": "link to shapefile with country borders",
+      "type": "string",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/gYcd4HD3tw3zcQB/download",
+    },
+    {
+      "name": "nis_list_url",
+      "label": "nis list url",
+      "description": "url to nis list",
+      "type": "string",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/gYcd4HD3tw3zcQB/download",
+    },
+    {
+      "name": "bio_oracle_dataset_id",
+      "label": "bio oracle dataset id",
+      "description": "bio oracle dataset id",
+      "type": "string",
+      "defaultValue": "tas_baseline_2000_2020_depthsurf",
+    },
+    {
+      "name": "bio_oracle_time_start",
+      "label": "bio oracle time start",
+      "description": "bio oracle time start",
+      "type": "string",
+      "defaultValue": "2001-01-01T00:00:00Z"
+    },
+    {
+      "name": "bio_oracle_time_end",
+      "label": "bio oracle time end",
+      "description": "bio oracle time end",
+      "type": "string",
+      "defaultValue": "2010-01-01T00:00:00Z"
+    },
+    {
+      "name": "bio_oracle_latitude",
+      "label": "bio oracle latitude",
+      "description": "bio oracle latitude range, e.g. 10, 20",
+      "type": "string",
+      "defaultValue": "10, 20"
+    },
+    {
+      "name": "bio_oracle_longitude",
+      "label": "bio oracle longitude",
+      "description": "bio oracle longitude range, e.g. 120, 130",
+      "type": "string",
+      "defaultValue": "120, 130"
+    },
+    {
+      "name": "bio_oracle_variables",
+      "label": "bio oracle variables",
+      "description": "comma separated list of bio oracle variables, e.g. tas_max, tas_min",
+      "type": "string",
+      "defaultValue": "tas_max, tas_min"
+    }
   ],
   "inputs": [
     {
