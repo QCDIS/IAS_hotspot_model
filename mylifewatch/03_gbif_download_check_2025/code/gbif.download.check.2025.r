@@ -14,8 +14,8 @@ nis_list_path <- paste(inputs_path,"NIS_list_combined_Mar2025_v2.csv")
 if (!dir.exists(nis_list_path)) {
     nis_list_url=args$nis_list_url
     download.file(nis_list_url,
-                destfile = paste0(Stackpath, "/NIS_list_combined_Mar2025_v2.zip"))
-    unzip(paste0(Stackpath, "/NIS_list_combined_Mar2025_v2.zip"), exdir = inputs_path)
+                destfile = paste0(inputs_path, "/NIS_list_combined_Mar2025_v2.zip"))
+    unzip(paste0(inputs_path, "/NIS_list_combined_Mar2025_v2.zip"), exdir = inputs_path)
 }
 
 specie_splots_dir <- paste0(outputs_path,"speciesplots/")
