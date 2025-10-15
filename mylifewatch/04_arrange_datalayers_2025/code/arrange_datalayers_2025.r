@@ -8,13 +8,13 @@ require(fBasics)
 inputs_path = "/mnt/inputs/"
 outputs_path <- "/mnt/outputs/"
 
-biooracle_dir <- paste0(inputs_path, "biooracle/rasterstacks")
+biooracle_dir <- paste0(inputs_path, "biooracle")
 rasterstacks_outputs <- outputs_path
 
 datalayer_dir = "/datalayer.tif/"
 # Get scenario folders
 dataset_scenarios <- list.dirs(
-  paste(biooracle_dir, sep = ""),
+  paste(biooracle_dir, datalayer_dir, sep = ""),
   full.names = FALSE,
   recursive = FALSE
 )
