@@ -10,14 +10,14 @@
       "label": "shapefile link",
       "description": "link to shapefile with country borders",
       "type": "string",
-      "defaultValue": "https://surfdrive.surf.nl/index.php/s/gYcd4HD3tw3zcQB/download",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/gYcd4HD3tw3zcQB/download"
     },
     {
       "name": "nis_list_url",
       "label": "nis list url",
       "description": "url to nis list",
       "type": "string",
-      "defaultValue": "https://surfdrive.surf.nl/index.php/s/gYcd4HD3tw3zcQB/download",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/gYcd4HD3tw3zcQB/download"
     },
     {
       "name": "bio_oracle_dataset_id",
