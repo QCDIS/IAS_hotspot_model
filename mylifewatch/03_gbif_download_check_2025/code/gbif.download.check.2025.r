@@ -51,7 +51,9 @@ download_zip_data_if_not_present_and_unzip(
     data_url = args$shapefile_link,
     dest_path = inputs_path
     )
-shapefile <- list.files(".", pattern = "\\.shp$", full.names = TRUE)[1]
+shapefile <- list.files(inputs_path, pattern = "\\.shp$", full.names = TRUE)[1]
+print(paste("Using shapefile:", shapefile))
+
 
 # --- Read and clean input data ---
 input <- read.delim(species_file, header = TRUE, sep = "\t", na = c("", "NA"))
