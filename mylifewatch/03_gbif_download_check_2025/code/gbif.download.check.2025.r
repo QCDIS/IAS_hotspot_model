@@ -209,13 +209,14 @@ for (s in all.species) {
   temp <- filtered.cleanput.marine[filtered.cleanput.marine$species == s,
                                    c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
                                      "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")]
-  print("Fix names of decimal coordinates")
-  names(temp) <- c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
-                   "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")
   if(length(temp) == 0) {
     print(paste("No records for species", s, "skipping to next species"))
     next
   }
+  print("Fix names of decimal coordinates")
+  names(temp) <- c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
+                   "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")
+
   write.csv(temp, file = paste(speciespath, s, ".csv", sep = ""), row.names = FALSE)
   print(paste("wrote: ", speciespath, s, ".csv", sep = ""))
   print(paste("no positives: ", length(which(temp$occurrenceStatus == "PRESENT")), sep = ""))
