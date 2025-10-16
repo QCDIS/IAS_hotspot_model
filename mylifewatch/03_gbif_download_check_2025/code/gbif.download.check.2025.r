@@ -247,7 +247,8 @@ for (s in all.species) {
 print(paste("tab : ", tab))
 print(paste("tab len: ", length(tab)))
 # colnames(tab) <- c("species", "present.data", "absence.data", "pseudoabsence.data", "n.present", "n.absent", "comment on Taxon")
-colnames(tab) <- c("species", "species.filename", "absence.data", "pseudoabsence.data", "n.present", "n.absent", "comment on Taxon")
+colnames(tab) <- c("species", "species.filename", "pseudoabsences.marine",
+    "n.present", "n.absent", "comment on Taxon")
 write.csv2(tab, file = paste(speciespath, "data_table_mars2025.csv", sep = ""))
 print(paste("Wrote species data table to", paste(speciespath, "data_table_mars2025.csv", sep = "")))
 
