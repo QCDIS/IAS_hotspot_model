@@ -294,7 +294,7 @@ filtered.cleanput.unbox <- filtered.cleanput[-excludebox, ]
 # --- Define groups of species and generate pseudoabsences ---
 selected.species <- read.csv2(nis_list_path, sep = ",")
 cathegories <- unique(selected.species$category)
-for (my.cathegory in cathegories[-5]) {
+for (my.cathegory in cathegories) {
   my.species.list <- selected.species$Taxon.name[selected.species$category == my.cathegory]
   filtered.cleanput.subset <- filtered.cleanput.unbox[!is.na(match(filtered.cleanput.unbox$species, my.species.list)), ]
   locationsamples <- sample(1:length(filtered.cleanput.subset$gbifID), 1000, replace = FALSE)
