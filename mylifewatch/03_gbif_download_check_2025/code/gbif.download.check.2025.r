@@ -184,52 +184,71 @@ all.species <- c(all.species, "Asparagopsis armata")
 print("Prepare input files for species distribution modelling")
 selected.species <- read.csv2(nis_list_path, sep = ",")
 cathegories <- unique(selected.species$category)
-tab <- c()
+# Define column names
+tab_colnames <- c("species", "present.data", "absence.data", "pseudoabsence.data", "n.present", "n.absent", "comment on Taxon")
+tab <- data.frame(matrix(ncol = length(tab_colnames), nrow = 0))
+colnames(tab) <- tab_colnames
+
 print(paste("Number of species to process:", length(all.species)))
 print(paste("Categories:", cathegories))
 print(paste("selected.species: ", head(selected.species)))
 
 for (s in all.species) {
-  print(paste("Working on species", s))
-  comment <- "no match"
-  id <- which(!is.na(match(selected.species$Taxon.name, s)))
-  print(paste("species id:", id))
-  if (length(id) < 1) {
+    print(paste("Working on species", s))
+    comment <- "no match"
+    id <- which(!is.na(match(selected.species$Taxon.name, s)))
+    print(paste("species id:", id))
+    if (length(id) < 1) {
     print("id len <1")
     spaces_name <- strsplit(s, " ")[[1]][1]
     print(paste("Try to find with spaces_name:", spaces_name))
     id <- grep(spaces_name, selected.species$Taxon.name)
     print(paste("new species id:", id))
     comment <- selected.species$Taxon.name[id]
-  } else {
+    } else {
     print("id len ok")
     comment <- "names match"
-  }
-  print(paste("comment:", comment))
-  cat <- selected.species$category[id]
-  if (length(cat) < 1) cat <- "no_match"
-  if (length(which(filtered.cleanput.marine$species == s)) < 1) {
+    }
+    print(paste("comment:", comment))
+    cat <- selected.species$category[id]
+    if (length(cat) < 1) cat <- "no_match"
+    if (length(which(filtered.cleanput.marine$species == s)) < 1) {
     print(paste("No records for species", s, "skipping to next species"))
     next
-  }
-  temp <- filtered.cleanput.marine[filtered.cleanput.marine$species == s,
+    }
+    temp <- filtered.cleanput.marine[filtered.cleanput.marine$species == s,
                                    c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
                                      "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")]
-  names(temp) <- c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
+    names(temp) <- c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
                    "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")
 
-  write.csv(temp, file = paste(speciespath, s, ".csv", sep = ""), row.names = FALSE)
-  print(paste("wrote: ", speciespath, s, ".csv", sep = ""))
-  print(paste("no positives: ", length(which(temp$occurrenceStatus == "PRESENT")), sep = ""))
-  print(paste("no negatives: ", length(which(temp$occurrenceStatus == "ABSENT")), sep = ""))
-  my.filename <- paste(s, ".csv", sep = "")
-  my.pseudoname <- paste("pseudoabsences.marine.excludebox", cat, ".csv", sep = "")
-  tab <- rbind(tab, c(s, my.filename, my.filename, my.pseudoname,
-                      length(which(temp$occurrenceStatus == "PRESENT")),
-                      length(which(temp$occurrenceStatus == "ABSENT")), comment))
-  print(paste("my.pseudoname:", my.pseudoname))
-  print(paste("tab in loop: ", tab))
-  print(paste("tab len: ", length(tab)))
+    write.csv(temp, file = paste(speciespath, s, ".csv", sep = ""), row.names = FALSE)
+    print(paste("wrote: ", speciespath, s, ".csv", sep = ""))
+    print(paste("no positives: ", length(which(temp$occurrenceStatus == "PRESENT")), sep = ""))
+    print(paste("no negatives: ", length(which(temp$occurrenceStatus == "ABSENT")), sep = ""))
+    my.filename <- paste(s, ".csv", sep = "")
+    my.pseudoname <- paste("pseudoabsences.marine.excludebox", cat, ".csv", sep = "")
+
+
+#     tab <- rbind(tab, c(s, my.filename, my.filename, my.pseudoname,
+#                       length(which(temp$occurrenceStatus == "PRESENT")),
+#                       length(which(temp$occurrenceStatus == "ABSENT")), comment))
+
+    tab <- rbind(tab, data.frame(
+    species = s,
+    present.data = my.filename,
+    absence.data = my.filename,
+    pseudoabsence.data = my.pseudoname,
+    n.present = length(which(temp$occurrenceStatus == "PRESENT")),
+    n.absent = length(which(temp$occurrenceStatus == "ABSENT")),
+    `comment on Taxon` = comment,
+    stringsAsFactors = FALSE
+    ))
+
+
+    print(paste("my.pseudoname:", my.pseudoname))
+    print(paste("tab in loop: ", tab))
+    print(paste("tab len: ", length(tab)))
 }
 print(paste("tab : ", tab))
 print(paste("tab len: ", length(tab)))
