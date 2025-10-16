@@ -210,7 +210,6 @@ for (s in all.species) {
   if (length(cat) < 1) cat <- "no_match"
   print(paste("category:", cat))
   print(paste("filtered.cleanput.marine len:", length(filtered.cleanput.marine)))
-  print(paste("filtered.cleanput.marine:", filtered.cleanput.marine))
   print(paste("filtered.cleanput.marine species:", filtered.cleanput.marine[filtered.cleanput.marine$species]))
   if (length(which(filtered.cleanput.marine$species == s)) < 1) {
     print(paste("No records for species", s, "skipping to next species"))
@@ -219,13 +218,6 @@ for (s in all.species) {
   temp <- filtered.cleanput.marine[filtered.cleanput.marine$species == s,
                                    c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
                                      "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")]
-  print(paste("temp len:", length(temp)))
-  print(paste("temp:", temp))
-  if(length(temp) == 0) {
-    print(paste("No records for species", s, "skipping to next species"))
-    next
-  }
-  print("Fix names of decimal coordinates")
   names(temp) <- c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
                    "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")
 
