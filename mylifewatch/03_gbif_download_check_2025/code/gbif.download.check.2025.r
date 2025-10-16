@@ -117,6 +117,10 @@ ylim <- c(-40, 80)
 for (s in all.species) {
   print(paste("Plotting species", s))
   plot_filename <- paste(specie_splots_dir, s, ".jpg", sep = "")
+  if (file.exists(plot_filename)) {
+    print(paste("Plot already exists, skipping:", plot_filename))
+    next
+  }
   jpeg(plot_filename, width = 18 * (xlim[2] - xlim[1]), height = 18 * (ylim[2] - ylim[1]), pointsize = 4)
   plot(world1$geometry, xlim = xlim, ylim = ylim, col = "light grey")
   points(cleanput$decimalLongitude[cleanput$species == s], cleanput$decimalLatitude[cleanput$species == s],
@@ -210,7 +214,7 @@ for (s in all.species) {
                                    c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
                                      "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")]
   print(paste("temp len:", length(temp)))
-  print(pate("temp:", temp))
+  print(paste("temp:", temp))
   if(length(temp) == 0) {
     print(paste("No records for species", s, "skipping to next species"))
     next
