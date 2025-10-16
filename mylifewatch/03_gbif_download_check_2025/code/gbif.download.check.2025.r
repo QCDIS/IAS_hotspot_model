@@ -209,6 +209,8 @@ for (s in all.species) {
   temp <- filtered.cleanput.marine[filtered.cleanput.marine$species == s,
                                    c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
                                      "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")]
+  print(paste("temp len:", length(temp)))
+  print(pate("temp:", temp))
   if(length(temp) == 0) {
     print(paste("No records for species", s, "skipping to next species"))
     next
