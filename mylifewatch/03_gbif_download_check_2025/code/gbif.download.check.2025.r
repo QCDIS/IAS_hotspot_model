@@ -184,11 +184,7 @@ all.species <- c(all.species, "Asparagopsis armata")
 print("Prepare input files for species distribution modelling")
 selected.species <- read.csv2(nis_list_path, sep = ",")
 cathegories <- unique(selected.species$category)
-# Define column names
-tab_colnames <- c("species", "present.data", "absence.data", "pseudoabsence.data", "n.present", "n.absent", "comment on Taxon")
-tab <- data.frame(matrix(ncol = length(tab_colnames), nrow = 0))
-colnames(tab) <- tab_colnames
-
+tab <- c()
 print(paste("Number of species to process:", length(all.species)))
 print(paste("Categories:", cathegories))
 print(paste("selected.species: ", head(selected.species)))
@@ -228,27 +224,18 @@ for (s in all.species) {
     print(paste("no negatives: ", length(which(temp$occurrenceStatus == "ABSENT")), sep = ""))
     my.filename <- paste(s, ".csv", sep = "")
     my.pseudoname <- paste("pseudoabsences.marine.excludebox", cat, ".csv", sep = "")
-
-
-#     tab <- rbind(tab, c(s, my.filename, my.filename, my.pseudoname,
-#                       length(which(temp$occurrenceStatus == "PRESENT")),
-#                       length(which(temp$occurrenceStatus == "ABSENT")), comment))
-
-    tab <- rbind(tab, data.frame(
-    species = s,
-    present.data = my.filename,
-    absence.data = my.filename,
-    pseudoabsence.data = my.pseudoname,
-    n.present = length(which(temp$occurrenceStatus == "PRESENT")),
-    n.absent = length(which(temp$occurrenceStatus == "ABSENT")),
-    `comment on Taxon` = comment,
-    stringsAsFactors = FALSE
-    ))
-
-
+    print("Adding to tab: ")
+    print(paste("species:", s))
+    print(paste("my.filename:", my.filename))
     print(paste("my.pseudoname:", my.pseudoname))
-    print(paste("tab in loop: ", tab))
-    print(paste("tab len: ", length(tab)))
+    print(paste("n.present:", length(which(temp$occurrenceStatus == "PRESENT"))))
+    print(paste("n.absent:", length(which(temp$occurrenceStatus == "ABSENT"))))
+    print(paste("comment:", comment))
+
+
+    tab <- rbind(tab, c(s, my.filename, my.filename, my.pseudoname,
+                      length(which(temp$occurrenceStatus == "PRESENT")),
+                      length(which(temp$occurrenceStatus == "ABSENT")), comment))
 }
 print(paste("tab : ", tab))
 print(paste("tab len: ", length(tab)))
