@@ -330,6 +330,7 @@ for (my.cathegory in cathegories) {
     print(paste("wrote: ", speciespath, "/pseudoabsences.marine.excludebox", my.cathegory, ".csv", sep = ""))
 } # --- End category loop ---
 
+
 # --- Final plot of cleaned data ---
 filtered.cleanput <- filtered.cleanput[, c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
                                            "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")]
