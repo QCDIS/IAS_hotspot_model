@@ -161,22 +161,29 @@ jpeg(filled_layers_plot, width = 1000, height = 1000, pointsize = 10)
 plot(mask)
 print("mask plotted")
 
-observations <- unique(filtered.cleanput[, c("gbifID", "decimalLongitude", "decimalLatitude", "occurrenceStatus")])
-names(observations) <- c("ID", "Lon", "Lat", "occurrenceStatus")
-observations$Lon <- as.numeric(observations$Lon)
-observations$Lat <- as.numeric(observations$Lat)
-coord <- as.data.frame(observations[, c("Lon", "Lat")])
-names(coord) <- c("Lon", "Lat")
-observations2 <- as.data.frame(observations[, -c(2, 3)])
-points <- SpatialPointsDataFrame(coord, observations2, proj4string = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
-points2 <- extract(mask, points, sp = TRUE)
-plot(mask)
-plot(world1$geometry)
-points(points, col = ifelse(is.na(points2$layer), 2, 3))
-print(paste("Number of observations in marine environment:", length(which(!is.na(points2$layer)))))
-is.marine <- sapply(filtered.cleanput$gbifID, function(i) points2$layer[which(points2$ID == i)])
-filtered.cleanput.marine <- filtered.cleanput[!is.na(is.marine), ]
-save(filtered.cleanput.marine, file = filtered_clean_marine_coordinates_output_mars_2025)
+
+if (!file.exists(filtered_clean_marine_coordinates_output_mars_2025)) {
+    observations <- unique(filtered.cleanput[, c("gbifID", "decimalLongitude", "decimalLatitude", "occurrenceStatus")])
+    names(observations) <- c("ID", "Lon", "Lat", "occurrenceStatus")
+    observations$Lon <- as.numeric(observations$Lon)
+    observations$Lat <- as.numeric(observations$Lat)
+    coord <- as.data.frame(observations[, c("Lon", "Lat")])
+    names(coord) <- c("Lon", "Lat")
+    observations2 <- as.data.frame(observations[, -c(2, 3)])
+    points <- SpatialPointsDataFrame(coord, observations2, proj4string = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
+    points2 <- extract(mask, points, sp = TRUE)
+    plot(mask)
+    plot(world1$geometry)
+    points(points, col = ifelse(is.na(points2$layer), 2, 3))
+    print(paste("Number of observations in marine environment:", length(which(!is.na(points2$layer)))))
+    is.marine <- sapply(filtered.cleanput$gbifID, function(i) points2$layer[which(points2$ID == i)])
+    filtered.cleanput.marine <- filtered.cleanput[!is.na(is.marine), ]
+    save(filtered.cleanput.marine, file = filtered_clean_marine_coordinates_output_mars_2025)
+} else {
+    print(paste("Loading filtered clean marine coordinates file:", filtered_clean_marine_coordinates_output_mars_2025))
+    load(filtered_clean_marine_coordinates_output_mars_2025)
+}
+
 
 # --- Prepare input files for species distribution modelling ---
 all.species <- unique(filtered.cleanput.marine$species)
