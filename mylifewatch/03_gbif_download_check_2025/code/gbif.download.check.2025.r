@@ -316,7 +316,7 @@ for (my.cathegory in cathegories) {
                              "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")
     xlim <- c(-180, 180)
     ylim <- c(-60, 84)
-    test_plot_pseudoabsences = paste(path, "/speciesplots/", "testplot.pseudoabsences.", my.cathegory, ".jpg", sep = "")
+    test_plot_pseudoabsences = paste(specie_splots_dir, "testplot.pseudoabsences.", my.cathegory, ".jpg", sep = "")
     print(paste("Plotting: ", test_plot_pseudoabsences))
     jpeg(test_plot_pseudoabsences,
        width = 18 * (xlim[2] - xlim[1]), height = 18 * (ylim[2] - ylim[1]), pointsize = 4)
@@ -339,7 +339,7 @@ fac1 <- ceiling(factor / 10)
 fac2 <- factor - 10 * (fac1 - 1)
 xlim <- c(-110, 40)
 ylim <- c(-2, 68)
-testplot_file = paste(path, "speciesplots/", "testplot.CLEANPUT.SMALLER.world.mar2025.jpg", sep = "")
+testplot_file = paste(specie_splots_dir, "testplot.CLEANPUT.SMALLER.world.mar2025.jpg", sep = "")
 print(paste("Plotting: ", testplot_file))
 jpeg(testplot_file,
      width = 10 * (xlim[2] - xlim[1]), height = 10 * (ylim[2] - ylim[1]), pointsize = 4)
