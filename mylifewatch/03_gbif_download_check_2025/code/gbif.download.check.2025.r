@@ -191,7 +191,11 @@ all.species <- c(all.species, "Asparagopsis armata")
 print("Prepare input files for species distribution modelling")
 selected.species <- read.csv2(nis_list_path, sep = ",")
 cathegories <- unique(selected.species$category)
-tab <- c()
+tab_colnames <- c("species", "present.data", "absence.data", "pseudoabsence.data", "n.present", "n.absent", "comment on Taxon")
+tab <- data.frame(matrix(ncol = length(tab_colnames), nrow = 0))
+colnames(tab) <- tab_colnames
+
+
 print(paste("Number of species to process:", length(all.species)))
 print(paste("Categories:", cathegories))
 print(paste("selected.species: ", head(selected.species)))
@@ -227,6 +231,7 @@ for (s in all.species) {
 
     write.csv(temp, file = paste(speciespath, s, ".csv", sep = ""), row.names = FALSE)
     print(paste("wrote: ", speciespath, s, ".csv", sep = ""))
+
     print(paste("no positives: ", length(which(temp$occurrenceStatus == "PRESENT")), sep = ""))
     print(paste("no negatives: ", length(which(temp$occurrenceStatus == "ABSENT")), sep = ""))
     my.filename <- paste(s, ".csv", sep = "")
@@ -239,16 +244,31 @@ for (s in all.species) {
     print(paste("n.absent:", length(which(temp$occurrenceStatus == "ABSENT"))))
     print(paste("comment:", comment))
 
+#
+#     tab <- rbind(tab, c(s, my.filename, my.pseudoname,
+#                       length(which(temp$occurrenceStatus == "PRESENT")),
+#                       length(which(temp$occurrenceStatus == "ABSENT")), comment))
 
-    tab <- rbind(tab, c(s, my.filename, my.pseudoname,
-                      length(which(temp$occurrenceStatus == "PRESENT")),
-                      length(which(temp$occurrenceStatus == "ABSENT")), comment))
+    tab <- rbind(tab, data.frame(
+      species = s,
+      present.data = my.filename,
+      absence.data = my.filename,
+      pseudoabsence.data = my.pseudoname,
+      n.present = length(which(temp$occurrenceStatus == "PRESENT")),
+      n.absent = length(which(temp$occurrenceStatus == "ABSENT")),
+      `comment on Taxon` = comment,
+      stringsAsFactors = FALSE
+    ))
+
 }
 print(paste("tab : ", tab))
-print(paste("tab len: ", length(tab)))
 # colnames(tab) <- c("species", "present.data", "absence.data", "pseudoabsence.data", "n.present", "n.absent", "comment on Taxon")
-colnames(tab) <- c("species", "species.filename", "pseudoabsences.marine",
-    "n.present", "n.absent", "comment on Taxon")
+# tab_colnames <- c("species", "present.data", "absence.data", "pseudoabsence.data", "n.present", "n.absent", "comment on Taxon")
+#
+#
+# colnames(tab) <- c("species", "species.filename", "pseudoabsences.marine",
+#     "n.present", "n.absent", "comment on Taxon")
+
 write.csv2(tab, file = paste(speciespath, "data_table_mars2025.csv", sep = ""))
 print(paste("Wrote species data table to", paste(speciespath, "data_table_mars2025.csv", sep = "")))
 
