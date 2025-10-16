@@ -210,7 +210,7 @@ for (s in all.species) {
   if (length(cat) < 1) cat <- "no_match"
   print(paste("category:", cat))
   print(paste("filtered.cleanput.marine len:", length(filtered.cleanput.marine)))
-  print(paste"filtered.cleanput.marine species:", filtered.cleanput.marine[filtered.cleanput.marine$species == s]))
+  print(paste("filtered.cleanput.marine species:", filtered.cleanput.marine[filtered.cleanput.marine$species == s]))
   if (length(which(filtered.cleanput.marine$species == s)) < 1) {
     print(paste("No records for species", s, "skipping to next species"))
     next
