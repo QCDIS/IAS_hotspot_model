@@ -195,22 +195,22 @@ for (s in all.species) {
     id <- which(!is.na(match(selected.species$Taxon.name, s)))
     print(paste("species id:", id))
     if (length(id) < 1) {
-    print("id len <1")
-    spaces_name <- strsplit(s, " ")[[1]][1]
-    print(paste("Try to find with spaces_name:", spaces_name))
-    id <- grep(spaces_name, selected.species$Taxon.name)
-    print(paste("new species id:", id))
-    comment <- selected.species$Taxon.name[id]
+        print("id len <1")
+        spaces_name <- strsplit(s, " ")[[1]][1]
+        print(paste("Try to find with spaces_name:", spaces_name))
+        id <- grep(spaces_name, selected.species$Taxon.name)
+        print(paste("new species id:", id))
+        comment <- selected.species$Taxon.name[id]
     } else {
-    print("id len ok")
-    comment <- "names match"
+        print("id len ok")
+        comment <- "names match"
     }
     print(paste("comment:", comment))
     cat <- selected.species$category[id]
     if (length(cat) < 1) cat <- "no_match"
     if (length(which(filtered.cleanput.marine$species == s)) < 1) {
-    print(paste("No records for species", s, "skipping to next species"))
-    next
+        print(paste("No records for species", s, "skipping to next species"))
+        next
     }
     temp <- filtered.cleanput.marine[filtered.cleanput.marine$species == s,
                                    c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
