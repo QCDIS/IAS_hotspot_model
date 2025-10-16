@@ -10,19 +10,17 @@ inputs_path = "/mnt/inputs/"
 outputs_path <- "/mnt/outputs/"
 
 species_file <- paste0(inputs_path,"0010903-240202131308920.csv")
-if (!file.exists(species_file)) {
-    species_file_url=args$species_file_url
-        download.file(species_file_url,
-                destfile = paste0(inputs_path, "/0010903-240202131308920.zip"))
-    unzip(paste0(inputs_path, "/0010903-240202131308920.zip"), exdir = inputs_path)
-}
+download_zip_data_if_not_present_and_unzip(
+    data_path = species_file,
+    data_url = args$species_file_url,
+    dest_path = inputs_path
+    )
 nis_list_path <- paste0(inputs_path,"NIS_list_combined_Mar2025_v2.csv")
-if (!dir.exists(nis_list_path)) {
-    nis_list_url=args$nis_list_url
-    download.file(nis_list_url,
-                destfile = paste0(inputs_path, "/NIS_list_combined_Mar2025_v2.zip"))
-    unzip(paste0(inputs_path, "/NIS_list_combined_Mar2025_v2.zip"), exdir = inputs_path)
-}
+download_zip_data_if_not_present_and_unzip(
+    data_path = nis_list_path,
+    data_url = args$nis_list_url,
+    dest_path = inputs_path
+    )
 
 specie_splots_dir <- paste0(outputs_path,"speciesplots/")
 if (!dir.exists(specie_splots_dir)) dir.create(specie_splots_dir, recursive = TRUE)
@@ -48,14 +46,11 @@ cleanput_cache <- paste(inputs_path, "cleaned_coordinates.rds", sep = "")
 shapefile_zip <- paste(inputs_path , "shapefile.shp.zip", sep = "")
 
 # --- Download and unzip shapefile if needed ---
-if (file.exists(shapefile_zip)) {
-  print(paste("Shapefile zip file already exists:", shapefile_zip))
-} else {
-  print(paste("Shapefile zip file does not exist, will download to:", shapefile_zip))
-  shapefile_link <- args$shapefile_link
-  download.file(shapefile_link, destfile = shapefile_zip, mode = "wb")
-}
-unzip(shapefile_zip, exdir = ".")
+download_zip_data_if_not_present_and_unzip(
+    data_path = shapefile_zip,
+    data_url = args$shapefile_link,
+    dest_path = inputs_path
+    )
 shapefile <- list.files(".", pattern = "\\.shp$", full.names = TRUE)[1]
 
 # --- Read and clean input data ---
