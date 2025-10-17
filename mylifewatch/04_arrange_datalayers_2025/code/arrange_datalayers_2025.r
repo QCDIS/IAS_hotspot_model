@@ -25,7 +25,7 @@ for (scenario in dataset_scenarios) {
     print(paste("Processing scenario:", scenario))
     #  outdir <- paste(dir,datalayer_dir,scenario,"/",sep="")
 
-    rasterpath <- biooracle_dir
+    rasterpath <- paste(biooracle_dir,scenario,"/",sep="")
     stackpath <- paste(rasterstacks_outputs,"/rasterstacks/",scenario,"/",sep="")
     if (!dir.exists(stackpath)) dir.create(stackpath, recursive = TRUE)
 #
