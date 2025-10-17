@@ -124,7 +124,7 @@ biooracle_filled_layers = paste(baseline_path,"/Biooracle.filled.layers.global20
 
 Stack <- stack(biooracle_filled_layers) #"globalStack.rda"#"globalStack.rda" or "europeStack.rda"
 
-layernames_path <- paste(baseline_path,"/layernames",".rda" ,sep ="")
+layernames_path <- paste(baseline_path,"/layernames.filled",".rda" ,sep ="")
 load(layernames_path)
 names(Stack) <- layernames
 
