@@ -55,8 +55,8 @@
       "defaultValue": "https://surfdrive.surf.nl/index.php/s/MijCe0RvTpexGWi/download"
     },
     {
-      "name": "SpeciespathRaw_url",
-      "label": "SpeciespathRaw_url",
+      "name": "speciespathRaw_url",
+      "label": "speciespathRaw_url",
       "description": "SpeciespathRaw url",
       "type": "String",
       "defaultValue": "https://surfdrive.surf.nl/index.php/s/YeTn0U9TCPKFniI/download"
