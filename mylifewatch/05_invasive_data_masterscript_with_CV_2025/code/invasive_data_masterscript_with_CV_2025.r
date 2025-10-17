@@ -38,7 +38,7 @@ Stackpath <- paste(biooracle_path,"/baseline", sep="")
 if (!dir.exists(Stackpath)) dir.create(Stackpath, recursive = TRUE)
 
 
-data_table_path <- paste(inputs_path, "data_table.csv", sep="")
+data_table_path <- paste(inputs_path, "species/data_table.csv", sep="")
 # If data.table is found download it from data_table_url
 download_zip_data_if_not_present_and_unzip(
     data_path = data_table_path,
