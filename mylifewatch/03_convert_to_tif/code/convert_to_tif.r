@@ -5,7 +5,7 @@ inputs_path = "/mnt/inputs/"
 outputs_path <- "/mnt/outputs/"
 
 
-output_biooracle_dir <- paste0(outputs_path,"biooracle/")
+converted_biooracle_dir <- paste0(outputs_path,"biooracle/")
 input_biooracle_dir <- paste0(inputs_path,"biooracle/")
 
 dataset_scenarios <- list.dirs(
@@ -16,7 +16,7 @@ dataset_scenarios <- list.dirs(
 
 for (scenario in dataset_scenarios) {
     nc_dir <- paste(input_biooracle_dir, "datalayer.nc/", scenario, "/", sep = "")
-    tif_dir <- paste(output_biooracle_dir, "datalayer.tif/", scenario, "/", sep = "")
+    tif_dir <- paste(converted_biooracle_dir, "datalayer.tif/", scenario, "/", sep = "")
     if (!dir.exists(tif_dir)) dir.create(tif_dir, recursive = TRUE)
     nc_files <- list.files(nc_dir, pattern = "\\.nc$", full.names = TRUE)
     for (nc_file in nc_files) {

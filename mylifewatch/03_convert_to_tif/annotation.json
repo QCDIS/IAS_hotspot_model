@@ -18,9 +18,9 @@
   "outputs": [
     {
       "type": "zip",
-      "name": "output_biooracle_dir",
+      "name": "converted_biooracle_dir",
       "path": "/mnt/outputs/biooracle.zip",
-      "label": "output_biooracle_dir",
+      "label": "converted_biooracle_dir",
       "description": "zip file containing biooracle layers in tif format"
     }
   ],
