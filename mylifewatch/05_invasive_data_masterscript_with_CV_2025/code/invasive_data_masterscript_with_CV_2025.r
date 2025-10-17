@@ -148,7 +148,6 @@ for(i in seq_along(Data.table$species[-1])) {
                                    species = species,
                                    stack = Stack,
                                    speciespath = speciespathRaw,
-                                   stackpath = rasterstacks_path,
                                    plotpath = Plotpath,
                                    outpath = Outpath)
     species.data <- species.data.list[["complete.points"]]
