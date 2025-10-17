@@ -1,31 +1,3 @@
-predict.maps.local <- function(species,modelpath){
-  #my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
-  if (!file.exists(modelpath)) {
-    msg = paste("Model file not found:", modelpath)
-    print(msg)
-    warning(msg)
-    return(NULL)
-  }
-  load(modelpath)
-  model <- rf.output$RF.selected
-  map<-predict(bar, model, type="prob")
-  map <- 1-map # to get probability of presence
-
-
-
- # png(paste(plotpath,"/",species, "B.png",sep=""),  width = 180, height = 180, units = "mm", res=1200)
- # plot(map2,col=colors, breaks = brk)
- # plot(shape2,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
- #  dev.off()
-  #png(paste(plotpath,"/C.",species, ".png",sep=""),  width = 180, height = 180, units = "mm", res=6000)
-  # plot(map,col=colors)
-  # plot(shape.ecoregions,add = TRUE, xlim=xlim, ylim=ylim, border = 1, lwd = 0.1)
-
-   #dev.off()
-
-   return(map)
-}
-
 require(raster)
 #require(rgdal)
 require(zip)
@@ -41,7 +13,6 @@ library(tools)
 ### Prepared fro SE-analytics Mars 2020
 ########################################################################################
 
-#suffixes <- c("",".no.chlora",".no.chlora.delim")
 suffixes <- c(".marine.new.base")#c(".marine")
 suffix <- suffixes[1]
 
@@ -49,69 +20,47 @@ inputs_path = "/mnt/inputs/"
 
 # Paths to folders where shapefiels are stored describing ICES areas. Used as overlays for plots only.
 ICESpath <- paste(inputs_path,"ICES_areas", sep="")
-if (!dir.exists(ICESpath)){
-    ICESpath_url=args$ICESpath_url
-    print(paste("Downloading ICES_areas:", ICESpath_url))
-    destfile = paste0(ICESpath, ".zip")
-    download.file(ICESpath_url, destfile = destfile)
-    unzip(destfile, exdir = "/mnt/inputs/")
-    # Delete zip file to save space
-    file.remove(destfile)
-}
+download_zip_data_if_not_present_and_unzip(
+    data_path = ICESpath,
+    data_url = args$ICESpath_url,
+    dest_path = inputs_path
+    )
 ICESecopath <- paste(inputs_path,"ICES_ecoregions", sep="")
-if (!dir.exists(ICESecopath)){
-    ICESecopath_url=args$ICESecopath_url
-    destfile = paste0(ICESecopath, ".zip")
-    print(paste("Downloading ICES_ecoregions:", ICESecopath_url))
-    download.file(ICESecopath_url, destfile = destfile)
-    unzip(destfile, exdir = inputs_path)
-    file.remove(destfile)
-}
+download_zip_data_if_not_present_and_unzip(
+    data_path = ICESecopath,
+    data_url = args$ICESecopath_url,
+    dest_path = inputs_path
+    )
 
 #Folder where the rasterstacks are stored
-biooracle_dir <- paste(inputs_path,"biooracle", sep="")
-Stackpath <- paste(biooracle_dir,"/baseline", sep="")
+biooracle_path <- paste(inputs_path,"biooracle", sep="")
+Stackpath <- paste(biooracle_path,"/baseline", sep="")
 if (!dir.exists(Stackpath)) dir.create(Stackpath, recursive = TRUE)
 
 
 data_table_path <- paste(inputs_path, "data_table.csv", sep="")
 # If data.table is found download it from data_table_url
-if (!file.exists(data_table_path)){
-    data_table_url=args$data_table_url
-    data_table_path_no_ext <- file_path_sans_ext(data_table_path)
-    destfile = paste0(data_table_path_no_ext, ".zip")
-    print(paste("Downloading data_table:", data_table_url))
-    download.file(data_table_url, destfile = destfile)
-    before <- list.files(inputs_path, full.names = FALSE, recursive = FALSE)
-    print(paste("before: ", before))
-    unzip(destfile, exdir = inputs_path)
-    after <- list.files(inputs_path, full.names = FALSE, recursive = FALSE)
-    print(paste("after: ", after))
-    new_folder <- setdiff(after, before)
-    print(paste("new_folder: ", new_folder))
-    # Rename to data_table_path
-    file.rename(paste0(inputs_path, new_folder), data_table_path)
-    file.remove(destfile)
-}
-
+download_zip_data_if_not_present_and_unzip(
+    data_path = data_table_path,
+    data_url = args$data_table_url
+    dest_path = inputs_path
+    )
 
 #### traffic patn may not be used here
 traffic_path <- paste(inputs_path, "traffic_layers", sep="")
-if (!dir.exists(traffic_path)){
-    ais_shipping_density_url=args$ais_shipping_density_url
-    destfile = paste0(traffic_path, ".zip")
-    download.file(ais_shipping_density_url, destfile = destfile)
-    unzip(destfile, exdir = traffic_path)
-    file.remove(destfile)
-}
+download_zip_data_if_not_present_and_unzip(
+    data_path = traffic_path,
+    data_url = args$ais_shipping_density_url,
+    dest_path = inputs_path
+    )
 
 
 stringsAsFactors = F
 #Folder with the original rasterdata
 
 outputs_path = "/mnt/outputs/"
-speciespath <- paste(outputs_path, "invasive_species/", sep="")
-if (!dir.exists(speciespath)) dir.create(speciespath, recursive = TRUE)
+invasive_species_path <- paste(outputs_path, "invasive_species/", sep="")
+if (!dir.exists(invasive_species_path)) dir.create(invasive_species_path, recursive = TRUE)
 
 #This folder contains files describing the cross validation scheme for each species
 
@@ -772,7 +721,7 @@ write.csv2(as.data.frame(all.AUC),file = all_AUC_path )
 # dec.vec <- c("", "dec50", "dec100")
 
 dataset_scenarios <- list.dirs(
-  paste(biooracle_dir, sep = ""),
+  paste(rasterstacks_path, sep = ""),
   full.names = FALSE,
   recursive = FALSE
 )
@@ -785,7 +734,7 @@ for (sel.sen in 1:length(dataset_scenarios)) {
         rastermappath_scenario <- paste(rastermappath,scenario,sep ="")
         if (!dir.exists(rastermappath_scenario)) dir.create(rastermappath_scenario)
 
-        Biooracle_scenario_path <- paste(biooracle_dir,"/",scenario,"/",sep="")
+        Biooracle_scenario_path <- paste(rasterstacks_path,"/",scenario,"/",sep="")
         Biooracle.filled.layers.global = paste(Biooracle_scenario_path,"Biooracle.filled.layers.global2025",".tif", sep="")
         print(paste("Loading raster stack from:", Biooracle.filled.layers.global))
         if (!file.exists(Biooracle.filled.layers.global)) {
@@ -794,7 +743,7 @@ for (sel.sen in 1:length(dataset_scenarios)) {
         }
         Stack <- stack(Biooracle.filled.layers.global)
 
-        Stackpath.base <- paste(biooracle_dir,"/baseline", sep="/")
+        Stackpath.base <- paste(rasterstacks_path,"/baselinedec50", sep="/")
         layernames_path <- paste(Stackpath.base,"/layernames",".rda" ,sep ="")
         load(layernames_path)
         # Check lengths before assignment

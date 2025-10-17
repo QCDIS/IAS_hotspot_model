@@ -269,9 +269,9 @@ print(paste("tab : ", tab))
 #
 # colnames(tab) <- c("species", "species.filename", "pseudoabsences.marine",
 #     "n.present", "n.absent", "comment on Taxon")
-data_table_mars2025 = paste(speciespath, "data_table_mars2025.csv", sep = "")
-write.csv2(tab, file = data_table_mars2025)
-print(paste("Wrote species data table to", paste(speciespath, "data_table_mars2025.csv", sep = "")))
+data_table_path = paste(speciespath, "data_table.csv", sep = "")
+write.csv2(tab, file = data_table_path)
+print(paste("Wrote species data table to", paste(speciespath, "data_table.csv", sep = "")))
 
 # --- Define a box to exclude pseudoabsences ---
 filtered.cleanput <- filtered.cleanput.marine
