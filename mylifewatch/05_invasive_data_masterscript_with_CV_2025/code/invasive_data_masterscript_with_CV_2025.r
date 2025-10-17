@@ -253,6 +253,7 @@ stats <- c()
 species.stats = paste(outputs_path,"species.stats.rda", sep="")
 for(i in seq_along(Data.table$species[-1])) {
     species <- Data.table$species[-1][i]
+    print(paste("species: ", species))
     species_indata_file =  paste(Outpath,species,"_indata.csv", sep="")
     if (file.exists(species_indata_file)) {
 #         print(paste("File already exists:", species_indata_file))
