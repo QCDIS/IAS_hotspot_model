@@ -1,0 +1,44 @@
+{
+  "parameters": [
+    {
+      "name": "data_table_url",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/DNqTYAyQdaD5gbh/download",
+      "value": "https://surfdrive.surf.nl/index.php/s/DNqTYAyQdaD5gbh/download"
+    },
+    {
+      "name": "ais_shipping_density_url",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/mRsQEzzJma7lGTc/download",
+      "value": "https://surfdrive.surf.nl/index.php/s/mRsQEzzJma7lGTc/download"
+    },
+    {
+      "name": "biooracle_filled_layers_url",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/K1a5zyNlKHIr0rD/download",
+      "value": "https://surfdrive.surf.nl/index.php/s/K1a5zyNlKHIr0rD/download"
+    },
+    {
+      "name": "ICESpath_url",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/MzIMedyFZbdV1Hh/download",
+      "value": "https://surfdrive.surf.nl/index.php/s/MzIMedyFZbdV1Hh/download"
+    },
+    {
+      "name": "ICESecopath_url",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/sgjj0HCYLnjJ0AO/download",
+      "value": "https://surfdrive.surf.nl/index.php/s/sgjj0HCYLnjJ0AO/download"
+    },
+    {
+      "name": "data_table_url",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/DNqTYAyQdaD5gbh",
+      "value": "https://surfdrive.surf.nl/index.php/s/DNqTYAyQdaD5gbh"
+    },
+    {
+      "name": "layernames_url",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/MijCe0RvTpexGWi/download",
+      "value": "https://surfdrive.surf.nl/index.php/s/MijCe0RvTpexGWi/download"
+    },
+    {
+      "name": "SpeciespathRaw_url",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/YeTn0U9TCPKFniI/download",
+      "value": "https://surfdrive.surf.nl/index.php/s/YeTn0U9TCPKFniI/download"
+    }
+  ]
+}
