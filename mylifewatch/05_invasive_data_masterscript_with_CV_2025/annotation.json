@@ -82,7 +82,7 @@
       "label": "data table path",
       "description": "zip species path dir",
       "type": "zip",
-      "path": "/mnt/inputs/data_table.zip"
+      "path": "/mnt/inputs/species/data_table.zip"
     },
     {
       "name": "rasterstacks_path",
