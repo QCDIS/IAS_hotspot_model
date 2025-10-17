@@ -33,7 +33,8 @@ download_zip_data_if_not_present_and_unzip(
     )
 
 #Folder where the rasterstacks are stored
-rasterstacks_path <- paste(inputs_path,"rasterstacks", sep="")
+biooracle_path <- paste(inputs_path,"biooracle/", sep="")
+rasterstacks_path <- paste(biooracle_path,"rasterstacks", sep="")
 baseline_path <- paste(rasterstacks_path,"/baselinedec50", sep="")
 
 
