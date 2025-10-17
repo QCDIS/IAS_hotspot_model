@@ -7,7 +7,7 @@ require(fBasics)
 #############################################################
 ################### read and extract rasterdata  ############
 #############################################################
-read.and.extract <- function(data.table,species,stack, speciespath,stackpath,plotpath,outpath){
+read.and.extract <- function(data.table,species,stack, speciespath,plotpath,outpath){
   #print(species)
   presence <- data.table$present.data[which(data.table$species == species)]
   #print(head(presence))
@@ -85,31 +85,7 @@ read.and.extract <- function(data.table,species,stack, speciespath,stackpath,plo
   }
   points<-SpatialPointsDataFrame(coord,
                                  points.all, proj4string=CRS("+init=epsg:4326"))
-  
-  
-  
-  
-  ## load rasterdata
-  # "globalStack.rda" or "europeStack.rda"
-  #load(paste(stackpath,stack, sep="/"))
-  # testplot
-  # xlim <- c(extent(points)[1],extent(points)[2]) + c(-0.01, 0.01)
-  # ylim <- c(extent(points)[3],extent(points)[4]) + c(-0.01, 0.01)
-  # extent(var2)
-  # xlim2 <- extent(var2)[1:2]
-  # ylim2 <- extent(var2)[3:4]
-  #plot(mean(var2, na.rm=T), xlim=xlim2, ylim=ylim2)
-  # proj4string(points)
-  # proj4string(var2)
-  # extract raster data for all points
-  #if(stack ==  "globalStack.rda"){
-  #  points2<-extract(var, points, sp=TRUE)#t
-  #  rm(var)
-  #}
-  #if(stack ==  "europeStack.rda"){
-  #  points2<-extract(var2, points, sp=TRUE)#t
-  #  rm(var2)
-  #}
+
   points2<-extract(stack, points, sp=TRUE)
   head(points2)
   
