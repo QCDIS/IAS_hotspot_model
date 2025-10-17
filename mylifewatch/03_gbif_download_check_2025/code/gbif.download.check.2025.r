@@ -283,8 +283,10 @@ points(filtered.cleanput$decimalLongitude[-excludebox], filtered.cleanput$decima
 filtered.cleanput.unbox <- filtered.cleanput[-excludebox, ]
 
 # --- Define groups of species and generate pseudoabsences ---
+print(paste("Loading NIS list from:", nis_list_path))
 selected.species <- read.csv2(nis_list_path, sep = ",")
 cathegories <- unique(selected.species$category)
+print(paste("cathegories: ", cathegories))
 for (my.cathegory in cathegories) {
     my.species.list <- selected.species$Taxon.name[selected.species$category == my.cathegory]
     filtered.cleanput.subset <- filtered.cleanput.unbox[!is.na(match(filtered.cleanput.unbox$species, my.species.list)), ]
