@@ -13,7 +13,7 @@ read.and.extract.local <- function(data.table,species,stack, speciespath,plotpat
   #
   presence_path = paste(speciespath,presence,sep="/")
   if (!file.exists(presence_path)){
-    stop(paste("Presence file not found for species:", species))
+    stop(paste("Presence file not found :", presence_path))
   }
   print(paste("Reading presence data from:", presence_path))
   present.data <-read.csv(presence_path, stringsAsFactors = F)

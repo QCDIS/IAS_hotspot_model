@@ -246,11 +246,6 @@ for (s in all.species) {
     print(paste("n.absent:", length(which(temp$occurrenceStatus == "ABSENT"))))
     print(paste("comment:", comment))
 
-#
-#     tab <- rbind(tab, c(s, my.filename, my.pseudoname,
-#                       length(which(temp$occurrenceStatus == "PRESENT")),
-#                       length(which(temp$occurrenceStatus == "ABSENT")), comment))
-
     tab <- rbind(tab, data.frame(
       species = s,
       present.data = my.filename,
