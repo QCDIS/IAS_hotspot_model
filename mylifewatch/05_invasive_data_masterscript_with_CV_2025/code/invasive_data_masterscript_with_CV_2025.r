@@ -48,6 +48,13 @@ download_zip_data_if_not_present_and_unzip(
     dest_path = traffic_path
     )
 
+speciespathRaw <- paste(inputs_path ,"speciesIndata", sep ="/")
+download_zip_data_if_not_present_and_unzip(
+    data_path = speciespathRaw,
+    data_url = args$speciespathRaw_url,
+    dest_path = inputs_path
+    )
+
 
 stringsAsFactors = F
 #Folder with the original rasterdata
@@ -115,13 +122,6 @@ species = Data.table$species[2] # Ficopomatus enigmaticus  "Neogobius melanostom
 biooracle_filled_layers = paste(rasterstacks_path,"/Biooracle.filled.layers.global2025",".tif", sep="")
 
 Stack <- stack(biooracle_filled_layers) #"globalStack.rda"#"globalStack.rda" or "europeStack.rda"
-
-speciespathRaw <- paste(inputs_path ,"speciesIndata", sep ="/")
-download_zip_data_if_not_present_and_unzip(
-    data_path = speciespathRaw,
-    data_url = args$speciespathRaw_url,
-    dest_path = inputs_path
-    )
 
 layernames_path <- paste(rasterstacks_path,"/layernames",".rda" ,sep ="")
 load(layernames_path)
