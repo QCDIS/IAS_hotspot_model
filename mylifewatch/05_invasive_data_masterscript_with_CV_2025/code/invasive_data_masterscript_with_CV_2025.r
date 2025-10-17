@@ -42,7 +42,7 @@ data_table_path <- paste(inputs_path, "data_table.csv", sep="")
 # If data.table is found download it from data_table_url
 download_zip_data_if_not_present_and_unzip(
     data_path = data_table_path,
-    data_url = args$data_table_url
+    data_url = args$data_table_url,
     dest_path = inputs_path
     )
 
