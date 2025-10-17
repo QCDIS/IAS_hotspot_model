@@ -39,12 +39,6 @@ rasterstacks_path <- paste(biooracle_path,"/rasterstacks/baselinec50", sep="")
 
 
 data_table_path <- paste(inputs_path, "species/data_table.csv", sep="")
-# If data.table is found download it from data_table_url
-download_zip_data_if_not_present_and_unzip(
-    data_path = data_table_path,
-    data_url = args$data_table_url,
-    dest_path = inputs_path
-    )
 
 #### traffic patn may not be used here
 traffic_path <- paste(inputs_path, "traffic_layers", sep="")
@@ -119,21 +113,6 @@ species = Data.table$species[2] # Ficopomatus enigmaticus  "Neogobius melanostom
 # Define which stack to used when extracting environmental data-
 # not using alternative rasterstacks
 biooracle_filled_layers = paste(rasterstacks_path,"/Biooracle.filled.layers.global2025",".tif", sep="")
-if (!file.exists(biooracle_filled_layers)) {
-    biooracle_filled_layers_url=args$biooracle_filled_layers_url
-    print(paste("Downloading raster stack from:", biooracle_filled_layers_url))
-    data_table_path_no_ext <- file_path_sans_ext(biooracle_filled_layers)
-    destfile = paste0(data_table_path_no_ext, ".zip")
-    options(timeout = 600)
-    download.file(biooracle_filled_layers_url, destfile = destfile)
-    before <- list.files(rasterstacks_path, full.names = FALSE, recursive = FALSE)
-    unzip(destfile, exdir = rasterstacks_path)
-    after <- list.files(rasterstacks_path, full.names = FALSE, recursive = FALSE)
-    new_folder <- setdiff(after, before)
-
-    file.rename(paste0(rasterstacks_path, "/",new_folder), biooracle_filled_layers)
-    file.remove(destfile)
-}
 
 Stack <- stack(biooracle_filled_layers) #"globalStack.rda"#"globalStack.rda" or "europeStack.rda"
 
