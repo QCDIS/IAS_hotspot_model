@@ -1,5 +1,7 @@
 read.and.extract.local <- function(data.table,species,stack, speciespath,plotpath,outpath){
-  #print(species)
+  if (!dir.exists(speciespath)){
+    stop(paste("Species data path not found:", speciespath))
+  }
   presence <- data.table$present.data[which(data.table$species == species)]
   #print(head(presence))
   absence <- data.table$present.data[which(data.table$species == species)]
@@ -8,14 +10,22 @@ read.and.extract.local <- function(data.table,species,stack, speciespath,plotpat
   #pseudoabsence <- strsplit(pseudoabsence, ":")[[1]]
   #print(head(pseudoabsence))
   #
-  present.data <-read.csv(paste(speciespath,presence,sep="/"), stringsAsFactors = F)
+  presence_path = paste(speciespath,presence,sep="/")
+  if (!file.exists(presence_path)){
+    stop(paste("Presence file not found for species:", species))
+  }
+  present.data <-read.csv(presence_path, stringsAsFactors = F)
   present.data <- present.data[which(present.data$occurrenceStatus == "PRESENT"),]
   names(present.data)[1] <-"ID"
   present.data$occurrenceStatus <- "present"
 
   if(is.na(absence)){absence <- ""}
   if(!absence==""){
-    absent.data <-read.csv(paste(speciespath,absence,sep="/"), stringsAsFactors = F)
+    absent_path = paste(speciespath,absence,sep="/")
+    if (!file.exists(absent_path)){
+      stop(paste("Absence file not found for species:", species))
+    }
+    absent.data <-read.csv(absent_path, stringsAsFactors = F)
     absent.data <- absent.data[which(absent.data$occurrenceStatus == "ABSENT"),]
     names(absent.data)[1] <-"ID"
     if(length(absent.data$ID) >0){  absent.data$occurrenceStatus <- "absent" }
