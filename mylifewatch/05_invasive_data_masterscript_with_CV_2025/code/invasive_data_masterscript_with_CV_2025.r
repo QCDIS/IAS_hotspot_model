@@ -33,8 +33,6 @@ download_zip_data_if_not_present_and_unzip(
     )
 
 #Folder where the rasterstacks are stored
-rasterstacks/baselinedec50/
-
 rasterstacks_path <- paste(inputs_path,"rasterstacks", sep="")
 baseline_path <- paste(rasterstacks_path,"/baselinedec50", sep="")
 
