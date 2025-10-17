@@ -28,7 +28,8 @@ for (scenario in dataset_scenarios) {
     rasterpath <- paste(biooracle_dir,scenario,"/",sep="")
     stackpath <- paste(rasterstacks_outputs,"/rasterstacks/",scenario,"/",sep="")
     if (!dir.exists(stackpath)) dir.create(stackpath, recursive = TRUE)
-#
+
+    print(paste("Raster path:", rasterpath))
     lista.ras<- Sys.glob(paste(rasterpath,"/*",".tif",sep=""))
     print(paste("Number of raster files found:", length(lista.ras)))
     mystack <- stack(lista.ras)
