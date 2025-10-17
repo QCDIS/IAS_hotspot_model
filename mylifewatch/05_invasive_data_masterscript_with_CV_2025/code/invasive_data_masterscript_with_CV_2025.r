@@ -251,6 +251,7 @@ stringsAsFactors= FALSE
 
 stats <- c()
 species.stats = paste(outputs_path,"species.stats.rda", sep="")
+print(paste("Data.table$species: ",Data.table$species))
 for(i in seq_along(Data.table$species[-1])) {
     species <- Data.table$species[-1][i]
     print(paste("species: ", species))

@@ -191,6 +191,7 @@ all.species <- c(all.species, "Asparagopsis armata")
 print("Prepare input files for species distribution modelling")
 selected.species <- read.csv2(nis_list_path, sep = ",")
 cathegories <- unique(selected.species$category)
+
 tab_colnames <- c("species", "present.data", "absence.data", "pseudoabsence.data", "n.present", "n.absent", "comment on Taxon")
 tab <- data.frame(matrix(ncol = length(tab_colnames), nrow = 0))
 colnames(tab) <- tab_colnames
