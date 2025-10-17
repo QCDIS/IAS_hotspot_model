@@ -3,7 +3,7 @@ read.and.extract.local <- function(data.table,species,stack, speciespath,plotpat
     stop(paste("Species data path not found:", speciespath))
   }
   presence <- data.table$present.data[which(data.table$species == species)]
-  #print(head(presence))
+  print(head(presence))
   absence <- data.table$present.data[which(data.table$species == species)]
   # print(head(absence))
   pseudoabsence <- data.table$pseudoabsence.data[which(data.table$species == species)]
