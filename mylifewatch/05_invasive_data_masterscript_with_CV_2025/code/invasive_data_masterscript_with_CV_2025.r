@@ -49,6 +49,7 @@ download_zip_data_if_not_present_and_unzip(
     )
 
 speciespathRaw <- paste(inputs_path ,"speciesIndata", sep ="")
+print(paste("Getting species data path:", args$speciespathRaw_url))
 download_zip_data_if_not_present_and_unzip(
     data_path = speciespathRaw,
     data_url = args$speciespathRaw_url,
