@@ -11,7 +11,7 @@ inputs_path = "/mnt/inputs/"
 outputs_path <- "/mnt/outputs/"
 
 input_dir <- paste0(inputs_path, "biooracle/")
-output_dir <- paste0(outputs_path, "biooracle/")
+biooracle_path <- paste0(outputs_path, "biooracle/")
 plots_path <- paste0(outputs_path, "plots/")
 if (!dir.exists(plots_path)) dir.create(plots_path, recursive = TRUE)
 
@@ -23,7 +23,7 @@ dataset_scenarios <- list.dirs(
 
 for (scenario in dataset_scenarios) {
   rasterpath <- paste(input_dir, "datalayer.nc/", scenario, sep = "")
-  stackpath <- paste(output_dir, "rasterstacks/", scenario, "/", sep = "")
+  stackpath <- paste(biooracle_path, "rasterstacks/", scenario, "/", sep = "")
   if (!dir.exists(stackpath)) dir.create(stackpath, recursive = TRUE)
 
   lista.ras <- Sys.glob(paste(rasterpath, "/*.nc", sep = ""))

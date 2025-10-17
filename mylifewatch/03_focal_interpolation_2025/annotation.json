@@ -18,7 +18,7 @@
   "outputs": [
     {
       "type": "zip",
-      "name": "output_biooracle_dir",
+      "name": "biooracle_path",
       "path": "/mnt/outputs/biooracle.zip",
       "label": "output biooracle dir",
       "description": "zip file containing biooracle layers after focal interpolation in .tif format"

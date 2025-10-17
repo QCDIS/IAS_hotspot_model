@@ -34,7 +34,7 @@ download_zip_data_if_not_present_and_unzip(
 
 #Folder where the rasterstacks are stored
 biooracle_path <- paste(inputs_path,"biooracle", sep="")
-Stackpath <- paste(biooracle_path,"/baselinec50", sep="")
+Stackpath <- paste(biooracle_path,"/rasterstacks/baselinec50", sep="")
 
 
 
@@ -136,23 +136,6 @@ if (!file.exists(biooracle_filled_layers)) {
 }
 
 Stack <- stack(biooracle_filled_layers) #"globalStack.rda"#"globalStack.rda" or "europeStack.rda"
-
-
-#par(mfrow = c(2,2))
-#    for(su in 1:3){
-#suffix2 <- suffixes[su]
-#Stack2 <- stack(paste(Stackpath,"/rasterstack.global.2022", suffix2,".TIFF", sep="")) #"globalStack.rda"#"globalStack.rda" or "europeStack.rda"
-#plot(mean(Stack2))
-#    }
-#Stack2 <- stack(paste(Stackpath,"/rasterstack.Europe.2022.no.chlora.delim.TIFF", sep=""))
-#plot(mean(Stack))
-
-#rm(layernames)
-#not using alternative stacks
-#load(paste(Stackpath,"/layernames",suffix,".rda" ,sep =""))
-
-
-
 
 speciespathRaw <- paste(inputs_path ,"speciesIndata", sep ="/")
 download_zip_data_if_not_present_and_unzip(
