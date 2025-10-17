@@ -258,13 +258,8 @@ for (s in all.species) {
     ))
 
 }
-print(paste("tab : ", tab))
-# colnames(tab) <- c("species", "present.data", "absence.data", "pseudoabsence.data", "n.present", "n.absent", "comment on Taxon")
-# tab_colnames <- c("species", "present.data", "absence.data", "pseudoabsence.data", "n.present", "n.absent", "comment on Taxon")
-#
-#
-# colnames(tab) <- c("species", "species.filename", "pseudoabsences.marine",
-#     "n.present", "n.absent", "comment on Taxon")
+
+
 data_table_path = paste(speciespath, "data_table.csv", sep = "")
 write.csv(tab, file = data_table_path, row.names = FALSE)
 print(paste("Wrote species data table to", paste(speciespath, "data_table.csv", sep = "")))
@@ -321,9 +316,8 @@ for (my.cathegory in cathegories) {
     points(pseudoabsences$decimalLongitude, pseudoabsences$decimalLatitude, col = "red", pch = "*", cex = 5)
     dev.off()
     pseudoabsences_marine_excludebox = paste(speciespath, "pseudoabsences.marine.excludebox", my.cathegory, ".csv", sep = "")
-    print(paste("wrote: ", pseudoabsences_marine_excludebox))
+    print(paste("pseudoabsences_marine_excludebox: ", pseudoabsences_marine_excludebox))
     write.csv(pseudoabsences, file = pseudoabsences_marine_excludebox, row.names = FALSE)
-    print(paste("wrote: ", speciespath, "/pseudoabsences.marine.excludebox", my.cathegory, ".csv", sep = ""))
 } # --- End category loop ---
 
 
