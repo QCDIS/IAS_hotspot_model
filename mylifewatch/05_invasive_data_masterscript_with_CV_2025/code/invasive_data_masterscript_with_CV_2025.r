@@ -14,6 +14,7 @@ read.and.extract.local <- function(data.table,species,stack, speciespath,plotpat
   if (!file.exists(presence_path)){
     stop(paste("Presence file not found for species:", species))
   }
+  print(paste("Reading presence data from:", presence_path))
   present.data <-read.csv(presence_path, stringsAsFactors = F)
   present.data <- present.data[which(present.data$occurrenceStatus == "PRESENT"),]
   names(present.data)[1] <-"ID"
@@ -25,6 +26,7 @@ read.and.extract.local <- function(data.table,species,stack, speciespath,plotpat
     if (!file.exists(absent_path)){
       stop(paste("Absence file not found for species:", species))
     }
+    print(paste("Reading absence data from:", absent_path))
     absent.data <-read.csv(absent_path, stringsAsFactors = F)
     absent.data <- absent.data[which(absent.data$occurrenceStatus == "ABSENT"),]
     names(absent.data)[1] <-"ID"
@@ -43,7 +45,9 @@ read.and.extract.local <- function(data.table,species,stack, speciespath,plotpat
 
   pseudoabsence.data <- c()
   for(i in pseudoabsence){
-    temp <- read.csv(paste(speciespath,i,sep="/"),
+    speciespath_i = paste(speciespath,i,sep="/")
+    print(paste("Reading pseudoabsence data from:", speciespath_i))
+    temp <- read.csv(speciespath_i,
                      sep=",", stringsAsFactors = F)[,c("gbifID","decimalLongitude",
                                                        "decimalLatitude","occurrenceStatus")]
 
