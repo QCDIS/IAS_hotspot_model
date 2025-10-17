@@ -34,8 +34,8 @@ download_zip_data_if_not_present_and_unzip(
 
 #Folder where the rasterstacks are stored
 biooracle_path <- paste(inputs_path,"biooracle", sep="")
-Stackpath <- paste(biooracle_path,"/baseline", sep="")
-if (!dir.exists(Stackpath)) dir.create(Stackpath, recursive = TRUE)
+Stackpath <- paste(biooracle_path,"/baselinec50", sep="")
+
 
 
 data_table_path <- paste(inputs_path, "species/data_table.csv", sep="")
@@ -97,18 +97,13 @@ rastermappath <- paste(outputs_path, "Rastermaps/" , sep="")
 if (!dir.exists(rastermappath)) dir.create(rastermappath, recursive = TRUE)
 
 
-exclude_species = paste("/mnt/outputs/exclude_species",suffix,".rda",sep="")
-stats_csv = paste("/mnt/outputs/exclude_species",suffix,".csv",sep="")
+exclude_species = paste(outputs_path,"exclude_species",suffix,".rda",sep="")
+stats_csv = paste(outputs_path,"exclude_species",suffix,".csv",sep="")
 
 all_AUC_path = paste(outputs_path,"all.AUC",suffix,".csv", sep="")
 
 # read in the region map used in the plots, and transfor to WGS84 - World Geodetic System 1984
 # actually the map will not be needed until later. Readin git could be omitted here to save memory.
-#shape2 <- readOGR(dsn="H:/R gruppen/Kartor/NUTS_shapefile",layer="nutsByHand")
-#proj4string(shape2)#GRS80 EPSG:4019
-#shape2 <- spTransform(shape2, CRS("+init=epsg:4326"))
-#plot(shape2)# just to check that it appears right
-#########################################################
 
 # Read the
 Data.table <- read.csv(data_table_path,header=TRUE, sep=",",stringsAsFactors = F)
@@ -156,36 +151,17 @@ Stack <- stack(biooracle_filled_layers) #"globalStack.rda"#"globalStack.rda" or 
 #not using alternative stacks
 #load(paste(Stackpath,"/layernames",suffix,".rda" ,sep =""))
 
-layernames_path <- paste(Stackpath,"/layernames",".rda" ,sep ="")
-if (!file.exists(layernames_path)) {
-    layernames_url=args$layernames_url
-    print(paste("Downloading layer names from:", layernames_url))
-    data_table_path_no_ext <- file_path_sans_ext(layernames_path)
-    destfile = paste0(data_table_path_no_ext, ".zip")
-    download.file(layernames_url, destfile = destfile)
-    before <- list.files(Stackpath, full.names = FALSE, recursive = FALSE)
-    unzip(destfile, exdir = Stackpath)
-    after <- list.files(Stackpath, full.names = FALSE, recursive = FALSE)
-    new_folder <- setdiff(after, before)
-    file.rename(paste0(Stackpath, "/",new_folder), layernames_path)
-    file.remove(destfile)
-}
+
+
 
 speciespathRaw <- paste(inputs_path ,"speciesIndata", sep ="/")
-if (!dir.exists(speciespathRaw)) {
-    speciespathRaw_url=args$speciespathRaw_url
-    print(paste("Downloading species data from:", speciespathRaw_url))
-    destfile = paste0(speciespathRaw, ".zip")
-    download.file(speciespathRaw_url, destfile = destfile)
-    before <- list.files(inputs_path, full.names = FALSE, recursive = FALSE)
-    unzip(destfile, exdir = inputs_path)
-    after <- list.files(inputs_path, full.names = FALSE, recursive = FALSE)
-    new_folder <- setdiff(after, before)
-    file.rename(paste0(inputs_path,new_folder), speciespathRaw)
-    file.remove(destfile)
-}
+download_zip_data_if_not_present_and_unzip(
+    data_path = speciespathRaw,
+    data_url = args$speciespathRaw_url,
+    dest_path = inputs_path
+    )
 
-
+layernames_path <- paste(Stackpath,"/layernames",".rda" ,sep ="")
 load(layernames_path)
 names(Stack) <- layernames
 
@@ -707,18 +683,6 @@ write.csv2(as.data.frame(all.AUC),file = all_AUC_path )
 ##################################################################
 ## predict maps
 ##################################################################
-#plots
-#load rasterlayers
-#load(paste(Stackpath,"europeStack.rda", sep="/") )
-#plot(var2[[1]])
-
-#Stack <- stack(paste(Stackpath,"rasterstack.global.2022.TIFF", sep="/")) #"globalStack.rda"#"globalStack.rda" or "europeStack.rda"
-
-#Stack <- stack(paste(Stackpath,"/Biooracle.global2024",".tif", sep="")) #"globalStack.rda"#"globalStack.rda" or "europeStack.rda"
-#Stack <- stack(paste(Stackpath,"/Biooracle.Europe2024",".tif", sep="")) #"globalStack.rda"#"globalStack.rda" or "europeStack.rda"
-
-# dataset_scenarios <- c( "baseline" ,"ssp119" ,  "ssp126"  , "ssp245"   ,"ssp370" ,  "ssp460"  , "ssp585"  )
-# dec.vec <- c("", "dec50", "dec100")
 
 dataset_scenarios <- list.dirs(
   paste(rasterstacks_path, sep = ""),
