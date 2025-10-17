@@ -233,19 +233,8 @@ for (s in all.species) {
 
     write.csv(temp, file = paste(speciespath, s, ".csv", sep = ""), row.names = FALSE)
     print(paste("wrote: ", speciespath, s, ".csv", sep = ""))
-
-    print(paste("no positives: ", length(which(temp$occurrenceStatus == "PRESENT")), sep = ""))
-    print(paste("no negatives: ", length(which(temp$occurrenceStatus == "ABSENT")), sep = ""))
     my.filename <- paste(s, ".csv", sep = "")
     my.pseudoname <- paste("pseudoabsences.marine.excludebox", cat, ".csv", sep = "")
-    print("Adding to tab: ")
-    print(paste("species:", s))
-    print(paste("my.filename:", my.filename))
-    print(paste("my.pseudoname:", my.pseudoname))
-    print(paste("n.present:", length(which(temp$occurrenceStatus == "PRESENT"))))
-    print(paste("n.absent:", length(which(temp$occurrenceStatus == "ABSENT"))))
-    print(paste("comment:", comment))
-
     tab <- rbind(tab, data.frame(
       species = s,
       present.data = my.filename,
@@ -310,7 +299,7 @@ for (my.cathegory in cathegories) {
     xlim <- c(-180, 180)
     ylim <- c(-60, 84)
     test_plot_pseudoabsences = paste(specie_splots_dir, "testplot.pseudoabsences.", my.cathegory, ".jpg", sep = "")
-    print(paste("Plotting: ", test_plot_pseudoabsences))
+    print(paste("Plotting test_plot_pseudoabsences: ", test_plot_pseudoabsences))
     jpeg(test_plot_pseudoabsences,
        width = 18 * (xlim[2] - xlim[1]), height = 18 * (ylim[2] - ylim[1]), pointsize = 4)
     plot(world1$geometry, xlim = xlim, ylim = ylim, col = "light grey")
@@ -333,7 +322,7 @@ fac2 <- factor - 10 * (fac1 - 1)
 xlim <- c(-110, 40)
 ylim <- c(-2, 68)
 testplot_file = paste(specie_splots_dir, "testplot.CLEANPUT.SMALLER.world.mar2025.jpg", sep = "")
-print(paste("Plotting: ", testplot_file))
+print(paste("Plotting testplot_file: ", testplot_file))
 jpeg(testplot_file,
      width = 10 * (xlim[2] - xlim[1]), height = 10 * (ylim[2] - ylim[1]), pointsize = 4)
 plot(world1, xlim = xlim, ylim = ylim, col = "light grey")
