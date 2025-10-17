@@ -1,3 +1,104 @@
+read.and.extract.local <- function(data.table,species,stack, speciespath,plotpath,outpath){
+  #print(species)
+  presence <- data.table$present.data[which(data.table$species == species)]
+  #print(head(presence))
+  absence <- data.table$present.data[which(data.table$species == species)]
+  # print(head(absence))
+  pseudoabsence <- data.table$pseudoabsence.data[which(data.table$species == species)]
+  #pseudoabsence <- strsplit(pseudoabsence, ":")[[1]]
+  #print(head(pseudoabsence))
+  #
+  present.data <-read.csv(paste(speciespath,presence,sep="/"), stringsAsFactors = F)
+  present.data <- present.data[which(present.data$occurrenceStatus == "PRESENT"),]
+  names(present.data)[1] <-"ID"
+  present.data$occurrenceStatus <- "present"
+
+  if(is.na(absence)){absence <- ""}
+  if(!absence==""){
+    absent.data <-read.csv(paste(speciespath,absence,sep="/"), stringsAsFactors = F)
+    absent.data <- absent.data[which(absent.data$occurrenceStatus == "ABSENT"),]
+    names(absent.data)[1] <-"ID"
+    if(length(absent.data$ID) >0){  absent.data$occurrenceStatus <- "absent" }
+
+    if(length(absent.data$occurrenceID >0)){
+      names(absent.data)[1] <-"ID"
+      print(paste("absences found",species))
+    }else{print(paste("No absences in absence file",species))}
+
+  }else{
+    absent.data = present.data[FALSE,]
+
+    print(paste("No absences",species))
+  }
+
+  pseudoabsence.data <- c()
+  for(i in pseudoabsence){
+    temp <- read.csv(paste(speciespath,i,sep="/"),
+                     sep=",", stringsAsFactors = F)[,c("gbifID","decimalLongitude",
+                                                       "decimalLatitude","occurrenceStatus")]
+
+    names(temp) <- c("ID", "decimalLongitude","decimalLatitude","occurrenceStatus")
+    if(length(pseudoabsence.data) >0){
+      pseudoabsence.data <- rbind(pseudoabsence.data,temp)
+    }else{pseudoabsence.data <- temp}
+  }
+  pseudoabsence.data$occurrenceStatus <- "absent"
+  head(present.data)
+  #head(absent.data)
+
+  points.pres <- present.data[,c("ID","decimalLongitude","decimalLatitude","occurrenceStatus")]
+  points.abs <- absent.data[,c("ID","decimalLongitude","decimalLatitude","occurrenceStatus")]
+
+
+  points.pseudo <- pseudoabsence.data[,c("ID","decimalLongitude","decimalLatitude","occurrenceStatus")]
+  points.all <- rbind(points.pres,points.abs,points.pseudo)
+  dim(unique(points.all[,c("decimalLongitude", "decimalLatitude", "occurrenceStatus")]) )
+  dim(points.all[,c("decimalLongitude", "decimalLatitude", "occurrenceStatus")])
+  names(points.all) <- c("ID","Lon","Lat","occurrenceStatus")
+
+  npos <- length(which(points.all$occurrenceStatus == "present"))
+  nabs <- length(which(points.all$occurrenceStatus == "absent"))
+
+  duplicates <- which(duplicated(points.all[, c("Lon","Lat","occurrenceStatus")]))
+  points.all<- points.all[-duplicates,]
+
+  npos.unique <- length(which(points.all$occurrenceStatus == "present"))
+  nabs.unique <- length(which(points.all$occurrenceStatus == "absent"))
+
+  points.all$Lon <- as.numeric(points.all$Lon)
+  points.all$Lat <- as.numeric(points.all$Lat)
+  coord<-points.all[,c("Lon","Lat")]
+  names(coord) <- c("Lon","Lat")
+  remove <- which(!complete.cases(coord))
+  if(length(remove >0)){
+    coord <- coord[-remove,]
+    points.all <- points.all[-remove,]
+  }
+  points<-SpatialPointsDataFrame(coord,
+                                 points.all, proj4string=CRS("+init=epsg:4326"))
+
+  points2<-extract(stack, points, sp=TRUE)
+  head(points2)
+
+  names(points2)
+  # filter out incomplete points (e.g points at land or outside )
+  points2 <- as.data.frame(points2)
+  complete.points <- points2[which(complete.cases(points2)),]
+  head(complete.points)
+  names(complete.points)
+  # repove the extra colums for "Lat" and "Lon" that was inserted when creating the dataframe
+  colnames(complete.points)
+  complete.points <- complete.points[,-match(c("Lon.1", "Lat.1"), colnames(complete.points)) ]
+  head(complete.points)
+  # rm(var2)
+  npos.unique.complete <- length(which(complete.points$occurrenceStatus == "present"))
+  nabs.unique.complete <- length(which(complete.points$occurrenceStatus == "absent"))
+
+  return(list("complete.points" = complete.points ,
+              "stats" = c(npos,nabs, npos.unique, nabs.unique, npos.unique.complete, nabs.unique.complete)))
+}
+
+
 require(raster)
 #require(rgdal)
 require(zip)
@@ -144,7 +245,7 @@ for(i in seq_along(Data.table$species[-1])) {
     }
     # Read in present absent and pseudoabsent points,
     #convert these points to spatial coordinates and extract environmental variables from rasterstack
-    species.data.list <-  read.and.extract(data.table = Data.table,
+    species.data.list <-  read.and.extract.local(data.table = Data.table,
                                    species = species,
                                    stack = Stack,
                                    speciespath = speciespathRaw,
