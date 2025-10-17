@@ -48,7 +48,7 @@ download_zip_data_if_not_present_and_unzip(
     dest_path = traffic_path
     )
 
-speciespathRaw <- paste(inputs_path ,"speciesIndata", sep ="/")
+speciespathRaw <- paste(inputs_path ,"speciesIndata", sep ="")
 download_zip_data_if_not_present_and_unzip(
     data_path = speciespathRaw,
     data_url = args$speciespathRaw_url,
