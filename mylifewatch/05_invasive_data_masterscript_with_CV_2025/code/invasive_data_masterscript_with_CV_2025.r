@@ -155,7 +155,7 @@ baseline_path <- paste(rasterstacks_path,"/baselinedec50", sep="")
 
 
 species_path = paste(inputs_path, "species/", sep="")
-data_table_path <- paste(inputs_path, ,species_path,"data_table.csv", sep="")
+data_table_path <- paste(inputs_path, species_path,"data_table.csv", sep="")
 
 #### traffic patn may not be used here
 traffic_path <- paste(inputs_path, "traffic_layers", sep="")
