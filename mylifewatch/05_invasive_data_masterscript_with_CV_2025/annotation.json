@@ -17,7 +17,7 @@
       "label": "ais_shipping_density_url",
       "description": "ais shipping density url",
       "type": "String",
-      "defaultValue": "https://surfdrive.surf.nl/index.php/s/mRsQEzzJma7lGTc/download"
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/OsJRgQhBVYG73hV/download"
     },
     {
       "name": "biooracle_filled_layers_url",

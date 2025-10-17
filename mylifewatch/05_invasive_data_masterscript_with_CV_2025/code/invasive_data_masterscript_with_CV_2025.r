@@ -51,7 +51,7 @@ traffic_path <- paste(inputs_path, "traffic_layers", sep="")
 download_zip_data_if_not_present_and_unzip(
     data_path = traffic_path,
     data_url = args$ais_shipping_density_url,
-    dest_path = inputs_path
+    dest_path = traffic_path
     )
 
 
