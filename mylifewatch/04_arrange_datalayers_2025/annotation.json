@@ -19,7 +19,7 @@
     {
       "type": "zip",
       "name": "rasterstacks_outputs",
-      "path": "/mnt/outputs/0010903-rasterstacks.zip",
+      "path": "/mnt/outputs/rasterstacks.zip",
       "label": "rasterstacks outputs",
       "description": "zip rasterstacks outputs"
     }
