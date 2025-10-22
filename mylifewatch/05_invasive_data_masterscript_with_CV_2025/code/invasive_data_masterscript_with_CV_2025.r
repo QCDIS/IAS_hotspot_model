@@ -238,6 +238,14 @@ exclude <- union(exclude, exclude2.index)
 ##################################################################
 ## Run MCMC  the function will prepare data and execute.
 ##################################################################
+# note to self exclude3 <- c(8,20,23,27,42,44,46,47,50, 53, 57, 58,62, 64, 65,68, 69,70,71,72,73,74,75,76,77,78,79 ,80) #Mnemiopsis leidyi,Halothrix lumbricalis,Haloa japonicaCelleporaria brunnea,Apionsoma misakianum,
+# Pleurosira laevis,Fenestrulina delicia Gonionemus vertens Smittoidea prolifica Corambe obscura Haminella solitaria Sinelobus vanhaareni Cephalothrix simula
+#Torquigener flavimaculosus Boccardia proboscidea Paracerceis sculpta Oithona davisae Pseudodiaptomus marinus Polydora websteri Xenostrobus securis Aurelia solida,
+#Evadne anonyx Parathalestris harpactoides Stylochus ellipticus Marenzelleria neglecta Marenzelleria arctia Aporrectodea caliginosa Polycerella emertoni
+#intersect(exclude, exclude3) #exclude 3 == exclude...
+#exclude3 <- c(8,20,23,27,42,44,46,47,50, 53, 57, 58,62, 64, 65,68, 69,70,71,72,73,74,75,76,77,78,79 ,80)
+#exclude <- union(exclude, exclude3)
+
 mcmc <- T
 if(mcmc){
   require("rmcfs")
@@ -556,22 +564,8 @@ for(species in Data.table$species[-exclude]){
     }
 
     my.data <- read.csv(csv_file,header=T)
-    requested_vars <- names(my.data)[5:23]
-    valid_vars <- intersect(requested_vars, names(my.data))
-    if (length(valid_vars) == 0) {
-      print(paste("No predictor columns (5:23) found for species:", species, "- skipping C5.0"))
-      next
-    }
-    if (length(valid_vars) < length(requested_vars)) {
-      print(paste0("Some predictors missing for species ", species, ". Using: ", paste(valid_vars, collapse = ",")))
-    }
-    # ensure response column exists
-    if (!"occurrenceStatus" %in% names(my.data)) {
-      print(paste("Column `occurrenceStatus` not found in", csv_file, "- skipping C5.0 for", species))
-      next
-    }
-    prnt(paste("Fitting C5.0 model for species:", species))
-    rule_mod <- C5.0(x = my.data[, valid_vars], y = as.factor(my.data$occurrenceStatus), rules = TRUE)
+    vars <- names(my.data)[5:23]
+#     rule_mod <- C5.0(x = my.data[, vars], y = as.factor(my.data$occurrenceStatus), rules = TRUE)
     c50_rules_file =  paste(Modelpath,"/C50 rules.",species,".txt",sep="")
     print(paste("Writing C5.0 rules to file:", c50_rules_file))
     sink(c50_rules_file)
