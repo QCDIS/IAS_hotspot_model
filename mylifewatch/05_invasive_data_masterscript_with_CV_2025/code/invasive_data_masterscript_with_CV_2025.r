@@ -556,13 +556,11 @@ for(species in Data.table$species[-exclude]){
         print(paste("No CSV file found for species:", species))
         next
     }
-    my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
-    print(head(my.data))
-    names(my.data)
-    #vars <- c("SST_.AMP", "SST_.MIN", "SST_.MAX", "SST_.MEAN", "CHLORA_.MAX",    "SALINITY")
-    #vars <- c("SST_.AMP", "SST_.MIN", "SST_.MAX", "SST_.MEAN",    "SALINITY")
-    vars <- names(my.data)[5:23]
 
+    my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
+    print(paste("my.data: ",my.data))
+    vars <- names(my.data)[5:23]
+    print(paste("vars: ", vars))
     rule_mod <- C5.0(x = my.data[, vars], y = as.factor(my.data$occurrenceStatus), rules = TRUE)
 
     sink(paste(Modelpath,"/C50 rules.",species,".txt",sep=""))
