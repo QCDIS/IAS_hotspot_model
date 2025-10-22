@@ -557,13 +557,13 @@ for(species in Data.table$species[-exclude]){
         next
     }
     csv_file <- lista.csv[grep(species,lista.csv)]
-    print(paste("Processing species:", species, "from file:", csv_file))
     if (!file.exists(csv_file))  {
         print(paste("File does not exist:", csv_file))
         next
     }
-
+    print(paste("Processing species:", species, "from file:", csv_file))
     my.data <- read.csv(csv_file,header=T)
+    print(paste("names(my.data)", names(my.data))
     vars <- names(my.data)[5:23]
     x_var <- my.data[,vars]
     print(paste("x_var: ",x_var))
