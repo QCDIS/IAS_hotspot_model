@@ -513,7 +513,6 @@ gc()
 #         print(paste("Random forest model and cross validation file already exist for species:", species))
         next
     }
-
     file_to_load <- paste(indata.path, species, "_indata.csv", sep="")
     if (!file.exists(file_to_load)) {
 #         print(paste("No CSV file found for species:", species))
@@ -551,6 +550,7 @@ gc()
 }
 # ####################
 # try C50 rules
+print("Generating C5.0 rules")
 #for(species in Data.table$species){
 for(species in Data.table$species[-exclude]){
 
@@ -580,6 +580,7 @@ for(species in Data.table$species[-exclude]){
 # # calculate ROC curves and plot
 # ##################################################################
 all.AUC <- c()
+print("Calculating and plotting ROC curves")
 for(species in Data.table$species[-exclude]){
 
     plotname <- paste(ROC_path,"/","plotROC_",species,"allvars",".png",sep="")
