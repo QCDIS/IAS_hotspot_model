@@ -433,7 +433,6 @@ for(species in Data.table$species[-exclude]){
   par(mar=c(4,2,2,0))
   for(l in 1:length(raw.labels)){
     my.var <- as.character(raw.labels[l])
-    print(paste("my.data: ",my.data))
 
     predictor <- my.data[,my.var]
     # my.data[,"bio_1"][which(is.na(my.data[,"bio_1"]))]
@@ -877,6 +876,7 @@ for (sel.sen in 1:length(dataset_scenarios)) {
       dev.off()
   }
 }# end sel.sen species
+print("Finished plotting future scenario maps")
 ######################################################################################################################################
 ### ###################################################################Plot logmaps
 #####################################################################################################################################
@@ -898,7 +898,7 @@ ylim = c(50,70)
 
 lista.ras <- Sys.glob(paste(rastermappath,"*linear.prob.*",sep="/"))
 predvar<-stack(lista.ras)
-
+print("Calculating mean probability of presence for all species")
 for(species in Data.table$species){
     plot_file_eu = paste(Plotpath,"/",species, ".logprob.Eur.png",sep="")
     plot_file_sw = paste(Plotpath,"/",species, ".logprob.Swe.png",sep="")
@@ -956,6 +956,7 @@ for(species in Data.table$species){
   rm(map)
   gc()
 }
+print("Finished plotting log maps for all species")
 ######################################################################################################################################
 
 ###################################################################
