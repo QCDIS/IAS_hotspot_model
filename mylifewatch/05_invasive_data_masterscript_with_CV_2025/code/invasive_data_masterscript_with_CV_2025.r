@@ -160,6 +160,7 @@ for(i in seq_along(Data.table$species[-1])) {
     #      For entires where status cannot be determiend the line is removed
     # If data was checked in the earleir stage these lines should not find any mistakes
     my.data <- species.data
+    print(paste("my.data: ",my.data))
     print(paste(species,paste(unique(my.data$occurrenceStatus) ))  )
     my.data$occurrenceStatus <- as.character(my.data$occurrenceStatus)
     present.synonyms <-  which(my.data$occurrenceStatus == "present"|my.data$occurrenceStatus == "Present"| my.data$occurrenceStatus == "established"| my.data$occurrenceStatus == "Established")
