@@ -361,6 +361,7 @@ for(species in Data.table$species[-exclude]){
         print("Skipping to next species")
         next
     }
+    print(paste("Plotting selected variables for species:", species))
     my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T, sep=",")
     absent_length = length(which(my.data$occurrenceStatus == "absent"))
     present_length = length(which(my.data$occurrenceStatus == "present"))
