@@ -43,6 +43,7 @@ RUN R -e "install.packages('rmcfs')"
 RUN R -e "library(rJava)"
 RUN R -e "install.packages('RWeka')"
 RUN R -e "install.packages('RStoolbox')"
+RUN R -e "install.packages('C50')"
 RUN mkdir /wrp
 COPY functions/ /wrp/functions
 RUN mkdir /wrp/utils
