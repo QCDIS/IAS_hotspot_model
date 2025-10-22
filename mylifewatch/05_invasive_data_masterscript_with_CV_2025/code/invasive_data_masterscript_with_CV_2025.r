@@ -48,18 +48,21 @@ read.and.extract.local <- function(data.table,species,stack, speciespath,plotpat
   for(i in pseudoabsence){
     speciespath_i = paste(speciespath,i,sep="/")
     print(paste("Reading pseudoabsence data from:", speciespath_i))
+    if (!file.exists(speciespath_i)){
+        print(paste("Pseudoabsence file not found for species:", species))
+        next
+    }
     temp <- read.csv(speciespath_i,
                      sep=",", stringsAsFactors = F)[,c("gbifID","decimalLongitude",
                                                        "decimalLatitude","occurrenceStatus")]
 
     names(temp) <- c("ID", "decimalLongitude","decimalLatitude","occurrenceStatus")
     if(length(pseudoabsence.data) >0){
-      pseudoabsence.data <- rbind(pseudoabsence.data,temp)
+        pseudoabsence.data <- rbind(pseudoabsence.data,temp)
     }else{pseudoabsence.data <- temp}
   }
+
   pseudoabsence.data$occurrenceStatus <- "absent"
-  head(present.data)
-  #head(absent.data)
 
   points.pres <- present.data[,c("ID","decimalLongitude","decimalLatitude","occurrenceStatus")]
   points.abs <- absent.data[,c("ID","decimalLongitude","decimalLatitude","occurrenceStatus")]
@@ -261,7 +264,7 @@ for(i in seq_along(Data.table$species[-1])) {
     }
     # Read in present absent and pseudoabsent points,
     #convert these points to spatial coordinates and extract environmental variables from rasterstack
-    species.data.list <-  read.and.extract.local(data.table = Data.table,
+    species.data.list <-  read.and.extract(data.table = Data.table,
                                    species = species,
                                    stack = Stack,
                                    speciespath = species_path,
