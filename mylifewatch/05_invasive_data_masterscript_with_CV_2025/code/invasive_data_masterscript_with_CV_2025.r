@@ -556,7 +556,12 @@ for(species in Data.table$species[-exclude]){
         print(paste("No CSV file found for species:", species))
         next
     }
-
+    csv_file <- lista.csv[grep(species,lista.csv)]
+    print(paste("Processing species:", species, "from file:", csv_file))
+    if (!file.exists(csv_file))  {
+        print(paste("File does not exist:", csv_file))
+        next
+    }
     my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
     print(paste("my.data: ",my.data))
     vars <- names(my.data)[5:23]
