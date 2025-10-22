@@ -563,12 +563,11 @@ for(species in Data.table$species[-exclude]){
         next
     }
     my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
-    print(paste("my.data: ",my.data))
     vars <- names(my.data)[5:23]
-    print(paste("vars: ", vars))
     rule_mod <- C5.0(x = my.data[, vars], y = as.factor(my.data$occurrenceStatus), rules = TRUE)
-
-    sink(paste(Modelpath,"/C50 rules.",species,".txt",sep=""))
+    c50_rules_file =  paste(Modelpath,"/C50 rules.",species,".txt",sep="")
+    print(paste("Writing C5.0 rules to file:", c50_rules_file))
+    sink(c50_rules_file)
     print(species)
     print("/n")
     print(summary(rule_mod))
