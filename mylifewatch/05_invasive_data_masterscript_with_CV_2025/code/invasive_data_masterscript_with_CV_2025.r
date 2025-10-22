@@ -563,18 +563,19 @@ for(species in Data.table$species[-exclude]){
     }
     print(paste("Processing species:", species, "from file:", csv_file))
     my.data <- read.csv(csv_file,header=T)
-    print(paste("names(my.data)", names(my.data))
-#     vars <- names(my.data)[5:23]
-#     x_var <- my.data[,vars]
-#     print(paste("x_var: ",x_var))
-#     rule_mod <- C5.0(x = x_var, y = as.factor(my.data$occurrenceStatus), rules = TRUE)
-#     c50_rules_file =  paste(Modelpath,"/C50 rules.",species,".txt",sep="")
-#     print(paste("Writing C5.0 rules to file:", c50_rules_file))
-#     sink(c50_rules_file)
-#     print(species)
-#     print("/n")
-#     print(summary(rule_mod))
-#     sink()
+    print(paste("Loaded my.data for species:", species))
+    print(paste("names: ", names(my.data)))
+    vars <- names(my.data)[5:23]
+    x_var <- my.data[,vars]
+    print(paste("x_var: ",x_var))
+    rule_mod <- C5.0(x = x_var, y = as.factor(my.data$occurrenceStatus), rules = TRUE)
+    c50_rules_file =  paste(Modelpath,"/C50 rules.",species,".txt",sep="")
+    print(paste("Writing C5.0 rules to file:", c50_rules_file))
+    sink(c50_rules_file)
+    print(species)
+    print("/n")
+    print(summary(rule_mod))
+    sink()
 }
 # ##################################################################
 # # calculate ROC curves and plot
