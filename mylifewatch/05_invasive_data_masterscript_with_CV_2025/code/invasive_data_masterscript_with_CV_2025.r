@@ -566,26 +566,35 @@ for(species in Data.table$species[-exclude]){
     print(paste("Loaded my.data for species:", species))
     column_names = names(my.data)
     print(paste("column_names: ", column_names))
-    vars_max_index = min(length(column_names), 23)
-    vars_min_index = 5
+    # Validate predictor columns and skip when none or all-NA
+    vars_max_index <- min(length(column_names), 23)
+    vars_min_index <- 5
     vars <- names(my.data)[vars_min_index:vars_max_index]
+
+    # keep only non-NA names that actually exist in my.data
     valid_vars <- vars[!is.na(vars) & vars %in% names(my.data)]
+
     if (length(valid_vars) == 0) {
-      print(paste("No valid predictor columns (5:23) found for species:", species, "- skipping C5.0"))
+      warning(paste("No valid predictor columns (5:23) found for species:", species, "- skipping C5.0"))
       next
     }
+
     # subset safely and preserve data.frame structure
     x_var <- my.data[, valid_vars, drop = FALSE]
+
     # skip if all predictor values are NA
     if (all(sapply(x_var, function(col) all(is.na(col))))) {
-      print(paste("Predictor columns are all NA for species:", species, "- skipping C5.0"))
+      warning(paste("Predictor columns are all NA for species:", species, "- skipping C5.0"))
       next
     }
 
+    # proceed to model (example)
+    rule_mod <- tryCatch(
+      C50::C5.0(x = x_var, y = as.factor(my.data$occurrenceStatus), rules = TRUE),
+      error = function(e) { warning(paste("C5.0 failed for", species, ":", conditionMessage(e))); return(NULL) }
+    )
+    if (is.null(rule_mod)) next
 
-    print(paste("x_var: ",x_var))
-    rule_mod <- C5.0(x = x_var, y = as.factor(my.data$occurrenceStatus), rules = TRUE)
-    c50_rules_file =  paste(Modelpath,"/C50 rules.",species,".txt",sep="")
     print(paste("Writing C5.0 rules to file:", c50_rules_file))
     sink(c50_rules_file)
     print(species)
