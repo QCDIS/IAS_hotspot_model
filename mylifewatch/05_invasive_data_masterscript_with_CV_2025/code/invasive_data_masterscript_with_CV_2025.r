@@ -576,10 +576,6 @@ for(species in Data.table$species[-exclude]){
     }
     # subset safely and preserve data.frame structure
     x_var <- my.data[, valid_vars, drop = FALSE]
-
-    print(paste("valid_vars: ", valid_vars))
-    x_var <- my.data[,valid_vars]
-
     # skip if all predictor values are NA
     if (all(sapply(x_var, function(col) all(is.na(col))))) {
       print(paste("Predictor columns are all NA for species:", species, "- skipping C5.0"))
