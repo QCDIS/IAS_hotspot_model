@@ -279,7 +279,7 @@ for (my.cathegory in cathegories) {
 #         print(paste("No samples for category", my.cathegory, "skipping to next category"))
 #         next
 #     }
-    locationsamples <- sample(1:nrow(filtered.cleanput.subset), n_samples, replace = FALSE)
+#     locationsamples <- sample(1:nrow(filtered.cleanput.subset), n_samples, replace = FALSE)
     locationsamples <- sample(1:length(filtered.cleanput.subset$gbifID), 1000, replace =F)
     pseudoabsences <- filtered.cleanput.subset[locationsamples,
                                              c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
