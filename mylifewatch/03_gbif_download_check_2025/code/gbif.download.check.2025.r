@@ -225,7 +225,6 @@ for (s in all.species) {
                    "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")
 
     write.csv(temp, file = paste(speciespath, s, ".csv", sep = ""), row.names = FALSE)
-    print(paste("wrote: ", speciespath, s, ".csv", sep = ""))
     my.filename <- paste(s, ".csv", sep = "")
     my.pseudoname <- paste("pseudoabsences.marine.excludebox", cat, ".csv", sep = "")
     tab <- rbind(tab, data.frame(
@@ -265,14 +264,21 @@ points(filtered.cleanput$decimalLongitude[-excludebox], filtered.cleanput$decima
 filtered.cleanput.unbox <- filtered.cleanput[-excludebox, ]
 
 # --- Define groups of species and generate pseudoabsences ---
-print(paste("Loading NIS list from:", nis_list_path))
 selected.species <- read.csv2(nis_list_path, sep = ",")
 cathegories <- unique(selected.species$category)
-print(paste("cathegories: ", cathegories))
 for (my.cathegory in cathegories) {
     my.species.list <- selected.species$Taxon.name[selected.species$category == my.cathegory]
-    print(paste("my.species.list: ",my.species.list))
-    filtered.cleanput.subset <- filtered.cleanput.unbox[!is.na(match(filtered.cleanput.unbox$species, my.species.list)), ]
+#     filtered.cleanput.subset <- filtered.cleanput.unbox[!is.na(match(filtered.cleanput.unbox$species, my.species.list)), ]
+    # find positions of species in the category list
+    species_match_idx <- match(filtered.cleanput.unbox$species, my.species.list)
+    print(paste("species_match_idx: ", species_match_idx))
+    # logical vector: TRUE where species matched
+    is_species_in_list <- !is.na(species_match_idx)
+    print(paste("is_species_in_list: ", is_species_in_list))
+    # subset rows where species is in the list
+    filtered.cleanput.subset <- filtered.cleanput.unbox[is_species_in_list, ]
+    print(paste(" filtered.cleanput.subset: ", filtered.cleanput.subset))
+
     n_samples <- min(1000, length(filtered.cleanput.subset$gbifID))
     if (n_samples <= 0) {
         print(paste("No samples for category", my.cathegory, "skipping to next category"))
