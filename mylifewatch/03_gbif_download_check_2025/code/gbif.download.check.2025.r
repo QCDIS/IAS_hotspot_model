@@ -271,7 +271,7 @@ cathegories <- unique(selected.species$category)
 print(paste("cathegories: ", cathegories))
 for (my.cathegory in cathegories) {
     my.species.list <- selected.species$Taxon.name[selected.species$category == my.cathegory]
-    print(paste("my.species.list: ",my.species.list)
+    print(paste("my.species.list: ",my.species.list))
     filtered.cleanput.subset <- filtered.cleanput.unbox[!is.na(match(filtered.cleanput.unbox$species, my.species.list)), ]
     n_samples <- min(1000, length(filtered.cleanput.subset$gbifID))
     if (n_samples <= 0) {
