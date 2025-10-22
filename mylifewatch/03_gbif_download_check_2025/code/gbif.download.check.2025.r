@@ -207,17 +207,12 @@ for (s in all.species) {
     id <- which(!is.na(match(selected.species$Taxon.name, s)))
     print(paste("species id:", id))
     if (length(id) < 1) {
-        print("id len <1")
         spaces_name <- strsplit(s, " ")[[1]][1]
-        print(paste("Try to find with spaces_name:", spaces_name))
         id <- grep(spaces_name, selected.species$Taxon.name)
-        print(paste("new species id:", id))
         comment <- selected.species$Taxon.name[id]
     } else {
-        print("id len ok")
         comment <- "names match"
     }
-    print(paste("comment:", comment))
     cat <- selected.species$category[id]
     if (length(cat) < 1) cat <- "no_match"
     if (length(comment) < 1) comment <- "no_match"
@@ -279,12 +274,13 @@ print(paste("cathegories: ", cathegories))
 for (my.cathegory in cathegories) {
     my.species.list <- selected.species$Taxon.name[selected.species$category == my.cathegory]
     filtered.cleanput.subset <- filtered.cleanput.unbox[!is.na(match(filtered.cleanput.unbox$species, my.species.list)), ]
-    n_samples <- min(1000, nrow(filtered.cleanput.subset))
-    if (n_samples <= 0) {
-        print(paste("No samples for category", my.cathegory, "skipping to next category"))
-        next
-    }
+#     n_samples <- min(1000, nrow(filtered.cleanput.subset))
+#     if (n_samples <= 0) {
+#         print(paste("No samples for category", my.cathegory, "skipping to next category"))
+#         next
+#     }
     locationsamples <- sample(1:nrow(filtered.cleanput.subset), n_samples, replace = FALSE)
+    locationsamples <- sample(1:length(filtered.cleanput.subset$gbifID), 1000, replace =F)
     pseudoabsences <- filtered.cleanput.subset[locationsamples,
                                              c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
                                                "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")]
