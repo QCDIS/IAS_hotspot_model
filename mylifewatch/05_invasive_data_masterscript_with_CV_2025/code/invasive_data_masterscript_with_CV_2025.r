@@ -160,7 +160,6 @@ for(i in seq_along(Data.table$species[-1])) {
     #      For entires where status cannot be determiend the line is removed
     # If data was checked in the earleir stage these lines should not find any mistakes
     my.data <- species.data
-    print(paste("my.data: ",my.data))
     print(paste(species,paste(unique(my.data$occurrenceStatus) ))  )
     my.data$occurrenceStatus <- as.character(my.data$occurrenceStatus)
     present.synonyms <-  which(my.data$occurrenceStatus == "present"|my.data$occurrenceStatus == "Present"| my.data$occurrenceStatus == "established"| my.data$occurrenceStatus == "Established")
@@ -433,11 +432,9 @@ for(species in Data.table$species[-exclude]){
   par(mfrow= c(nrow,3))
   par(mar=c(4,2,2,0))
   for(l in 1:length(raw.labels)){
-#     # plot(c(),c(),xlim=c(0,1), ylim=c(0,1))
-#     #}
-#
-    my.var <- as.character(raw.labels[l])# names(my.data)[24]
-    # my.var <- "bio_10"
+    my.var <- as.character(raw.labels[l])
+    print(paste("my.data: ",my.data))
+
     predictor <- my.data[,my.var]
     # my.data[,"bio_1"][which(is.na(my.data[,"bio_1"]))]
     response <- as.factor(my.data$occurrenceStatus)
@@ -457,8 +454,6 @@ for(species in Data.table$species[-exclude]){
     nsplit <- 5
     chunks <- cut(seq(1:length(temptab[,1])),nsplit, labels = F)
     summary(chunks)
-#     # i <- 1
-#     # temptab[which(chunks == i),]
     table <- c()
     for(i in 1: nsplit){
       meanp <- mean(as.numeric(temptab$predictor[which(chunks == i)]))
