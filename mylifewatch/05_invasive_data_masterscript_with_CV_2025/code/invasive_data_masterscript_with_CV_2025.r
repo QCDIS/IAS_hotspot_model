@@ -569,13 +569,24 @@ for(species in Data.table$species[-exclude]){
     vars_max_index = min(length(column_names), 23)
     vars_min_index = 5
     vars <- names(my.data)[vars_min_index:vars_max_index]
+    valid_vars <- vars[!is.na(vars) & vars %in% names(my.data)]
+    if (length(valid_vars) == 0) {
+      print(paste("No valid predictor columns (5:23) found for species:", species, "- skipping C5.0"))
+      next
+    }
+    # subset safely and preserve data.frame structure
+    x_var <- my.data[, valid_vars, drop = FALSE]
+
     print(paste("vars: ", vars))
     x_var <- my.data[,vars]
-    # Check if x_var has any columns
-    if (ncol(x_var) == 0) {
-        print(paste("No predictor variables found for species:", species))
-        next
+
+    # skip if all predictor values are NA
+    if (all(sapply(x_var, function(col) all(is.na(col))))) {
+      print(paste("Predictor columns are all NA for species:", species, "- skipping C5.0"))
+      next
     }
+
+
     print(paste("x_var: ",x_var))
     rule_mod <- C5.0(x = x_var, y = as.factor(my.data$occurrenceStatus), rules = TRUE)
     c50_rules_file =  paste(Modelpath,"/C50 rules.",species,".txt",sep="")
