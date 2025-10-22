@@ -264,7 +264,7 @@ for(i in seq_along(Data.table$species[-1])) {
     }
     # Read in present absent and pseudoabsent points,
     #convert these points to spatial coordinates and extract environmental variables from rasterstack
-    species.data.list <-  read.and.extract(data.table = Data.table,
+    species.data.list <-  read.and.extract.local(data.table = Data.table,
                                    species = species,
                                    stack = Stack,
                                    speciespath = species_path,
