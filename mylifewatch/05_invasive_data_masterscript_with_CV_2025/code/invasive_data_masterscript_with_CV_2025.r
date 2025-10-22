@@ -580,7 +580,7 @@ for(species in Data.table$species[-exclude]){
     }
 
 
-    rule_mod <- C5.0(x = my.data[, vars], y = as.factor(my.data$occurrenceStatus), rules = TRUE)
+    rule_mod <- C5.0(x = my.data[, valid_vars], y = as.factor(my.data$occurrenceStatus), rules = TRUE)
     c50_rules_file =  paste(Modelpath,"/C50 rules.",species,".txt",sep="")
     print(paste("Writing C5.0 rules to file:", c50_rules_file))
     sink(c50_rules_file)
