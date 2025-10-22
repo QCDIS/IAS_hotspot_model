@@ -510,14 +510,15 @@ gc()
     random_forest_model = paste(Modelpath,"/RF.model.and.predictions.eur.wt.",species,".rda",sep="")
     cross_validation_file = paste(Modelpath,"/RF.model.and.predictions.CV.eur.wt.",species,".rda",sep="")
     if (file.exists(random_forest_model) & file.exists(cross_validation_file)) {
-#         print(paste("Random forest model and cross validation file already exist for species:", species))
+        print(paste("Random forest model and cross validation file already exist for species:", species))
         next
     }
     file_to_load <- paste(indata.path, species, "_indata.csv", sep="")
     if (!file.exists(file_to_load)) {
-#         print(paste("No CSV file found for species:", species))
+        print(paste("No CSV file found for species:", species))
         next
     }
+    print(paste("Running random forest for species:", species))
     rf.output.list <- run.random.forests(species = species ,
                 selvar = "all",
                 indata.path = Outpath,
