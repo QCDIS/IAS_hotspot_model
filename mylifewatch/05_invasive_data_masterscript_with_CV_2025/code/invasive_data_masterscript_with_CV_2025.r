@@ -352,7 +352,6 @@ lista.selection <- Sys.glob(paste(resultpath,"*.rda",sep="/"))
 indata.path = Outpath
 lista.csv<- Sys.glob(paste(indata.path,"*.csv",sep="/"))
 
-#for(species in Data.table$species){
 for(species in Data.table$species[-exclude]){
     #  for(species in Data.table$species[-exclude][-c(4,7,9,10,12,13)]){
     if (length(lista.selection[intersect(grep(species,lista.selection),
@@ -491,6 +490,7 @@ for(species in Data.table$species[-exclude]){
   dev.off()
 }
 
+print("Completed plotting selected variables")
 ##################################################################
   ## Run random forests. the function will prepare data and execute.
 ##################################################################
