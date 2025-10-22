@@ -510,15 +510,12 @@ gc()
     random_forest_model = paste(Modelpath,"/RF.model.and.predictions.eur.wt.",species,".rda",sep="")
     cross_validation_file = paste(Modelpath,"/RF.model.and.predictions.CV.eur.wt.",species,".rda",sep="")
     if (file.exists(random_forest_model) & file.exists(cross_validation_file)) {
-        print(paste("Random forest model and cross validation file already exist for species:", species))
         next
     }
     file_to_load <- paste(indata.path, species, "_indata.csv", sep="")
     if (!file.exists(file_to_load)) {
-        print(paste("No CSV file found for species:", species))
         next
     }
-    print(paste("Running random forest for species:", species))
     rf.output.list <- run.random.forests(species = species ,
                 selvar = "all",
                 indata.path = Outpath,
@@ -554,16 +551,13 @@ gc()
 print("Generating C5.0 rules")
 #for(species in Data.table$species){
 for(species in Data.table$species[-exclude]){
-
-    #for(i in Data.table$species[-c(7 ,10,16,18, 20, 22,23,24,25,26)]){
-    #species <-  i #Data.table$species[1]
     lista.csv<- Sys.glob(paste(species_path,"*.csv",sep="/"))
     if (length(lista.csv[grep(species,lista.csv)]) == 0) {
-#         print(paste("No CSV file found for species:", species))
+        print(paste("No CSV file found for species:", species))
         next
     }
     my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
-    head(my.data)
+    print(head(my.data))
     names(my.data)
     #vars <- c("SST_.AMP", "SST_.MIN", "SST_.MAX", "SST_.MEAN", "CHLORA_.MAX",    "SALINITY")
     #vars <- c("SST_.AMP", "SST_.MIN", "SST_.MAX", "SST_.MEAN",    "SALINITY")
