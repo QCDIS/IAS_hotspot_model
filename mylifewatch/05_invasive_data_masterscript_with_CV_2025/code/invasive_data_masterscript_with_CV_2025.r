@@ -562,8 +562,24 @@ for(species in Data.table$species[-exclude]){
         print(paste("File does not exist:", csv_file))
         next
     }
-    my.data <- read.csv(lista.csv[grep(species,lista.csv)],header=T)
-    vars <- names(my.data)[5:23]
+
+    my.data <- read.csv(csv_file,header=T)
+    requested_vars <- names(my.data)[5:23]
+    valid_vars <- intersect(requested_vars, names(my.data))
+    if (length(valid_vars) == 0) {
+      print(paste("No predictor columns (5:23) found for species:", species, "- skipping C5.0"))
+      next
+    }
+    if (length(valid_vars) < length(requested_vars)) {
+      print(paste0("Some predictors missing for species ", species, ". Using: ", paste(valid_vars, collapse = ",")))
+    }
+    # ensure response column exists
+    if (!"occurrenceStatus" %in% names(my.data)) {
+      print(paste("Column `occurrenceStatus` not found in", csv_file, "- skipping C5.0 for", species))
+      next
+    }
+
+
     rule_mod <- C5.0(x = my.data[, vars], y = as.factor(my.data$occurrenceStatus), rules = TRUE)
     c50_rules_file =  paste(Modelpath,"/C50 rules.",species,".txt",sep="")
     print(paste("Writing C5.0 rules to file:", c50_rules_file))
