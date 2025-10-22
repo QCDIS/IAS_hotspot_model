@@ -1,172 +1,3 @@
-read.and.extract.local <- function(data.table,species,stack, speciespath,plotpath,outpath){
-  if (!dir.exists(speciespath)){
-    stop(paste("Species data path not found:", speciespath))
-  }
-  print(paste("Processing species:", species))
-  presence <- data.table$present.data[which(data.table$species == species)]
-  print(paste("presence file for species:", presence))
-  absence <- data.table$present.data[which(data.table$species == species)]
-  # print(head(absence))
-  pseudoabsence <- data.table$pseudoabsence.data[which(data.table$species == species)]
-  #pseudoabsence <- strsplit(pseudoabsence, ":")[[1]]
-  #print(head(pseudoabsence))
-  #
-  presence_path = paste(speciespath,presence,sep="/")
-  if (!file.exists(presence_path)){
-    stop(paste("Presence file not found :", presence_path))
-  }
-  print(paste("Reading presence data from:", presence_path))
-  present.data <-read.csv(presence_path, stringsAsFactors = F)
-  present.data <- present.data[which(present.data$occurrenceStatus == "PRESENT"),]
-  names(present.data)[1] <-"ID"
-  present.data$occurrenceStatus <- "present"
-
-  if(is.na(absence)){absence <- ""}
-  if(!absence==""){
-    absent_path = paste(speciespath,absence,sep="/")
-    if (!file.exists(absent_path)){
-      stop(paste("Absence file not found for species:", species))
-    }
-    print(paste("Reading absence data from:", absent_path))
-    absent.data <-read.csv(absent_path, stringsAsFactors = F)
-    absent.data <- absent.data[which(absent.data$occurrenceStatus == "ABSENT"),]
-    names(absent.data)[1] <-"ID"
-    if(length(absent.data$ID) >0){  absent.data$occurrenceStatus <- "absent" }
-
-    if(length(absent.data$occurrenceID >0)){
-      names(absent.data)[1] <-"ID"
-      print(paste("absences found",species))
-    }else{print(paste("No absences in absence file",species))}
-
-  }else{
-    absent.data = present.data[FALSE,]
-
-    print(paste("No absences",species))
-  }
-
-  pseudoabsence.data <- c()
-  for(i in pseudoabsence){
-    speciespath_i = paste(speciespath,i,sep="/")
-    print(paste("Reading pseudoabsence data from:", speciespath_i))
-    if (!file.exists(speciespath_i)){
-        print(paste("Pseudoabsence file not found for species:", species))
-        next
-    }
-    temp <- read.csv(speciespath_i,
-                     sep=",", stringsAsFactors = F)[,c("gbifID","decimalLongitude",
-                                                       "decimalLatitude","occurrenceStatus")]
-
-    names(temp) <- c("ID", "decimalLongitude","decimalLatitude","occurrenceStatus")
-    if(length(pseudoabsence.data) >0){
-        pseudoabsence.data <- rbind(pseudoabsence.data,temp)
-    }else{pseudoabsence.data <- temp}
-  }
-
-
-  # prepare pseudoabsence file list
-if (is.na(pseudoabsence) || pseudoabsence == "") {
-  pseudo_files <- character(0)
-} else {
-  pseudo_files <- unlist(strsplit(as.character(pseudoabsence), ":"))
-}
-
-# initialize empty data.frame with expected columns
-pseudoabsence.data <- data.frame(
-  ID = character(0),
-  decimalLongitude = numeric(0),
-  decimalLatitude = numeric(0),
-  occurrenceStatus = character(0),
-  stringsAsFactors = FALSE
-)
-
-for (pf in pseudo_files) {
-  speciespath_i <- file.path(speciespath, pf)
-  print(paste("Reading pseudoabsence data from:", speciespath_i))
-  if (!file.exists(speciespath_i)) {
-    print(paste("Pseudoabsence file not found for species:", species))
-    next
-  }
-  temp <- tryCatch(read.csv(speciespath_i, stringsAsFactors = FALSE),
-                   error = function(e) NULL)
-  if (is.null(temp)) next
-
-  required <- c("gbifID", "decimalLongitude", "decimalLatitude", "occurrenceStatus")
-  if (!all(required %in% colnames(temp))) {
-    warning(paste("Pseudoabsence file", pf, "missing required columns. Skipping."))
-    next
-  }
-
-  temp <- temp[, required, drop = FALSE]
-  names(temp) <- c("ID", "decimalLongitude", "decimalLatitude", "occurrenceStatus")
-  pseudoabsence.data <- rbind(pseudoabsence.data, temp)
-}
-
-
-if (nrow(pseudoabsence.data) > 0) {
-  print(paste("pseudoabsences found", species))
-  pseudoabsence.data$occurrenceStatus <- "absent"
-} else {
-  print(paste("No pseudoabsences in pseudoabsence file", species))
-  # create empty pseudoabsence.data with same columns as present.data (safe downstream subsetting)
-  pseudoabsence.data <- present.data[FALSE, c("ID", "decimalLongitude", "decimalLatitude", "occurrenceStatus")]
-}
-
-
-#   pseudoabsence.data$occurrenceStatus <- "absent"
-
-  points.pres <- present.data[,c("ID","decimalLongitude","decimalLatitude","occurrenceStatus")]
-  points.abs <- absent.data[,c("ID","decimalLongitude","decimalLatitude","occurrenceStatus")]
-
-
-  points.pseudo <- pseudoabsence.data[,c("ID","decimalLongitude","decimalLatitude","occurrenceStatus")]
-  points.all <- rbind(points.pres,points.abs,points.pseudo)
-  dim(unique(points.all[,c("decimalLongitude", "decimalLatitude", "occurrenceStatus")]) )
-  dim(points.all[,c("decimalLongitude", "decimalLatitude", "occurrenceStatus")])
-  names(points.all) <- c("ID","Lon","Lat","occurrenceStatus")
-
-  npos <- length(which(points.all$occurrenceStatus == "present"))
-  nabs <- length(which(points.all$occurrenceStatus == "absent"))
-
-  duplicates <- which(duplicated(points.all[, c("Lon","Lat","occurrenceStatus")]))
-  points.all<- points.all[-duplicates,]
-
-  npos.unique <- length(which(points.all$occurrenceStatus == "present"))
-  nabs.unique <- length(which(points.all$occurrenceStatus == "absent"))
-
-  points.all$Lon <- as.numeric(points.all$Lon)
-  points.all$Lat <- as.numeric(points.all$Lat)
-  coord<-points.all[,c("Lon","Lat")]
-  names(coord) <- c("Lon","Lat")
-  remove <- which(!complete.cases(coord))
-  if(length(remove >0)){
-    coord <- coord[-remove,]
-    points.all <- points.all[-remove,]
-  }
-  points<-SpatialPointsDataFrame(coord,
-                                 points.all, proj4string=CRS("+init=epsg:4326"))
-
-  points2<-extract(stack, points, sp=TRUE)
-  head(points2)
-
-  names(points2)
-  # filter out incomplete points (e.g points at land or outside )
-  points2 <- as.data.frame(points2)
-  complete.points <- points2[which(complete.cases(points2)),]
-  head(complete.points)
-  names(complete.points)
-  # repove the extra colums for "Lat" and "Lon" that was inserted when creating the dataframe
-  colnames(complete.points)
-  complete.points <- complete.points[,-match(c("Lon.1", "Lat.1"), colnames(complete.points)) ]
-  head(complete.points)
-  # rm(var2)
-  npos.unique.complete <- length(which(complete.points$occurrenceStatus == "present"))
-  nabs.unique.complete <- length(which(complete.points$occurrenceStatus == "absent"))
-
-  return(list("complete.points" = complete.points ,
-              "stats" = c(npos,nabs, npos.unique, nabs.unique, npos.unique.complete, nabs.unique.complete)))
-}
-
-
 require(raster)
 #require(rgdal)
 require(zip)
@@ -217,7 +48,7 @@ download_zip_data_if_not_present_and_unzip(
     dest_path = traffic_path
     )
 
-speciespathRaw <- paste(inputs_path ,"speciesIndata", sep ="")
+# speciespathRaw <- paste(inputs_path ,"speciesIndata", sep ="")
 # print(paste("Getting species data path:", args$speciespathRaw_url))
 # print(paste("speciespathRaw: ", speciespathRaw))
 # download_zip_data_if_not_present_and_unzip(
@@ -314,7 +145,7 @@ for(i in seq_along(Data.table$species[-1])) {
     }
     # Read in present absent and pseudoabsent points,
     #convert these points to spatial coordinates and extract environmental variables from rasterstack
-    species.data.list <-  read.and.extract.local(data.table = Data.table,
+    species.data.list <-  read.and.extract(data.table = Data.table,
                                    species = species,
                                    stack = Stack,
                                    speciespath = species_path,
@@ -728,7 +559,7 @@ for(species in Data.table$species[-exclude]){
 
     #for(i in Data.table$species[-c(7 ,10,16,18, 20, 22,23,24,25,26)]){
     #species <-  i #Data.table$species[1]
-    lista.csv<- Sys.glob(paste(speciespath,"*.csv",sep="/"))
+    lista.csv<- Sys.glob(paste(species_path,"*.csv",sep="/"))
     if (length(lista.csv[grep(species,lista.csv)]) == 0) {
 #         print(paste("No CSV file found for species:", species))
         next
