@@ -62,6 +62,13 @@ read.and.extract.local <- function(data.table,species,stack, speciespath,plotpat
     }else{pseudoabsence.data <- temp}
   }
 
+  # Check pseudoabsence.data has data
+    if(length(pseudoabsence.data$ID) >0){
+        print(paste("pseudoabsences found",species))
+    }else{
+        print(paste("No pseudoabsences in pseudoabsence file",species))
+    }
+
   pseudoabsence.data$occurrenceStatus <- "absent"
 
   points.pres <- present.data[,c("ID","decimalLongitude","decimalLatitude","occurrenceStatus")]
