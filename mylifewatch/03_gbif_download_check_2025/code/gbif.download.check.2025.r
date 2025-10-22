@@ -202,10 +202,8 @@ print(paste("Categories:", cathegories))
 print(paste("selected.species: ", head(selected.species)))
 
 for (s in all.species) {
-    print(paste("Working on species", s))
     comment <- "no match"
     id <- which(!is.na(match(selected.species$Taxon.name, s)))
-    print(paste("species id:", id))
     if (length(id) < 1) {
         spaces_name <- strsplit(s, " ")[[1]][1]
         id <- grep(spaces_name, selected.species$Taxon.name)
@@ -273,39 +271,39 @@ cathegories <- unique(selected.species$category)
 print(paste("cathegories: ", cathegories))
 for (my.cathegory in cathegories) {
     my.species.list <- selected.species$Taxon.name[selected.species$category == my.cathegory]
+    print(paste("my.species.list: ",my.species.list)
     filtered.cleanput.subset <- filtered.cleanput.unbox[!is.na(match(filtered.cleanput.unbox$species, my.species.list)), ]
-#     n_samples <- min(1000, nrow(filtered.cleanput.subset))
-#     if (n_samples <= 0) {
-#         print(paste("No samples for category", my.cathegory, "skipping to next category"))
-#         next
-#     }
+    n_samples <- min(1000, length(filtered.cleanput.subset$gbifID))
+    if (n_samples <= 0) {
+        print(paste("No samples for category", my.cathegory, "skipping to next category"))
+    }
 #     locationsamples <- sample(1:nrow(filtered.cleanput.subset), n_samples, replace = FALSE)
-    print(paste("len of filtered.cleanput.subset: ", length(filtered.cleanput.subset$gbifID)))
-    locationsamples <- sample(1:length(filtered.cleanput.subset$gbifID), 1000, replace =F)
-    pseudoabsences <- filtered.cleanput.subset[locationsamples,
-                                             c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
-                                               "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")]
-    pseudoabsences$gbifID <- paste("pseudo", seq(1:1000), sep = "")
-    pseudoabsences$species <- NA
-    pseudoabsences$occurrenceStatus <- "ABSENT"
-    pseudoabsences$coordinateUncertaintyInMeters <- NA
-    pseudoabsences$depthAccuracy <- NA
-    pseudoabsences$eventDate <- NA
-    names(pseudoabsences) <- c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
-                             "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")
-    xlim <- c(-180, 180)
-    ylim <- c(-60, 84)
-    test_plot_pseudoabsences = paste(specie_splots_dir, "testplot.pseudoabsences.", my.cathegory, ".jpg", sep = "")
-    print(paste("Plotting test_plot_pseudoabsences: ", test_plot_pseudoabsences))
-    jpeg(test_plot_pseudoabsences,
-       width = 18 * (xlim[2] - xlim[1]), height = 18 * (ylim[2] - ylim[1]), pointsize = 4)
-    plot(world1$geometry, xlim = xlim, ylim = ylim, col = "light grey")
-    lines(boxxlim[c(1, 2, 2, 1, 1)], boxylim[c(1, 1, 2, 2, 1)])
-    points(pseudoabsences$decimalLongitude, pseudoabsences$decimalLatitude, col = "red", pch = "*", cex = 5)
-    dev.off()
-    pseudoabsences_marine_excludebox = paste(speciespath, "pseudoabsences.marine.excludebox", my.cathegory, ".csv", sep = "")
-    print(paste("pseudoabsences_marine_excludebox: ", pseudoabsences_marine_excludebox))
-    write.csv(pseudoabsences, file = pseudoabsences_marine_excludebox, row.names = FALSE)
+    print(paste("n_samples: ", n_samples))
+#     locationsamples <- sample(1:length(filtered.cleanput.subset$gbifID), 1000, replace =F)
+#     pseudoabsences <- filtered.cleanput.subset[locationsamples,
+#                                              c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
+#                                                "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")]
+#     pseudoabsences$gbifID <- paste("pseudo", seq(1:1000), sep = "")
+#     pseudoabsences$species <- NA
+#     pseudoabsences$occurrenceStatus <- "ABSENT"
+#     pseudoabsences$coordinateUncertaintyInMeters <- NA
+#     pseudoabsences$depthAccuracy <- NA
+#     pseudoabsences$eventDate <- NA
+#     names(pseudoabsences) <- c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
+#                              "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")
+#     xlim <- c(-180, 180)
+#     ylim <- c(-60, 84)
+#     test_plot_pseudoabsences = paste(specie_splots_dir, "testplot.pseudoabsences.", my.cathegory, ".jpg", sep = "")
+#     print(paste("Plotting test_plot_pseudoabsences: ", test_plot_pseudoabsences))
+#     jpeg(test_plot_pseudoabsences,
+#        width = 18 * (xlim[2] - xlim[1]), height = 18 * (ylim[2] - ylim[1]), pointsize = 4)
+#     plot(world1$geometry, xlim = xlim, ylim = ylim, col = "light grey")
+#     lines(boxxlim[c(1, 2, 2, 1, 1)], boxylim[c(1, 1, 2, 2, 1)])
+#     points(pseudoabsences$decimalLongitude, pseudoabsences$decimalLatitude, col = "red", pch = "*", cex = 5)
+#     dev.off()
+#     pseudoabsences_marine_excludebox = paste(speciespath, "pseudoabsences.marine.excludebox", my.cathegory, ".csv", sep = "")
+#     print(paste("pseudoabsences_marine_excludebox: ", pseudoabsences_marine_excludebox))
+#     write.csv(pseudoabsences, file = pseudoabsences_marine_excludebox, row.names = FALSE)
 } # --- End category loop ---
 
 
