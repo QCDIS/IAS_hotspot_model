@@ -280,6 +280,7 @@ for (my.cathegory in cathegories) {
 #         next
 #     }
 #     locationsamples <- sample(1:nrow(filtered.cleanput.subset), n_samples, replace = FALSE)
+    print(paste("len of filtered.cleanput.subset: ", length(filtered.cleanput.subset$gbifID)))
     locationsamples <- sample(1:length(filtered.cleanput.subset$gbifID), 1000, replace =F)
     pseudoabsences <- filtered.cleanput.subset[locationsamples,
                                              c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
