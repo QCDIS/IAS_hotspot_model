@@ -571,6 +571,11 @@ for(species in Data.table$species[-exclude]){
     vars <- names(my.data)[vars_min_index:vars_max_index]
     print(paste("vars: ", vars))
     x_var <- my.data[,vars]
+    # Check if x_var has any columns
+    if (ncol(x_var) == 0) {
+        print(paste("No predictor variables found for species:", species))
+        next
+    }
     print(paste("x_var: ",x_var))
     rule_mod <- C5.0(x = x_var, y = as.factor(my.data$occurrenceStatus), rules = TRUE)
     c50_rules_file =  paste(Modelpath,"/C50 rules.",species,".txt",sep="")
