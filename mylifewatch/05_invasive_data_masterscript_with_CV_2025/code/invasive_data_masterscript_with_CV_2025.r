@@ -564,10 +564,11 @@ for(species in Data.table$species[-exclude]){
     print(paste("Processing species:", species, "from file:", csv_file))
     my.data <- read.csv(csv_file,header=T)
     print(paste("Loaded my.data for species:", species))
-    print(paste("names: ", names(my.data)))
     column_names = names(my.data)
     print(paste("column_names: ", column_names))
-    vars <- names(my.data)[5:23]
+    vars_max_index = max(length(column_names), 23)
+    vars_min_index = 5
+    vars <- names(my.data)[vars_min_index:vars_max_index]
     print(paste("vars: ", vars))
     x_var <- my.data[,vars]
     print(paste("x_var: ",x_var))
