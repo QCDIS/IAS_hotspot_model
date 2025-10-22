@@ -62,14 +62,57 @@ read.and.extract.local <- function(data.table,species,stack, speciespath,plotpat
     }else{pseudoabsence.data <- temp}
   }
 
-  # Check pseudoabsence.data has data
-    if(length(pseudoabsence.data$ID) >0){
-        print(paste("pseudoabsences found",species))
-    }else{
-        print(paste("No pseudoabsences in pseudoabsence file",species))
-    }
 
+  # prepare pseudoabsence file list
+if (is.na(pseudoabsence) || pseudoabsence == "") {
+  pseudo_files <- character(0)
+} else {
+  pseudo_files <- unlist(strsplit(as.character(pseudoabsence), ":"))
+}
+
+# initialize empty data.frame with expected columns
+pseudoabsence.data <- data.frame(
+  ID = character(0),
+  decimalLongitude = numeric(0),
+  decimalLatitude = numeric(0),
+  occurrenceStatus = character(0),
+  stringsAsFactors = FALSE
+)
+
+for (pf in pseudo_files) {
+  speciespath_i <- file.path(speciespath, pf)
+  print(paste("Reading pseudoabsence data from:", speciespath_i))
+  if (!file.exists(speciespath_i)) {
+    print(paste("Pseudoabsence file not found for species:", species))
+    next
+  }
+  temp <- tryCatch(read.csv(speciespath_i, stringsAsFactors = FALSE),
+                   error = function(e) NULL)
+  if (is.null(temp)) next
+
+  required <- c("gbifID", "decimalLongitude", "decimalLatitude", "occurrenceStatus")
+  if (!all(required %in% colnames(temp))) {
+    warning(paste("Pseudoabsence file", pf, "missing required columns. Skipping."))
+    next
+  }
+
+  temp <- temp[, required, drop = FALSE]
+  names(temp) <- c("ID", "decimalLongitude", "decimalLatitude", "occurrenceStatus")
+  pseudoabsence.data <- rbind(pseudoabsence.data, temp)
+}
+
+
+if (nrow(pseudoabsence.data) > 0) {
+  print(paste("pseudoabsences found", species))
   pseudoabsence.data$occurrenceStatus <- "absent"
+} else {
+  print(paste("No pseudoabsences in pseudoabsence file", species))
+  # create empty pseudoabsence.data with same columns as present.data (safe downstream subsetting)
+  pseudoabsence.data <- present.data[FALSE, c("ID", "decimalLongitude", "decimalLatitude", "occurrenceStatus")]
+}
+
+
+#   pseudoabsence.data$occurrenceStatus <- "absent"
 
   points.pres <- present.data[,c("ID","decimalLongitude","decimalLatitude","occurrenceStatus")]
   points.abs <- absent.data[,c("ID","decimalLongitude","decimalLatitude","occurrenceStatus")]
