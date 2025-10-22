@@ -565,7 +565,10 @@ for(species in Data.table$species[-exclude]){
     my.data <- read.csv(csv_file,header=T)
     print(paste("Loaded my.data for species:", species))
     print(paste("names: ", names(my.data)))
+    column_names = names(my.data)
+    print(paste("column_names: ", column_names))
     vars <- names(my.data)[5:23]
+    print(paste("vars: ", vars))
     x_var <- my.data[,vars]
     print(paste("x_var: ",x_var))
     rule_mod <- C5.0(x = x_var, y = as.factor(my.data$occurrenceStatus), rules = TRUE)
