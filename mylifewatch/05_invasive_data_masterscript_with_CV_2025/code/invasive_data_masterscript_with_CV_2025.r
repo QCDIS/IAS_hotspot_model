@@ -566,7 +566,7 @@ for(species in Data.table$species[-exclude]){
     print(paste("Loaded my.data for species:", species))
     column_names = names(my.data)
     print(paste("column_names: ", column_names))
-    vars_max_index = max(length(column_names), 23)
+    vars_max_index = min(length(column_names), 23)
     vars_min_index = 5
     vars <- names(my.data)[vars_min_index:vars_max_index]
     print(paste("vars: ", vars))
