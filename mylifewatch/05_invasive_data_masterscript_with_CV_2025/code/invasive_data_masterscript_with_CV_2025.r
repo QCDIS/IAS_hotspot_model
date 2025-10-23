@@ -50,6 +50,10 @@ download_zip_data_if_not_present_and_unzip(
     dest_path = traffic_path
     )
 
+
+
+rasterstacks_alternative = paste0(inputs_path,"/rasterstacks/")
+
 # speciespathRaw <- paste(inputs_path ,"speciesIndata", sep ="")
 # print(paste("Getting species data path:", args$speciespathRaw_url))
 # print(paste("speciespathRaw: ", speciespathRaw))
@@ -702,7 +706,7 @@ for (sel.sen in 1:length(dataset_scenarios)) {
         layernames_path <- paste(rasterstacks_path.base,"/layernames",".rda" ,sep ="")
         if (!file.exists(layernames_path)) {
             print(paste("No layer names file found:", layernames_path))
-            layernames_path <- paste(inputs_path,"/rasterstacks/",scenario,"/layernames",".rda" ,sep ="")
+            layernames_path <- paste(rasterstacks_alternative,scenario,"/layernames",".rda" ,sep ="")
             print(paste("Trying alternative layer names file:", layernames_path))
             if (!file.exists(layernames_path)) {
                 print(paste("No layer names file found:", layernames_path))
@@ -727,6 +731,9 @@ for (sel.sen in 1:length(dataset_scenarios)) {
         #call the function to predict the species distribution at raster level.
         #The function return the prediction as a raster object but also make plots as .png
         # the lines between png() and dev.off() may be removed/inactivated if the png plots are not wanted.
+        exclude_species = Data.table$species[-exclude]
+        print(paste("exclude_species: ", exclude_species))
+        print(paste("Number of species to process:", length(Data.table$species[-exclude])))
         for(Species in Data.table$species[-exclude]){
             newfile <- paste(rastermappath_scenario,"/linear.prob.global.",Species,'.tif',sep="")
             print(paste("Looking for  map:", newfile))
