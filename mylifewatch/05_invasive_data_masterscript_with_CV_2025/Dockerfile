@@ -1,4 +1,4 @@
-FROM ghcr.io/qcdis/ias_hotspot_model:v2.0.0
+FROM ias_hotspot_model
 
 WORKDIR wrp
 
