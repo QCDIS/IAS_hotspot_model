@@ -734,6 +734,10 @@ for (sel.sen in 1:length(dataset_scenarios)) {
         exclude_species = Data.table$species[-exclude]
         print(paste("exclude_species: ", exclude_species))
         print(paste("Number of species to process:", length(Data.table$species[-exclude])))
+        if (length(Data.table$species[-exclude]) == 0) {
+            print("No species to process for map prediction.")
+            next
+        }
         for(Species in Data.table$species[-exclude]){
             newfile <- paste(rastermappath_scenario,"/linear.prob.global.",Species,'.tif',sep="")
             print(paste("Looking for  map:", newfile))
