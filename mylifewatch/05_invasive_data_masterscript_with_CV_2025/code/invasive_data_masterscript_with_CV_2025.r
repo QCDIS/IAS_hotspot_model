@@ -154,19 +154,12 @@ for(i in seq_along(Data.table$species[-1])) {
     #convert these points to spatial coordinates and extract environmental variables from rasterstack
     if (!file.exists(species_path)) {
         print(paste("Species path does not exist:", species_path))
-        exit()
     }
     if (length(list.files(species_path, pattern = paste0("^", species, ".*\\.csv$"))) == 0) {
         print(paste("No CSV file found for species:", species))
-        exit()
     }
     if (!dir.exists(Plotpath)){
         print(paste("Plotpath does not exist:", Plotpath))
-        exit()
-    }
-    if (!dir.exists(Outpath)){
-        print(paste("Outpath does not exist:", Outpath))
-        exit()
     }
     species.data.list <-  read.and.extract(data.table = Data.table,
                                    species = species,
