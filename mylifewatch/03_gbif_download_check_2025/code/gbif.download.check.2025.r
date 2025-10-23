@@ -271,12 +271,15 @@ cathegories <- unique(selected.species$category)
 for (my.cathegory in cathegories) {
     print(paste("Generating pseudoabsences for category:", my.cathegory))
     my.species.list <- selected.species$Taxon.name[selected.species$category == my.cathegory]
+    print(paste("Species in this category:", paste(my.species.list, collapse = ", ")))
     filtered.cleanput.subset <- filtered.cleanput.unbox[!is.na(match(filtered.cleanput.unbox$species, my.species.list)), ]
-    n_samples <- min(1000, length(filtered.cleanput.subset$gbifID))
+    n_samples <- min(10000, length(filtered.cleanput.subset$gbifID))
+    print(paste("Will sample 1:", length(filtered.cleanput.subset$gbifID), " pseudoabsences"))
     if (n_samples <= 0) {
         print(paste("No samples for category", my.cathegory, "skipping to next category"))
         next
     }
+
     locationsamples <- sample(1:length(filtered.cleanput.subset$gbifID), n_samples, replace =F)
     pseudoabsences <- filtered.cleanput.subset[locationsamples,
                                              c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
