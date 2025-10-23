@@ -7,6 +7,7 @@ require(C50)
 require(unix)
 library(tools)
 library(C50)
+library(raster)
 
 ########################################################################################
 ### Ecological niche modelling for invasive species
@@ -696,6 +697,8 @@ for (sel.sen in 1:length(dataset_scenarios)) {
             next
         }
         Biooracle.filled.layers.global = "/mnt/inputs/biooracle/rasterstacks/ssp245dec100/Biooracle.filled.layers.global2025.tif"
+        imported_raster=raster(Biooracle.filled.layers.global)
+        print(paste("Imported raster layer:", imported_raster))
         Stack <- stack(Biooracle.filled.layers.global)
         rasterstacks_path.base <- paste(rasterstacks_path,"/baselinedec50", sep="/")
         layernames_path <- paste(rasterstacks_path.base,"/layernames",".rda" ,sep ="")

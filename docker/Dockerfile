@@ -44,6 +44,8 @@ RUN R -e "library(rJava)"
 RUN R -e "install.packages('RWeka')"
 RUN R -e "install.packages('RStoolbox')"
 RUN R -e "install.packages('C50')"
+RUN R -e "install.packages('raster')"
+library(raster)
 RUN mkdir /wrp
 COPY functions/ /wrp/functions
 RUN mkdir /wrp/utils
