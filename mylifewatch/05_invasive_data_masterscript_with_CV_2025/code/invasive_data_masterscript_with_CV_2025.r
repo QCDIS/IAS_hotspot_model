@@ -696,9 +696,13 @@ for (sel.sen in 1:length(dataset_scenarios)) {
             print(paste("No raster stack file found:", Biooracle.filled.layers.global))
             next
         }
-        Biooracle.filled.layers.global = "/mnt/inputs/biooracle/rasterstacks/ssp245dec100/Biooracle.filled.layers.global2025.tif"
-        imported_raster=raster(Biooracle.filled.layers.global)
-        print(paste("Imported raster layer:", imported_raster))
+
+biooracle_filled_layers = paste(baseline_path,"/Biooracle.filled.layers.global2025",".tif", sep="")
+Stack <- stack(biooracle_filled_layers) #"globalStack.rda"#"globalStack.rda" or "europeStack.rda"
+print(paste("biooracle_filled_layers Loading raster stack from:", biooracle_filled_layers))
+
+
+
         Stack <- stack(Biooracle.filled.layers.global)
         rasterstacks_path.base <- paste(rasterstacks_path,"/baselinedec50", sep="/")
         layernames_path <- paste(rasterstacks_path.base,"/layernames",".rda" ,sep ="")
