@@ -696,15 +696,13 @@ for (sel.sen in 1:length(dataset_scenarios)) {
             print(paste("No raster stack file found:", Biooracle.filled.layers.global))
             next
         }
-
-biooracle_filled_layers = paste(baseline_path,"/Biooracle.filled.layers.global2025",".tif", sep="")
-Stack <- stack(biooracle_filled_layers) #"globalStack.rda"#"globalStack.rda" or "europeStack.rda"
-print(paste("biooracle_filled_layers Loading raster stack from:", biooracle_filled_layers))
-print(paste("nlayers(Stack):", nlayers(Stack)))
-
-
-#         Stack <- stack(Biooracle.filled.layers.global)
+        Stack <- stack(Biooracle.filled.layers.global)
+        print(paste("nlayers(Stack):", nlayers(Stack)))
         rasterstacks_path.base <- paste(rasterstacks_path,"/baselinedec50", sep="/")
+        if (!dir.exists(rasterstacks_path.base)) {
+            print(paste("No baseline raster stack path found:", rasterstacks_path.base))
+            stop()
+        }
         layernames_path <- paste(rasterstacks_path.base,"/layernames",".rda" ,sep ="")
         load(layernames_path)
         # Check lengths before assignment
