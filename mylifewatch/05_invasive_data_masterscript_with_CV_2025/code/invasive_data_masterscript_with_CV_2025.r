@@ -695,16 +695,8 @@ for (sel.sen in 1:length(dataset_scenarios)) {
             print(paste("No raster stack file found:", Biooracle.filled.layers.global))
             next
         }
-        Stack <- tryCatch(
-          stack(Biooracle.filled.layers.global),
-          error = function(e) {
-            message("Failed to stack `", Biooracle.filled.layers.global, "`: ", conditionMessage(e))
-            message("file.exists(`", Biooracle.filled.layers.global, "`): ", file.exists(Biooracle.filled.layers.global))
-            message("file.info(`", Biooracle.filled.layers.global, "`):")
-            print(file.info(Biooracle.filled.layers.global))
-            stop(e)
-          }
-        )
+        Biooracle.filled.layers.global = "/mnt/inputs/biooracle/rasterstacks/ssp245dec100/Biooracle.filled.layers.global2025.tif"
+        Stack <- stack(Biooracle.filled.layers.global)
         rasterstacks_path.base <- paste(rasterstacks_path,"/baselinedec50", sep="/")
         layernames_path <- paste(rasterstacks_path.base,"/layernames",".rda" ,sep ="")
         load(layernames_path)
