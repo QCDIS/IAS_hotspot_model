@@ -695,6 +695,7 @@ for (sel.sen in 1:length(dataset_scenarios)) {
             print(paste("No raster stack file found:", Biooracle.filled.layers.global))
             next
         }
+        print("file.exists(`", Biooracle.filled.layers.global, "`): ", file.exists(Biooracle.filled.layers.global))
         Stack <- tryCatch(
           stack(Biooracle.filled.layers.global),
           error = function(e) {
