@@ -702,7 +702,12 @@ for (sel.sen in 1:length(dataset_scenarios)) {
         layernames_path <- paste(rasterstacks_path.base,"/layernames",".rda" ,sep ="")
         if (!file.exists(layernames_path)) {
             print(paste("No layer names file found:", layernames_path))
-            exit(1)
+            layernames_path <- paste(inputs_path,"/rasterstacks/",scenario,"/layernames",".rda" ,sep ="")
+            pinrt(paste("Trying alternative layer names file:", layernames_path))
+            if (!file.exists(layernames_path)) {
+                print(paste("No layer names file found:", layernames_path))
+                next
+            }
         }
         load(layernames_path)
         # Check lengths before assignment
