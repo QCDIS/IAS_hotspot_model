@@ -179,6 +179,10 @@ if (!file.exists(filtered_clean_marine_coordinates_output_mars_2025)) {
     is.marine <- sapply(filtered.cleanput$gbifID, function(i) points2$layer[which(points2$ID == i)])
     filtered.cleanput.marine <- filtered.cleanput[!is.na(is.marine), ]
     save(filtered.cleanput.marine, file = filtered_clean_marine_coordinates_output_mars_2025)
+
+    # Also save as csv for debugging
+    write.csv(filtered.cleanput.marine, file = gsub(".rda", ".csv", filtered_clean_marine_coordinates_output_mars_2025), row.names = FALSE)
+
 } else {
     print(paste("Loading filtered clean marine coordinates file:", filtered_clean_marine_coordinates_output_mars_2025))
     load(filtered_clean_marine_coordinates_output_mars_2025)
@@ -187,8 +191,7 @@ if (!file.exists(filtered_clean_marine_coordinates_output_mars_2025)) {
 
 # --- Prepare input files for species distribution modelling ---
 all.species <- unique(filtered.cleanput.marine$species)
-all.species <- c(all.species, "Asparagopsis armata")
-print("Prepare input files for species distribution modelling")
+print(paste("Number of marine species to process:", length(all.species)))
 selected.species <- read.csv2(nis_list_path, sep = ",")
 cathegories <- unique(selected.species$category)
 
