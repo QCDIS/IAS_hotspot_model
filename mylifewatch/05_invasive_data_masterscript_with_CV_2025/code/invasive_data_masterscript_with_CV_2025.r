@@ -703,7 +703,7 @@ print(paste("biooracle_filled_layers Loading raster stack from:", biooracle_fill
 
 
 
-        Stack <- stack(Biooracle.filled.layers.global)
+#         Stack <- stack(Biooracle.filled.layers.global)
         rasterstacks_path.base <- paste(rasterstacks_path,"/baselinedec50", sep="/")
         layernames_path <- paste(rasterstacks_path.base,"/layernames",".rda" ,sep ="")
         load(layernames_path)
