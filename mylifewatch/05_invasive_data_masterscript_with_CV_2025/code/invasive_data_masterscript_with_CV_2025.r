@@ -571,7 +571,6 @@ for(species in Data.table$species[-exclude]){
     my.data <- read.csv(csv_file,header=T)
     print(paste("Loaded my.data for species:", species))
     column_names = names(my.data)
-    print(paste("column_names: ", column_names))
     # Validate predictor columns and skip when none or all-NA
     vars_max_index <- min(length(column_names), 23)
     vars_min_index <- 5
@@ -689,7 +688,6 @@ dataset_scenarios <- list.dirs(
 for (sel.sen in 1:length(dataset_scenarios)) {
 
     scenario <- dataset_scenarios[[sel.sen]]
-    print(paste("Processing scenario:", scenario))
         rastermappath_scenario <- paste(rastermappath,scenario,sep ="")
         if (!dir.exists(rastermappath_scenario)) dir.create(rastermappath_scenario)
 
@@ -701,7 +699,6 @@ for (sel.sen in 1:length(dataset_scenarios)) {
             next
         }
         Stack <- stack(Biooracle.filled.layers.global)
-        print(paste("nlayers(Stack):", nlayers(Stack)))
         rasterstacks_path.base <- paste(rasterstacks_path,"/baselinedec50", sep="/")
         layernames_path <- paste(rasterstacks_path.base,"/layernames",".rda" ,sep ="")
         if (!file.exists(layernames_path)) {
@@ -715,14 +712,12 @@ for (sel.sen in 1:length(dataset_scenarios)) {
         }
         load(layernames_path)
         # Check lengths before assignment
-
-
         if (length(layernames) == nlayers(Stack)) {
           names(Stack) <- layernames
           print(length(layernames))
-        print(nlayers(Stack))
+          print(nlayers(Stack))
         } else {
-          warning("Length of layernames does not match number of layers in Stack. Names not assigned.")
+          print("Length of layernames does not match number of layers in Stack. Names not assigned.")
           print(length(layernames))
           print(nlayers(Stack))
           next
@@ -861,8 +856,6 @@ for (sel.sen in 1:length(dataset_scenarios)) {
             next
         }
         #get files for scenario
-        print(paste("Processing scenario:", scenario, "species:", species))
-
         cases <- union(grep("baseline",listatiff),grep(scenario,listatiff))
         print(paste("Found", length(cases), "files for scenario:", scenario))
         my.rasterfiles<- listatiff[ intersect(grep(species,listatiff), cases)  ]
