@@ -700,7 +700,7 @@ for (sel.sen in 1:length(dataset_scenarios)) {
 biooracle_filled_layers = paste(baseline_path,"/Biooracle.filled.layers.global2025",".tif", sep="")
 Stack <- stack(biooracle_filled_layers) #"globalStack.rda"#"globalStack.rda" or "europeStack.rda"
 print(paste("biooracle_filled_layers Loading raster stack from:", biooracle_filled_layers))
-
+print(paste("nlayers(Stack):", nlayers(Stack)))
 
 
 #         Stack <- stack(Biooracle.filled.layers.global)
