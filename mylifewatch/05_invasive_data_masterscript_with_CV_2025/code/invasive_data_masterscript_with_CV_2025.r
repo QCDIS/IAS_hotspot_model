@@ -520,6 +520,7 @@ gc()
     }
     file_to_load <- paste(indata.path, species, "_indata.csv", sep="")
     if (!file.exists(file_to_load)) {
+        print(paste("file_to_load does not exist:", file_to_load))
         next
     }
     rf.output.list <- run.random.forests(species = species ,
@@ -527,30 +528,30 @@ gc()
                 indata.path = Outpath,
                 iterations.path = iterations_path)
 
-  # run a garbage collection to free memory
-  gc()
-  # the rf.output.cv object contains the results from the cross validations analysis.
-  #Predictions for each entrie are stored for each repeat and cv-fold. The random forest model is not saved, to save memory
-  rf.output.cv <- rf.output.list[["RF.results.CV"]]
-  # this object contains the random forests model obtainied when all indata is used as trainingset.
-  # the predicted probability of being present is stored for each data poing
-  rf.output <- rf.output.list[["RF.results.alldata"]]
+    # run a garbage collection to free memory
+    gc()
+    # the rf.output.cv object contains the results from the cross validations analysis.
+    #Predictions for each entrie are stored for each repeat and cv-fold. The random forest model is not saved, to save memory
+    rf.output.cv <- rf.output.list[["RF.results.CV"]]
+    # this object contains the random forests model obtainied when all indata is used as trainingset.
+    # the predicted probability of being present is stored for each data poing
+    rf.output <- rf.output.list[["RF.results.alldata"]]
 
-  #print results to see progression
-  names(rf.output)
-  print(rf.output$"RF.selected")
- # print(rf.output$"response.sel")
+    #print results to see progression
+    names(rf.output)
+    print(rf.output$"RF.selected")
+    # print(rf.output$"response.sel")
 
-  #save cross validation results for later calculation of ROC
+    #save cross validation results for later calculation of ROC
 
-  save(rf.output.cv, file= cross_validation_file)
-  #save the random forest model for late prediction of map
-  save(rf.output, file= random_forest_model)
-  #remove the large object generated to make space for the next species
-  rm(rf.output.list)
-  rm(rf.output.cv)
-  rm(rf.output)
-  gc()
+    save(rf.output.cv, file= cross_validation_file)
+    #save the random forest model for late prediction of map
+    save(rf.output, file= random_forest_model)
+    #remove the large object generated to make space for the next species
+    rm(rf.output.list)
+    rm(rf.output.cv)
+    rm(rf.output)
+    gc()
 }
 # ####################
 # try C50 rules
@@ -735,7 +736,6 @@ for (sel.sen in 1:length(dataset_scenarios)) {
         }
         for(Species in Data.table$species[-exclude]){
             newfile <- paste(rastermappath_scenario,"/linear.prob.global.",Species,'.tif',sep="")
-            print(paste("Looking for  map:", newfile))
             if (file.exists(newfile)) {
                 print(paste("Prediction map already exists:", newfile))
                 next
