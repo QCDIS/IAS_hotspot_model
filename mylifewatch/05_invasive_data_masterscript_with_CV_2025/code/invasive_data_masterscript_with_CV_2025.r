@@ -36,9 +36,6 @@ download_zip_data_if_not_present_and_unzip(
 #Folder where the rasterstacks are stored
 biooracle_path <- paste(inputs_path,"biooracle/", sep="")
 rasterstacks_path <- paste(biooracle_path,"rasterstacks", sep="")
-if (!dir.exists(rasterstacks_path)){
-    rasterstacks_path <- paste(inputs_path,"rasterstacks", sep="")
-}
 baseline_path <- paste(rasterstacks_path,"/baselinedec50", sep="")
 
 
@@ -126,11 +123,12 @@ species = Data.table$species[2] # Ficopomatus enigmaticus  "Neogobius melanostom
 # Define which stack to used when extracting environmental data-
 # not using alternative rasterstacks
 biooracle_filled_layers = paste(baseline_path,"/Biooracle.filled.layers.global2025",".tif", sep="")
-
 Stack <- stack(biooracle_filled_layers) #"globalStack.rda"#"globalStack.rda" or "europeStack.rda"
+print(paste("Loading raster stack from:", biooracle_filled_layers))
 
 layernames_path <- paste(baseline_path,"/layernames.filled",".rda" ,sep ="")
 load(layernames_path)
+print(paste("Loaded layer names from:", layernames_path))
 names(Stack) <- layernames
 
 #Prevent that strings in csv files are red in as factors variables
