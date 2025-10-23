@@ -31,7 +31,7 @@
     {
       "name": "nis_list_url",
       "label": "nis_list_url",
-      "description": "optional value to download nis list url",
+      "description": "optional value to download non-indigenous species (NIS) list url",
       "type": "String",
       "defaultValue": "https://surfdrive.surf.nl/index.php/s/gYcd4HD3tw3zcQB/download"
     },
@@ -47,7 +47,7 @@
     {
       "name": "nis_list_path",
       "label": "nis_list_path",
-      "description": "zip nis_list_path",
+      "description": "zip path to non-indigenous species (NIS) list",
       "type": "zip",
       "path": "/mnt/inputs/NIS_list_combined_Mar2025_v2.zip"
     }

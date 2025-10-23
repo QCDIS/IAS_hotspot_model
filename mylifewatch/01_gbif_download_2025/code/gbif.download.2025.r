@@ -35,6 +35,8 @@ gbif_taxon_keys <-
 
 gbif_taxon_keys <- gbif_taxon_keys
 
+print(paste("Number of GBIF taxon keys:", length(gbif_taxon_keys)))
+
 occ_download(
   pred_in("taxonKey", gbif_taxon_keys),
   format = "SIMPLE_CSV",
