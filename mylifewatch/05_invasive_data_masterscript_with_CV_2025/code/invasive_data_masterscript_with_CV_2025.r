@@ -36,6 +36,9 @@ download_zip_data_if_not_present_and_unzip(
 #Folder where the rasterstacks are stored
 biooracle_path <- paste(inputs_path,"biooracle/", sep="")
 rasterstacks_path <- paste(biooracle_path,"rasterstacks", sep="")
+if (!dir.exists(rasterstacks_path)){
+    rasterstacks_path <- paste("rasterstacks", sep="")
+}
 baseline_path <- paste(rasterstacks_path,"/baselinedec50", sep="")
 
 
@@ -695,7 +698,6 @@ for (sel.sen in 1:length(dataset_scenarios)) {
             next
         }
         Stack <- stack(Biooracle.filled.layers.global)
-
         rasterstacks_path.base <- paste(rasterstacks_path,"/baselinedec50", sep="/")
         layernames_path <- paste(rasterstacks_path.base,"/layernames",".rda" ,sep ="")
         load(layernames_path)
