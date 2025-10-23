@@ -699,11 +699,11 @@ for (sel.sen in 1:length(dataset_scenarios)) {
         Stack <- stack(Biooracle.filled.layers.global)
         print(paste("nlayers(Stack):", nlayers(Stack)))
         rasterstacks_path.base <- paste(rasterstacks_path,"/baselinedec50", sep="/")
-        if (!dir.exists(rasterstacks_path.base)) {
-            print(paste("No baseline raster stack path found:", rasterstacks_path.base))
-            stop()
-        }
         layernames_path <- paste(rasterstacks_path.base,"/layernames",".rda" ,sep ="")
+        if (!file.exists(layernames_path)) {
+            print(paste("No layer names file found:", layernames_path))
+            exit(1)
+        }
         load(layernames_path)
         # Check lengths before assignment
 
