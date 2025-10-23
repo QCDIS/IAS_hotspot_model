@@ -240,7 +240,6 @@ for (s in all.species) {
       `comment on Taxon` = comment,
       stringsAsFactors = FALSE
     ))
-
 }
 
 
@@ -270,6 +269,7 @@ filtered.cleanput.unbox <- filtered.cleanput[-excludebox, ]
 selected.species <- read.csv2(nis_list_path, sep = ",")
 cathegories <- unique(selected.species$category)
 for (my.cathegory in cathegories) {
+    print(paste("Generating pseudoabsences for category:", my.cathegory))
     my.species.list <- selected.species$Taxon.name[selected.species$category == my.cathegory]
     filtered.cleanput.subset <- filtered.cleanput.unbox[!is.na(match(filtered.cleanput.unbox$species, my.species.list)), ]
     n_samples <- min(1000, length(filtered.cleanput.subset$gbifID))
