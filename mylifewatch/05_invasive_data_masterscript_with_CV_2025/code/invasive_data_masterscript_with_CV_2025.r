@@ -147,7 +147,7 @@ for(i in seq_along(Data.table$species[-1])) {
     print(paste("species: ", species))
     species_indata_file =  paste(Outpath,species,"_indata.csv", sep="")
     if (file.exists(species_indata_file)) {
-#         print(paste("File already exists:", species_indata_file))
+        print(paste("File already exists:", species_indata_file))
         next
     }
     # Read in present absent and pseudoabsent points,
