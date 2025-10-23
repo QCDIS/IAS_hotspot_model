@@ -695,6 +695,7 @@ for (sel.sen in 1:length(dataset_scenarios)) {
             print(paste("No raster stack file found:", Biooracle.filled.layers.global))
             next
         }
+        print(paste("Loading raster stack from:", Biooracle.filled.layers.global))
         Stack <- stack(Biooracle.filled.layers.global)
         rasterstacks_path.base <- paste(rasterstacks_path,"/baselinedec50", sep="/")
         layernames_path <- paste(rasterstacks_path.base,"/layernames",".rda" ,sep ="")
