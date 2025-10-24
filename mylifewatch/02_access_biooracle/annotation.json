@@ -74,11 +74,11 @@
   ],
   "outputs": [
     {
-      "name": "biooracle_output_path",
-      "label": "biooracle_output_path",
-      "description": "zip biooracle output dir",
+      "name": "biooracle_datalayer_path",
+      "label": "biooracle_datalayer_path",
+      "description": "zip biooracle datalayer output dir",
       "type": "zip",
-      "path": "/mnt/outputs/biooracle.zip"
+      "path": "/mnt/outputs/biooracle/datalayer.zip"
     }
   ],
   "resources": {
