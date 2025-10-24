@@ -12,7 +12,7 @@
       "label": "biooracle datalayer path",
       "description": "zip file containing biooracle layers in .nc format",
       "type": "zip",
-      "path": "/mnt/inputs/biooracle/datalayer_nc.zip"
+      "path": "/mnt/inputs/datalayer_nc.zip"
     }
   ],
   "outputs": [

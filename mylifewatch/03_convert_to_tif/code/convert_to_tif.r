@@ -5,9 +5,9 @@ inputs_path = "/mnt/inputs/"
 outputs_path <- "/mnt/outputs/"
 
 
-converted_biooracle_dir <- paste0(outputs_path,"biooracle/datalayer_tif/")
+converted_biooracle_dir <- paste0(outputs_path,"datalayer_tif/")
 
-biooracle_datalayer_path <- paste0(inputs_path,"biooracle/datalayer_nc/")
+biooracle_datalayer_path <- paste0(inputs_path,"datalayer_nc/")
 
 dataset_scenarios <- list.dirs(
   paste(biooracle_datalayer_path, sep = ""),
