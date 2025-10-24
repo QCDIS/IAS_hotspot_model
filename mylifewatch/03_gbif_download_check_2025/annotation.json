@@ -47,7 +47,7 @@
       "label": "filled layers file",
       "description": "zip filled layers file",
       "type": "zip",
-      "path": "/mnt/inputs/biooracle/rasterstacks/baselinedec50/filled_layers_new.zip"
+      "path": "/mnt/inputs/rasterstacks/baselinedec50/filled_layers_new.zip"
     },
     {
       "name": "shapefile_zip",
