@@ -12,7 +12,7 @@
       "label": "converted_biooracle_dir",
       "description": "zip biooracle dir",
       "type": "zip",
-      "path": "/mnt/inputs/biooracle.zip"
+      "path": "/mnt/inputs/datalayer_tif.zip"
     }
   ],
   "outputs": [

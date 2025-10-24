@@ -11,10 +11,10 @@ outputs_path <- "/mnt/outputs/"
 converted_biooracle_dir <- paste0(inputs_path, "biooracle/")
 rasterstacks_outputs <- outputs_path
 
-datalayer_dir = "/datalayer.tif/"
+converted_biooracle_dir = paste0(inputs_path, "datalayer_tif/")
 # Get scenario folders
 dataset_scenarios <- list.dirs(
-  paste(converted_biooracle_dir, datalayer_dir, sep = ""),
+  paste(converted_biooracle_dir, sep = ""),
   full.names = FALSE,
   recursive = FALSE
 )
@@ -24,9 +24,8 @@ dataset_scenarios <- list.dirs(
 # --- Scenario loop ---
 for (scenario in dataset_scenarios) {
     print(paste("Processing scenario:", scenario))
-    #  outdir <- paste(dir,datalayer_dir,scenario,"/",sep="")
 
-    rasterpath <- paste(converted_biooracle_dir,datalayer_dir,scenario,"/",sep="")
+    rasterpath <- paste(converted_biooracle_dir,scenario,"/",sep="")
     stackpath <- paste(rasterstacks_outputs,"/rasterstacks/",scenario,"/",sep="")
     if (!dir.exists(stackpath)) dir.create(stackpath, recursive = TRUE)
 #
@@ -47,7 +46,6 @@ for (scenario in dataset_scenarios) {
 
     filename2 <- paste(stackpath,"/","Biooracle.Europe2025.tif", sep="")
     writeRaster(rasterstack.Europe.2025, filename2, format="GTiff",overwrite=TRUE)
-
 
     layernames <- names(mystack)
     save(layernames, file = paste(stackpath,"/layernames.rda" ,sep =""))
