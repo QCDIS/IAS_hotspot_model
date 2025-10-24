@@ -3,7 +3,8 @@
 base_dir="$(pwd)"
 dev_kit_dir="$HOME/workspace/mylifewatch-wrapper-development-kit"
 
-wrapper_paths=("01_gbif_download_2025"
+wrapper_paths=("01_gbif_download_2025",
+               "02_access_biooracle"
         )
 
 
