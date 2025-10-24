@@ -8,19 +8,19 @@
   ],
   "inputs": [
     {
-      "name": "input_biooracle_dir",
-      "label": "input_biooracle_dir",
+      "name": "biooracle_datalayer_path",
+      "label": "biooracle datalayer path",
       "description": "zip file containing biooracle layers",
       "type": "zip",
-      "path": "/mnt/inputs/biooracle.zip"
+      "path": "/mnt/inputs/biooracle/datalayer_nc.zip"
     }
   ],
   "outputs": [
     {
       "type": "zip",
       "name": "converted_biooracle_dir",
-      "path": "/mnt/outputs/biooracle.zip",
-      "label": "converted_biooracle_dir",
+      "path": "/mnt/outputs/biooracle/datalayer_tif.zip",
+      "label": "converted biooracle_dir",
       "description": "zip file containing biooracle layers in tif format"
     }
   ],

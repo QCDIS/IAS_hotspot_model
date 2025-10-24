@@ -10,20 +10,23 @@ library(RNetCDF)
 inputs_path = "/mnt/inputs/"
 outputs_path <- "/mnt/outputs/"
 
-input_dir <- paste0(inputs_path, "biooracle/")
 biooracle_path <- paste0(outputs_path, "biooracle/")
+rasterstacks <- paste0(biooracle_path, "rasterstacks/")
+biooracle_datalayer_path <- paste0(inputs_path,"biooracle/datalayer_nc/")
+
+
 plots_path <- paste0(outputs_path, "plots/")
 if (!dir.exists(plots_path)) dir.create(plots_path, recursive = TRUE)
 
 dataset_scenarios <- list.dirs(
-  paste(input_dir, "datalayer.nc", sep = ""),
+  biooracle_datalayer_path,
   full.names = FALSE,
   recursive = FALSE
 )
 
 for (scenario in dataset_scenarios) {
-  rasterpath <- paste(input_dir, "datalayer.nc/", scenario, sep = "")
-  stackpath <- paste(biooracle_path, "rasterstacks/", scenario, "/", sep = "")
+  rasterpath <- paste(biooracle_datalayer_path, scenario, sep = "")
+  stackpath <- paste(rasterstacks, scenario, "/", sep = "")
   if (!dir.exists(stackpath)) dir.create(stackpath, recursive = TRUE)
 
   lista.ras <- Sys.glob(paste(rasterpath, "/*.nc", sep = ""))

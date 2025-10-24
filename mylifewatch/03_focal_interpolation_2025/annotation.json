@@ -8,20 +8,20 @@
   ],
   "inputs": [
     {
-      "name": "input_biooracle_dir",
-      "label": "input_biooracle_dir",
+      "name": "biooracle_datalayer_path",
+      "label": "biooracle datalayer path",
       "description": "zip file containing biooracle layers in .nc format",
       "type": "zip",
-      "path": "/mnt/inputs/biooracle.zip"
+      "path": "/mnt/inputs/biooracle/datalayer_nc.zip"
     }
   ],
   "outputs": [
     {
       "type": "zip",
-      "name": "biooracle_path",
-      "path": "/mnt/outputs/biooracle.zip",
-      "label": "output biooracle dir",
-      "description": "zip file containing biooracle layers after focal interpolation in .tif format"
+      "name": "rasterstacks",
+      "path": "/mnt/outputs/biooracle/rasterstacks.zip",
+      "label": "output rasterstacks dir",
+      "description": "zip file containing biooracle rasterstacks after focal interpolation in .tif format"
     },
     {
       "type": "zip",
