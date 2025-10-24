@@ -7,6 +7,7 @@ wrapper_paths=("01_gbif_download_2025"
                "02_access_biooracle"
                "03_convert_to_tif"
                "03_focal_interpolation_2025"
+               "03_gbif_download_check_2025"
         )
 
 
