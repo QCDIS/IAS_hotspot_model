@@ -10,8 +10,7 @@ library(RNetCDF)
 inputs_path = "/mnt/inputs/"
 outputs_path <- "/mnt/outputs/"
 
-biooracle_path <- paste0(outputs_path, "biooracle/")
-rasterstacks <- paste0(biooracle_path, "rasterstacks/")
+rasterstacks <- paste0(outputs_path, "rasterstacks/")
 biooracle_datalayer_path <- paste0(inputs_path,"/datalayer_nc/")
 
 
