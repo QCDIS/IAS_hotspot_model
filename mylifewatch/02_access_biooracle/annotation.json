@@ -78,7 +78,7 @@
       "label": "biooracle_datalayer_path",
       "description": "zip biooracle datalayer output dir",
       "type": "zip",
-      "path": "/mnt/outputs/biooracle/datalayer_nc.zip"
+      "path": "/mnt/outputs/datalayer_nc.zip"
     }
   ],
   "resources": {
