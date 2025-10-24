@@ -5,6 +5,7 @@ dev_kit_dir="$HOME/workspace/mylifewatch-wrapper-development-kit"
 
 wrapper_paths=("01_gbif_download_2025"
                "02_access_biooracle"
+               "03_convert_to_tif"
         )
 
 
