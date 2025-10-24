@@ -63,21 +63,21 @@
       "label": "species plots",
       "description": "zip species plots",
       "type": "zip",
-      "path": "/mnt/inputs/speciesplots.zip"
+      "path": "/mnt/outputs/speciesplots.zip"
     },
     {
       "name": "coordinates_output",
       "label": "coordinates output",
       "description": "zip cleaned coordinates",
       "type": "zip",
-      "path": "/mnt/inputs/cleaned_coordinates.zip"
+      "path": "/mnt/outputs/cleaned_coordinates.zip"
     },
     {
       "name": "speciespath",
       "label": "specie spath",
       "description": "zip species path",
       "type": "zip",
-      "path": "/mnt/inputs/species.zip"
+      "path": "/mnt/outputs/species.zip"
     }
   ],
   "resources": {
