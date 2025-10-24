@@ -8,6 +8,7 @@ wrapper_paths=("01_gbif_download_2025"
                "03_convert_to_tif"
                "03_focal_interpolation_2025"
                "03_gbif_download_check_2025"
+               "04_arrange_datalayers_2025"
         )
 
 
