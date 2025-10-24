@@ -74,13 +74,6 @@
   ],
   "outputs": [
     {
-        "name": "dataset_och_variabler",
-        "label": "dataset och variabler",
-        "description": "och variables",
-        "type": "zip",
-        "path": "/mnt/outputs/dataset_och_variabler.zip"
-    },
-    {
       "name": "biooracle_output_path",
       "label": "biooracle_output_path",
       "description": "zip biooracle output dir",
