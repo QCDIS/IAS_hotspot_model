@@ -19,7 +19,7 @@ inputs_path = "/mnt/inputs/"
 outputs_path <- "/mnt/outputs/"
 
 
-biooracle_datalayer_path <- paste0(outputs_path,"biooracle/datalayer.nc")
+biooracle_datalayer_path <- paste0(outputs_path,"biooracle/datalayer.nc/")
 if(!dir.exists(biooracle_datalayer_path)){
   dir.create(biooracle_datalayer_path, recursive = TRUE)
 }
