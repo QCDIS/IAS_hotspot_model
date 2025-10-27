@@ -18,8 +18,8 @@
   "outputs": [
     {
       "type": "zip",
-      "name": "rasterstacks",
-      "path": "/mnt/outputs/rasterstacks.zip",
+      "name": "filled_rasterstacks",
+      "path": "/mnt/outputs/filled_rasterstacks.zip",
       "label": "output rasterstacks dir",
       "description": "zip file containing biooracle rasterstacks after focal interpolation in .tif format"
     },

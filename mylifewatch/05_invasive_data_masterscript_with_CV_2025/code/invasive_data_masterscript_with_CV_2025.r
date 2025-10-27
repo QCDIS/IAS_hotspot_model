@@ -35,9 +35,11 @@ download_zip_data_if_not_present_and_unzip(
     )
 
 #Folder where the rasterstacks are stored
-biooracle_path <- paste(inputs_path,"biooracle/", sep="")
-rasterstacks_path <- paste(biooracle_path,"rasterstacks", sep="")
-baseline_path <- paste(rasterstacks_path,"/baselinedec100", sep="")
+baseline_path <- "baselinedec100"
+filled_rasterstacks <- paste(inputs_path,"filled_rasterstacks", sep="")
+arranged_rasterstacks <- paste(inputs_path,"/arranged_rasterstacks", sep="") # For the layernames.rda"
+arranged_baseline_path <- paste(arranged_rasterstacks,"/",baseline_path, sep="")
+filtered_baseline_path <- paste(filled_rasterstacks,"/",baseline_path, sep="")
 
 
 species_path = paste(inputs_path, "species/", sep="")
@@ -49,20 +51,6 @@ download_zip_data_if_not_present_and_unzip(
     data_url = args$ais_shipping_density_url,
     dest_path = traffic_path
     )
-
-
-
-rasterstacks_alternative = paste0(inputs_path,"/rasterstacks/")
-
-# speciespathRaw <- paste(inputs_path ,"speciesIndata", sep ="")
-# print(paste("Getting species data path:", args$speciespathRaw_url))
-# print(paste("speciespathRaw: ", speciespathRaw))
-# download_zip_data_if_not_present_and_unzip(
-#     data_path = speciespathRaw,
-#     data_url = args$speciespathRaw_url,
-#     dest_path = inputs_path
-#     )
-
 
 stringsAsFactors = F
 #Folder with the original rasterdata
@@ -127,11 +115,11 @@ names(Data.table)[1] <- "species" # just to check
 species = Data.table$species[2] # Ficopomatus enigmaticus  "Neogobius melanostomus"
 # Define which stack to used when extracting environmental data-
 # not using alternative rasterstacks
-biooracle_filled_layers = paste(baseline_path,"/Biooracle.filled.layers.global2025",".tif", sep="")
+biooracle_filled_layers = paste(filtered_baseline_path,"/Biooracle.filled.layers.global2025",".tif", sep="")
 Stack <- stack(biooracle_filled_layers) #"globalStack.rda"#"globalStack.rda" or "europeStack.rda"
 print(paste("Loading raster stack from:", biooracle_filled_layers))
 
-layernames_path <- paste(baseline_path,"/layernames.filled",".rda" ,sep ="")
+layernames_path <- paste(arranged_baseline_path,"/layernames",".rda" ,sep ="")
 load(layernames_path)
 print(paste("Loaded layer names from:", layernames_path))
 names(Stack) <- layernames
@@ -236,7 +224,7 @@ print(paste("Excluding species:", paste(Data.table$species[exclude], collapse = 
 #
 exclude2 <- c()
 
-  for(species in Data.table$species){
+for(species in Data.table$species){
     lista.csv<- Sys.glob(paste(Outpath,"*.csv",sep="/"))
     files_to_read <- lista.csv[grep(species, lista.csv)]
     if (length(files_to_read) == 0) {
@@ -710,16 +698,11 @@ for (sel.sen in 1:length(dataset_scenarios)) {
             next
         }
         Stack <- stack(Biooracle.filled.layers.global)
-        rasterstacks_path.base <- paste(rasterstacks_path,"/baselinedec50", sep="/")
+        rasterstacks_path.base <- paste(arranged_rasterstacks,"/baselinedec50", sep="/")
         layernames_path <- paste(rasterstacks_path.base,"/layernames",".rda" ,sep ="")
         if (!file.exists(layernames_path)) {
             print(paste("No layer names file found:", layernames_path))
-            layernames_path <- paste(rasterstacks_alternative,scenario,"/layernames",".rda" ,sep ="")
-            print(paste("Trying alternative layer names file:", layernames_path))
-            if (!file.exists(layernames_path)) {
-                print(paste("No layer names file found:", layernames_path))
-                next
-            }
+            next
         }
         load(layernames_path)
         # Check lengths before assignment

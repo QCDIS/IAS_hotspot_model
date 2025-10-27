@@ -26,7 +26,7 @@ for (scenario in dataset_scenarios) {
     print(paste("Processing scenario:", scenario))
 
     rasterpath <- paste(converted_biooracle_dir,scenario,"/",sep="")
-    stackpath <- paste(rasterstacks_outputs,"/rasterstacks/",scenario,"/",sep="")
+    stackpath <- paste(rasterstacks_outputs,"/arranged_rasterstacks/",scenario,"/",sep="")
     if (!dir.exists(stackpath)) dir.create(stackpath, recursive = TRUE)
 #
     lista.ras<- Sys.glob(paste(rasterpath,"/*",".tif",sep=""))
