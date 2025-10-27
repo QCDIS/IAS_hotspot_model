@@ -78,11 +78,11 @@
       "path": "/mnt/inputs/ICES_ecoregions.zip"
     },
     {
-      "name": "data_table_path",
-      "label": "data table path",
-      "description": "zip species path dir",
+      "name": "species_path",
+      "label": "specie path",
+      "description": "zip species path",
       "type": "zip",
-      "path": "/mnt/inputs/species/data_table.zip"
+      "path": "/mnt/inputs/species.zip"
     },
     {
       "type": "zip",

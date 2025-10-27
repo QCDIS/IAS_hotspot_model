@@ -41,7 +41,6 @@ arranged_rasterstacks <- paste(inputs_path,"/arranged_rasterstacks", sep="") # F
 arranged_baseline_path <- paste(arranged_rasterstacks,"/",baseline_path, sep="")
 filtered_baseline_path <- paste(filled_rasterstacks,"/",baseline_path, sep="")
 
-
 species_path = paste(inputs_path, "species/", sep="")
 data_table_path <- paste(species_path,"data_table.csv", sep="")
 
