@@ -66,9 +66,11 @@ for (scenario in dataset_scenarios) {
 
   summary(values(template))
   summary(values(filled_layers[[1]]))
-  writeRaster(filled_layers, paste(stackpath, "filled_layers_new.tif", sep = ""), overwrite = TRUE, filetype = "GTiff")
-
-  mystack <- stack(paste(stackpath, "filled_layers_new.tif", sep = ""))
+  filled_layers_new = paste(stackpath, "filled_layers_new.tif", sep = "")
+  print(paste("Writing filled layers to scenario:", filled_layers_new))
+  writeRaster(filled_layers, filled_layers_new , overwrite = TRUE, filetype = "GTiff")
+  print(paste("Reading filled layers from scenario:", filled_layers_new))
+  mystack <- stack(filled_layers_new)
   rm(masked_layers)
   rm(land_mask)
   rm(this_layer)
