@@ -49,11 +49,6 @@
       "name": "layernames_url",
       "defaultValue": "https://surfdrive.surf.nl/index.php/s/MijCe0RvTpexGWi/download",
       "value": "https://surfdrive.surf.nl/index.php/s/MijCe0RvTpexGWi/download"
-    },
-    {
-      "name": "speciespathRaw_url",
-      "defaultValue": "https://surfdrive.surf.nl/index.php/s/p6Swy5Imy837tLc/download",
-      "value": "https://surfdrive.surf.nl/index.php/s/p6Swy5Imy837tLc/download"
     }
   ]
 }
