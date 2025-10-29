@@ -45,7 +45,7 @@ species_path = paste(inputs_path, "species/", sep="")
 download_zip_data_if_not_present_and_unzip(
     data_path = species_path,
     data_url = args$species_url,
-    dest_path = inputs_path
+    dest_path = species_path
     )
 
 data_table_path <- paste(species_path,"data_table.csv", sep="")
