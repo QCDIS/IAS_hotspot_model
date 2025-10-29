@@ -41,14 +41,14 @@ arranged_rasterstacks <- paste(inputs_path,"/arranged_rasterstacks", sep="") # F
 arranged_baseline_path <- paste(arranged_rasterstacks,"/",baseline_path, sep="")
 filtered_baseline_path <- paste(filled_rasterstacks,"/",baseline_path, sep="")
 
-species_path = paste(inputs_path, "species/", sep="")
+species_path = paste(inputs_path, "species", sep="")
 download_zip_data_if_not_present_and_unzip(
     data_path = species_path,
     data_url = args$species_url,
-    dest_path = species_path
+    dest_path = inputs_path
     )
 
-data_table_path <- paste(species_path,"data_table.csv", sep="")
+data_table_path <- paste(species_path,"/data_table.csv", sep="")
 
 
 
