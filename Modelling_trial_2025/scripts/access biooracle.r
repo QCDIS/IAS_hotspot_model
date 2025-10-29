@@ -12,12 +12,12 @@ library(ggplot2)
 library(maps)
 library(glue)
 library(readxl)# to rename files
-setwd("/home/gunnarandersson/Dokument/Projekt/HAV2025")
+setwd("/home/gunnarandersson/Dokument/Projekt/HAV2025") 
 # Explore datasets in the package
 #list_datasets()
 
 # Explore layers in a dataset
-#list_layers()
+#list_layers() 
 
 
 projectpath <- "~/Dokument/Projekt/HAV2025"
@@ -93,7 +93,7 @@ for(sel.sen in c(4:7)){
     #latitude = c(25, 80),
     #longitude = c(-15, 40),
     time = c("2040-01-01T00:00:00Z", "2040-01-01T00:00:00Z") )# Ensure time is correctly specified
-
+   
    constraints.dec100 <- list(
       #latitude = c(25, 80),
       #longitude = c(-15, 40),
@@ -125,7 +125,7 @@ scenario.info[[scenario]][["datasets"]][[i]]<- list(dataset_id = variable.select
 
 for (dataset.nr in 1:length(scenario.info[[scenario]][["datasets"]])) {
 #for (dataset.nr in 1:3) {
-
+  
   dataset <- scenario.info[[scenario]][["datasets"]][[dataset.nr]]
   dataset_id <- dataset$dataset_id
   if(!(scenario == "baseline")){
@@ -134,19 +134,18 @@ for (dataset.nr in 1:length(scenario.info[[scenario]][["datasets"]])) {
   variable.vector[scenario.pos]<- scenario
   variable.vector[scenario.pos+1]<- 2020
   variable.vector[scenario.pos+2]<- 2100
-
+  
   dataset_id <- paste(variable.vector, collapse ="_")
   }#end if
-
   strsplit(dataset_id,"_")[[1]]
   variables <- dataset$variables
   constraints <- dataset$constraints
 
   for(variable in strsplit(variables,",")[[1]] ){
-  # Download and load data layers of choice
+  # Download and load data layers of choice 
  # dir <- "/home/gunnarandersson/Dokument/Projekt/HAV2025/data/Biooracle.download/"
-  if (!dir.exists(dir)) dir.create(dir)
-
+  if (!dir.exists(dir)) dir.create(dir) 
+  
   info_layer(dataset_id)
   a <- download_layers(dataset_id, variables = variable, constraints = constraints, directory= dir)
   filename_with_ext <- basename(terra::sources(a))[1]
@@ -155,10 +154,10 @@ for (dataset.nr in 1:length(scenario.info[[scenario]][["datasets"]])) {
     to = glue("{dir}{dataset_id}_{variables}.nc"))
   b <- brick(glue("{dir}{dataset_id}_{variables}.nc"))
   filename1 <- glue("{dir}{dataset_id}_{variables}.nc")
-
+  
   # datalayer.tiff for tif, etc
   outdir <- paste(dir,"datalayer.nc/",scenario,dec,"/",sep="")
-  if (!dir.exists(outdir)) dir.create(outdir)
+  if (!dir.exists(outdir)) dir.create(outdir) 
   depth <- strsplit(dataset_id,"_")[[1]][length(strsplit(dataset_id,"_")[[1]])]
   filename <-paste(outdir,variable,"_",depth,".tif",sep="")
   # to save as tiff
@@ -180,13 +179,13 @@ for(sel.sen in c(2:7)){
   for(dec in dec.vec[c(2,3)]){
     indir <- paste(dir,"datalayer.nc/",dataset_scenarios[[1]][1],"/",sep="")
     outdir <- paste(dir,"datalayer.nc/",scenario,dec,"/",sep="")
-    print( paste(outdir,"par_mean_mean_depthsurf.nc exists",
+    print( paste(outdir,"par_mean_mean_depthsurf.nc exists", 
                  file.exists(paste(outdir,"par_mean_mean_depthsurf.nc",sep=""))))
-
-    file.copy(paste(indir,"par_mean_mean_depthsurf.nc",sep=""),
+    
+    file.copy(paste(indir,"par_mean_mean_depthsurf.nc",sep=""), 
               paste(outdir,"par_mean_mean_depthsurf.nc",sep=""), overwrite = TRUE)
-
-    print( paste(outdir,"par_mean_mean_depthsurf.nc exists",
+    
+    print( paste(outdir,"par_mean_mean_depthsurf.nc exists", 
                  file.exists(paste(outdir,"par_mean_mean_depthsurf.nc",sep=""))))
   }}
 ##################################################################

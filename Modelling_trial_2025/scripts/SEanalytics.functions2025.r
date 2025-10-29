@@ -534,7 +534,7 @@ calc.ROC <- function(.RF.result,.true.class){
 ##################################################################
 
 plot.ROC <- function(.ROC.path,.my.species,.mean.ROC,.all.ROC){
-  plotname <- paste(.ROC.path,"/","plotROC_",.my.species,method,".png",sep="")
+  plotname <- paste(ROC.path,"/","plotROC_",.my.species,method,".png",sep="")
   png(plotname)  #to make file
   par(mar = rep(2, 4))
 
@@ -567,14 +567,14 @@ MCMC.process = function(.mydata, .iters, .process.plan,.process.ID){
   ]]
  iter.nr <-  unlist(sapply(1:length(iter.ID),function(i)
 grep(paste("A",iter.ID[i],"A"),paste("A",.mydata$ID,"A"))
- ))
-
+ )) 
+ 
 # length(iter.ID)
 # length(iter.nr)
   train <- seq(1:length(.mydata$occurrenceStatus))[-iter.nr ]
   #ncol <- length(names(mydata))# value is the last column
   # temp <- try(randomForest(.mydata[train,-c(ncol)], mydata[train,ncol], prox=TRUE))
-
+  
   # make sure that class is the ast column
   class <- .mydata$occurrenceStatus
   remove.col <- unlist( sapply(c("ID" ,"Lat", "Lon", "occurrenceStatus" ),function(i)
@@ -593,8 +593,8 @@ grep(paste("A",iter.ID[i],"A"),paste("A",.mydata$ID,"A"))
   attribute.names <- names(d)
   names(d) <- c( paste("nr",seq(1,length(d[1,])-1 ),sep="_"),"class")
   d$class <- factor(d$class)
-  n.attributes <- length(names(d))-1
-
+  n.attributes <- length(names(d))-1 
+  
   #temp <- try(MCMFresult <- mcfs(class~., d, mcfs.projections=60, mcfs.projectionSize=min(2,n.attributes), mcfs.cutoffPermutations=5, mcfs.threadsNumber=8)
   #)
   temp <- try(MCMFresult <- mcfs(class~., d, projections="auto", projectionSize="auto", cutoffMethod = "permutations",cutoffPermutations=20, threadsNumber=8)
@@ -603,9 +603,9 @@ grep(paste("A",iter.ID[i],"A"),paste("A",.mydata$ID,"A"))
   RI <- temp$RI
   RI$attribute.name <- attribute.names[ sapply(1:length(RI$attribute),function(i)
     as.numeric( strsplit(RI$attribute[i],"_")[[1]][2]))]
-
+  
   selected.nr <- as.numeric( rownames(temp$RI)[seq(1,temp$cutoff_value)])
- if(length(selected.nr)>0){
+ if(length(selected.nr)>0){ 
    selected <- attribute.names[selected.nr]
  }else{
      selected <- NA}
