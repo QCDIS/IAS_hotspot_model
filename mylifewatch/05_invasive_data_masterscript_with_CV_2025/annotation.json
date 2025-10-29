@@ -39,7 +39,7 @@
       "description": "ICESecopath url",
       "type": "String",
       "defaultValue": "https://surfdrive.surf.nl/index.php/s/sgjj0HCYLnjJ0AO/download"
-    }
+    },
     {
       "name": "layernames_url",
       "label": "layernames_url",
