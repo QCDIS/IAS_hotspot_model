@@ -29,6 +29,9 @@ for (scenario in dataset_scenarios) {
   if (!dir.exists(stackpath)) dir.create(stackpath, recursive = TRUE)
 
   lista.ras <- Sys.glob(paste(rasterpath, "/*.nc", sep = ""))
+  if (length(lista.ras) <= 0) {
+    next
+  }
   layers <- rast(lista.ras)
   template <- layers[[1]]
 
@@ -84,9 +87,12 @@ for (scenario in dataset_scenarios) {
 
   biooracle_filled_layers <- paste(stackpath, "/", "Biooracle.filled.layers.global2025.tif", sep = "")
   writeRaster(mystack, biooracle_filled_layers, format = "GTiff", overwrite = TRUE)
-  # copy `biooracle_filled_layers` into `inputs_path` preserving the basename
-  dest_path <- file.path(inputs_path, basename(biooracle_filled_layers))
-  copied <- file.copy(from = biooracle_filled_layers, to = dest_path, overwrite = TRUE)
+  # if scenario contains baseline copy the global filled layers
+    if (grepl("baseline", scenario)) {
+        dest_path <- file.path(inputs_path, basename(biooracle_filled_layers))
+        copied <- file.copy(from = biooracle_filled_layers, to = dest_path, overwrite = TRUE)
+    }
+
 
   filename2 <- paste(stackpath, "/", "Biooracle.filled.layers.Europe2025.tif", sep = "")
   writeRaster(rasterstack.filled.layers.Europe.2025, filename2, format = "GTiff", overwrite = TRUE)
