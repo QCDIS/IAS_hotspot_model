@@ -82,11 +82,11 @@ for (scenario in dataset_scenarios) {
   e <- extent(-25, 45, 30, 72) #xmin, xmax, ymin, ymax
   rasterstack.filled.layers.Europe.2025 <- crop(mystack, e)
 
-  filename <- paste(stackpath, "/", "Biooracle.filled.layers.global2025.tif", sep = "")
-  writeRaster(mystack, filename, format = "GTiff", overwrite = TRUE)
-  # copy `filename` into `inputs_path` preserving the basename
-  dest_path <- file.path(inputs_path, basename(filename))
-  copied <- file.copy(from = filename, to = dest_path, overwrite = TRUE)
+  biooracle_filled_layers <- paste(stackpath, "/", "Biooracle.filled.layers.global2025.tif", sep = "")
+  writeRaster(mystack, biooracle_filled_layers, format = "GTiff", overwrite = TRUE)
+  # copy `biooracle_filled_layers` into `inputs_path` preserving the basename
+  dest_path <- file.path(inputs_path, basename(biooracle_filled_layers))
+  copied <- file.copy(from = biooracle_filled_layers, to = dest_path, overwrite = TRUE)
 
   filename2 <- paste(stackpath, "/", "Biooracle.filled.layers.Europe2025.tif", sep = "")
   writeRaster(rasterstack.filled.layers.Europe.2025, filename2, format = "GTiff", overwrite = TRUE)
