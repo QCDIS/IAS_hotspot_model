@@ -123,24 +123,21 @@ species = Data.table$species[2] # Ficopomatus enigmaticus  "Neogobius melanostom
 # Define which stack to used when extracting environmental data-
 # not using alternative rasterstacks
 
-biooracle_filled_layers = paste(inputs_path,"/Biooracle.filled.layers.global2025",".tif", sep="")
-download_zip_data_if_not_present_and_unzip
-(
-    data_path = biooracle_filled_layers,
+biooracle_filled_layers = paste(inputs_path,"Biooracle.filled.layers.global2025",".tif", sep="")
+download_zip_data_if_not_present_and_unzip(
+data_path = biooracle_filled_layers,
     data_url = args$biooracle_filled_layers_url,
     dest_path = inputs_path
-)
-
+    )
 Stack <- stack(biooracle_filled_layers) #"globalStack.rda"#"globalStack.rda" or "europeStack.rda"
 print(paste("Loading raster stack from:", biooracle_filled_layers))
 
 layernames_path <- paste(inputs_path,"/layernames",".rda" ,sep ="")
-download_zip_data_if_not_present_and_unzip
-(
-    data_path = layernames_path,
+download_zip_data_if_not_present_and_unzip(
+data_path = layernames_path,
     data_url = args$layernames_url,
     dest_path = inputs_path
-)
+    )
 
 load(layernames_path)
 print(paste("Loaded layer names from:", layernames_path))
