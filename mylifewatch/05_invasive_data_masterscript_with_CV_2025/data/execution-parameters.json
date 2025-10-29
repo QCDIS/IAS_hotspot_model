@@ -1,9 +1,9 @@
 {
   "parameters": [
     {
-      "name": "data_table_url",
-      "defaultValue": "https://surfdrive.surf.nl/index.php/s/DNqTYAyQdaD5gbh/download",
-      "value": "https://surfdrive.surf.nl/index.php/s/DNqTYAyQdaD5gbh/download"
+      "name": "species_url",
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/lvh7tU9BJi6QGg6/download",
+      "value": "https://surfdrive.surf.nl/index.php/s/lvh7tU9BJi6QGg6/download"
     },
     {
       "name": "ais_shipping_density_url",
@@ -24,11 +24,6 @@
       "name": "ICESecopath_url",
       "defaultValue": "https://surfdrive.surf.nl/index.php/s/sgjj0HCYLnjJ0AO/download",
       "value": "https://surfdrive.surf.nl/index.php/s/sgjj0HCYLnjJ0AO/download"
-    },
-    {
-      "name": "data_table_url",
-      "defaultValue": "https://surfdrive.surf.nl/index.php/s/DNqTYAyQdaD5gbh",
-      "value": "https://surfdrive.surf.nl/index.php/s/DNqTYAyQdaD5gbh"
     },
     {
       "name": "layernames_url",

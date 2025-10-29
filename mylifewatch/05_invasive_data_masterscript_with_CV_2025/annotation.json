@@ -6,11 +6,11 @@
   "dockerImage": "invasive_data_masterscript_with_cv_2025",
   "parameters": [
     {
-      "name": "data_table_url",
-      "label": "data_table_url",
+      "name": "species_url",
+      "label": "species_url",
       "description": "data table url",
       "type": "String",
-      "defaultValue": "https://surfdrive.surf.nl/index.php/s/DNqTYAyQdaD5gbh/download"
+      "defaultValue": "https://surfdrive.surf.nl/index.php/s/lvh7tU9BJi6QGg6/download"
     },
     {
       "name": "ais_shipping_density_url",
@@ -39,27 +39,13 @@
       "description": "ICESecopath url",
       "type": "String",
       "defaultValue": "https://surfdrive.surf.nl/index.php/s/sgjj0HCYLnjJ0AO/download"
-    },
-    {
-      "name": "data_table_url",
-      "label": "data_table_url",
-      "description": "data table url",
-      "type": "String",
-      "defaultValue": "https://surfdrive.surf.nl/index.php/s/DNqTYAyQdaD5gbh"
-    },
+    }
     {
       "name": "layernames_url",
       "label": "layernames_url",
       "description": "layernames url",
       "type": "String",
       "defaultValue": "https://surfdrive.surf.nl/index.php/s/MijCe0RvTpexGWi/download"
-    },
-    {
-      "name": "speciespathRaw_url",
-      "label": "speciespathRaw_url",
-      "description": "SpeciespathRaw url",
-      "type": "String",
-      "defaultValue": "https://surfdrive.surf.nl/index.php/s/p6Swy5Imy837tLc/download"
     }
   ],
   "inputs": [
