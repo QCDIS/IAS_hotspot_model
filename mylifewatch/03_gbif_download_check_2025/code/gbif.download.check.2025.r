@@ -296,16 +296,16 @@ for (my.cathegory in cathegories) {
     pseudoabsences$eventDate <- NA
     names(pseudoabsences) <- c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
                              "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")
-#     xlim <- c(-180, 180)
-#     ylim <- c(-60, 84)
-#     test_plot_pseudoabsences = paste(specie_splots_dir, "testplot.pseudoabsences.", my.cathegory, ".jpg", sep = "")
-#     print(paste("Plotting test_plot_pseudoabsences: ", test_plot_pseudoabsences))
-#     jpeg(test_plot_pseudoabsences,
-#        width = 18 * (xlim[2] - xlim[1]), height = 18 * (ylim[2] - ylim[1]), pointsize = 4)
-#     plot(world1$geometry, xlim = xlim, ylim = ylim, col = "light grey")
-#     lines(boxxlim[c(1, 2, 2, 1, 1)], boxylim[c(1, 1, 2, 2, 1)])
-#     points(pseudoabsences$decimalLongitude, pseudoabsences$decimalLatitude, col = "red", pch = "*", cex = 5)
-#     dev.off()
+    xlim <- c(-180, 180)
+    ylim <- c(-60, 84)
+    test_plot_pseudoabsences = paste(specie_splots_dir, "testplot.pseudoabsences.", my.cathegory, ".jpg", sep = "")
+    print(paste("Plotting test_plot_pseudoabsences: ", test_plot_pseudoabsences))
+    jpeg(test_plot_pseudoabsences,
+       width = 18 * (xlim[2] - xlim[1]), height = 18 * (ylim[2] - ylim[1]), pointsize = 4)
+    plot(world1$geometry, xlim = xlim, ylim = ylim, col = "light grey")
+    lines(boxxlim[c(1, 2, 2, 1, 1)], boxylim[c(1, 1, 2, 2, 1)])
+    points(pseudoabsences$decimalLongitude, pseudoabsences$decimalLatitude, col = "red", pch = "*", cex = 5)
+    dev.off()
 #     pseudoabsences_marine_excludebox = paste(speciespath, "pseudoabsences.marine.excludebox", my.cathegory, ".csv", sep = "")
 #     print(paste("pseudoabsences_marine_excludebox: ", pseudoabsences_marine_excludebox))
 #     write.csv(pseudoabsences, file = pseudoabsences_marine_excludebox, row.names = FALSE)
