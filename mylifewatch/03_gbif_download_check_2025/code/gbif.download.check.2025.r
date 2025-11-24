@@ -294,8 +294,8 @@ for (my.cathegory in cathegories) {
     pseudoabsences$coordinateUncertaintyInMeters <- NA
     pseudoabsences$depthAccuracy <- NA
     pseudoabsences$eventDate <- NA
-#     names(pseudoabsences) <- c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
-#                              "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")
+    names(pseudoabsences) <- c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
+                             "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")
 #     xlim <- c(-180, 180)
 #     ylim <- c(-60, 84)
 #     test_plot_pseudoabsences = paste(specie_splots_dir, "testplot.pseudoabsences.", my.cathegory, ".jpg", sep = "")
