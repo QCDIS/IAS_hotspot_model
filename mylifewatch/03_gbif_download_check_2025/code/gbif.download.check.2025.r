@@ -15,7 +15,7 @@ download_zip_data_if_not_present_and_unzip(
     data_url = args$species_file_url,
     dest_path = inputs_path
     )
-nis_list_path <- paste0(inputs_path,"NIS_list_combined_Mar2025_v2.csv")
+nis_list_path <- paste0(inputs_path,"NIS_list.csv")
 download_zip_data_if_not_present_and_unzip(
     data_path = nis_list_path,
     data_url = args$nis_list_url,

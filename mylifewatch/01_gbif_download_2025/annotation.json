@@ -49,7 +49,7 @@
       "label": "nis_list_path",
       "description": "zip path to non-indigenous species (NIS) list",
       "type": "zip",
-      "path": "/mnt/inputs/NIS_list_combined_Mar2025_v2.zip"
+      "path": "/mnt/inputs/NIS_list.zip"
     }
   ],
   "outputs": [

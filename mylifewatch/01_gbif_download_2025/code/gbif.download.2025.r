@@ -13,7 +13,7 @@ key <- args$key
 inputs_path = "/mnt/inputs/"
 outputs_path <- "/mnt/outputs/"
 download_file = paste0(outputs_path,key,".zip")
-nis_list_path <- paste0(inputs_path,"NIS_list_combined_Mar2025_v2.csv")
+NIS_listnis_list_path <- paste0(inputs_path,"NIS_list.csv")
 dest_path =  paste0(nis_list_path, ".zip")
 print(paste("nis_list_path:", nis_list_path))
 print(paste("dest_path:", dest_path))
