@@ -15,7 +15,7 @@ download_zip_data_if_not_present_and_unzip(
     data_url = args$species_file_url,
     dest_path = inputs_path
     )
-nis_list_path <- paste0(inputs_path,"NIS_list.csv")
+nis_list_path <- paste0(inputs_path,"NIS_list_combined_Mar2025_v2.csv")
 download_zip_data_if_not_present_and_unzip(
     data_path = nis_list_path,
     data_url = args$nis_list_url,
@@ -281,10 +281,16 @@ for (my.cathegory in cathegories) {
     }
 
     locationsamples <- sample(1:length(filtered.cleanput.subset$gbifID), n_samples, replace =F)
+    print(paste("locationsamples length:", length(locationsamples)))
+    locationsamples <- sample(seq_len(nrow(filtered.cleanput.subset)), n_samples, replace = FALSE)
+    print(paste("locationsamples length:", length(locationsamples)))
+
     pseudoabsences <- filtered.cleanput.subset[locationsamples,
                                              c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
                                                "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")]
-    pseudoabsences$gbifID <- paste("pseudo", seq(1:1000), sep = "")
+
+    # generate gbifIDs that match the number of rows in pseudoabsences
+    pseudoabsences$gbifID <- paste0("pseudo", seq_len(nrow(pseudoabsences)))
     pseudoabsences$species <- NA
     pseudoabsences$occurrenceStatus <- "ABSENT"
     pseudoabsences$coordinateUncertaintyInMeters <- NA
