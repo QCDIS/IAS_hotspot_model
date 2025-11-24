@@ -287,8 +287,8 @@ for (my.cathegory in cathegories) {
                                              c("gbifID", "occurrenceID", "species", "occurrenceStatus", "decimalLongitude", "decimalLatitude",
                                                "coordinateUncertaintyInMeters", "depth", "depthAccuracy", "eventDate")]
 
-#     # generate gbifIDs that match the number of rows in pseudoabsences
-#     pseudoabsences$gbifID <- paste0("pseudo", seq_len(nrow(pseudoabsences)))
+    # generate gbifIDs that match the number of rows in pseudoabsences
+    pseudoabsences$gbifID <- paste0("pseudo", seq_len(nrow(pseudoabsences)))
 #     pseudoabsences$species <- NA
 #     pseudoabsences$occurrenceStatus <- "ABSENT"
 #     pseudoabsences$coordinateUncertaintyInMeters <- NA
