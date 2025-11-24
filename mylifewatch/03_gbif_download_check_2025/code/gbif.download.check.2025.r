@@ -306,8 +306,8 @@ for (my.cathegory in cathegories) {
     lines(boxxlim[c(1, 2, 2, 1, 1)], boxylim[c(1, 1, 2, 2, 1)])
     points(pseudoabsences$decimalLongitude, pseudoabsences$decimalLatitude, col = "red", pch = "*", cex = 5)
     dev.off()
-#     pseudoabsences_marine_excludebox = paste(speciespath, "pseudoabsences.marine.excludebox", my.cathegory, ".csv", sep = "")
-#     print(paste("pseudoabsences_marine_excludebox: ", pseudoabsences_marine_excludebox))
+    pseudoabsences_marine_excludebox = paste(speciespath, "pseudoabsences.marine.excludebox", my.cathegory, ".csv", sep = "")
+    print(paste("pseudoabsences_marine_excludebox: ", pseudoabsences_marine_excludebox))
 #     write.csv(pseudoabsences, file = pseudoabsences_marine_excludebox, row.names = FALSE)
 } # --- End category loop ---
 
