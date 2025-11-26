@@ -725,7 +725,13 @@ for (sel.sen in 1:length(dataset_scenarios)) {
         if (!dir.exists(rastermappath_scenario)) dir.create(rastermappath_scenario)
 
         Biooracle_scenario_path <- paste(rasterstacks_path,"/",scenario,"/",sep="")
-        Biooracle.filled.layers.global = paste(Biooracle_scenario_path,"Biooracle.filled.layers.global2025",".tif", sep="")
+        # if we use filled rasters, load Biooracle.filled.layers.global2025 else load Biooracle.tif
+        if (rasterstacks_path == filled_rasterstacks) {
+          biooracle_layers_file <- "Biooracle.filled.layers.global2025.tif"
+        } else {
+          biooracle_layers_file <- "Biooracle.tif"
+        }
+        Biooracle.filled.layers.global = paste(Biooracle_scenario_path,biooracle_layers_file, sep="")
         print(paste("Loading raster stack from:", Biooracle.filled.layers.global))
         if (!file.exists(Biooracle.filled.layers.global)) {
             print(paste("No raster stack file found:", Biooracle.filled.layers.global))
