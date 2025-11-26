@@ -60,6 +60,13 @@ input <- read.delim(species_file, header = TRUE, sep = "\t", na = c("", "NA"))
 to.use <- complete.cases(input[, c("decimalLatitude", "decimalLongitude")])
 input <- input[to.use, ]
 
+# Print all input paths
+print(paste("species_file:", species_file))
+print(paste("nis_list_path:", nis_list_path))
+print(paste("shapefile:", shapefile))
+
+
+
 # --- Plot initial data ---
 print("Plotting initial data")
 factor <- as.numeric(as.factor(input$species))
