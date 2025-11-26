@@ -709,9 +709,10 @@ write.csv2(as.data.frame(all.AUC),file = all_AUC_path )
 ##################################################################
 
 
+rasterstacks_path = filled_rasterstacks
 
 dataset_scenarios <- list.dirs(
-  paste(filled_rasterstacks, sep = ""),
+  paste(rasterstacks_path, sep = ""),
   full.names = FALSE,
   recursive = FALSE
 )
@@ -723,7 +724,7 @@ for (sel.sen in 1:length(dataset_scenarios)) {
         rastermappath_scenario <- paste(rastermappath,scenario,sep ="")
         if (!dir.exists(rastermappath_scenario)) dir.create(rastermappath_scenario)
 
-        Biooracle_scenario_path <- paste(filled_rasterstacks,"/",scenario,"/",sep="")
+        Biooracle_scenario_path <- paste(rasterstacks_path,"/",scenario,"/",sep="")
         Biooracle.filled.layers.global = paste(Biooracle_scenario_path,"Biooracle.filled.layers.global2025",".tif", sep="")
         print(paste("Loading raster stack from:", Biooracle.filled.layers.global))
         if (!file.exists(Biooracle.filled.layers.global)) {
@@ -731,8 +732,12 @@ for (sel.sen in 1:length(dataset_scenarios)) {
             next
         }
         Stack <- stack(Biooracle.filled.layers.global)
-        rasterstacks_path.base <- paste(arranged_rasterstacks,"/baselinedec50", sep="/")
-        layernames_path <- paste(rasterstacks_path.base,"/layernames",".rda" ,sep ="")
+        rasterstacks_path.base <- paste(rasterstacks_path,"/baselinedec50", sep="/")
+        if (rasterstacks_path == filled_rasterstacks) {
+          layernames_path <- paste(rasterstacks_path.base,"/layernames.filled",".rda" ,sep ="")
+        } else {
+          layernames_path <- paste(rasterstacks_path.base,"/layernames",".rda" ,sep ="")
+        }
         if (!file.exists(layernames_path)) {
             print(paste("No layer names file found:", layernames_path))
             next
