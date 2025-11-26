@@ -708,6 +708,9 @@ write.csv2(as.data.frame(all.AUC),file = all_AUC_path )
 ## predict maps
 ##################################################################
 
+
+rasterstacks_path = arranged_rasterstacks
+
 dataset_scenarios <- list.dirs(
   paste(rasterstacks_path, sep = ""),
   full.names = FALSE,
@@ -729,7 +732,7 @@ for (sel.sen in 1:length(dataset_scenarios)) {
             next
         }
         Stack <- stack(Biooracle.filled.layers.global)
-        rasterstacks_path.base <- paste(arranged_rasterstacks,"/baselinedec50", sep="/")
+        rasterstacks_path.base <- paste(rasterstacks_path,"/baselinedec50", sep="/")
         layernames_path <- paste(rasterstacks_path.base,"/layernames",".rda" ,sep ="")
         if (!file.exists(layernames_path)) {
             print(paste("No layer names file found:", layernames_path))
