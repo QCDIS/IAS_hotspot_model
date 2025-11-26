@@ -90,13 +90,6 @@
       "description": "zip traffic_path dir",
       "type": "zip",
       "path": "/mnt/inputs/traffic_layers.zip"
-    },
-    {
-      "type": "zip",
-      "name": "layernames_path",
-      "path": "/mnt/inputs/layernames.zip",
-      "label": "layernames",
-      "description": "zip layernames dir with csv file"
     }
   ],
   "outputs": [
