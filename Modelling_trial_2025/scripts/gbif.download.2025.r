@@ -11,7 +11,7 @@ email <- "gunnar.andersson@sva.se" # your email
 
 path <- "~/Dokument/Projekt/HAV2025/"
 #file_url <- paste(path,"Data2022/valda.arter.5.csv",sep ="" )
-file_url <- paste(path,"data/species.data/NIS_list_combined_Mar2025_v2.csv",sep ="" )
+file_url <- paste(path,"data/species.data/NIS_list.csv",sep ="" )
 
 
 ########################################

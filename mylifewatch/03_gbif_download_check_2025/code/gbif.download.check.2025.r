@@ -308,7 +308,7 @@ for (my.cathegory in cathegories) {
     dev.off()
     pseudoabsences_marine_excludebox = paste(speciespath, "pseudoabsences.marine.excludebox", my.cathegory, ".csv", sep = "")
     print(paste("pseudoabsences_marine_excludebox: ", pseudoabsences_marine_excludebox))
-#     write.csv(pseudoabsences, file = pseudoabsences_marine_excludebox, row.names = FALSE)
+    write.csv(pseudoabsences, file = pseudoabsences_marine_excludebox, row.names = FALSE)
 } # --- End category loop ---
 
 
