@@ -56,11 +56,11 @@ prestage_input_data(){
 }
 
 
-#for i in "${wrapper_paths[@]}"
-#do
-#	echo $i
-#	sudo rm -rf $i/data/inputs/* $i/data/outputs/*
-#done
+for i in "${wrapper_paths[@]}"
+do
+	echo $i
+	sudo rm -rf $i/data/outputs/*
+done
 
 for wrapper_path in "${wrapper_paths[@]}"
 do
