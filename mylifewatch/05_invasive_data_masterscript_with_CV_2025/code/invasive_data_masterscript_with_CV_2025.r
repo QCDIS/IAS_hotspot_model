@@ -732,7 +732,7 @@ for (sel.sen in 1:length(dataset_scenarios)) {
             next
         }
         Stack <- stack(Biooracle.filled.layers.global)
-        rasterstacks_path.base <- paste(rasterstacks_path,"/baselinedec50", sep="/")
+        rasterstacks_path.base <- paste(rasterstacks_path,"/",baseline_path, sep="/")
         if (rasterstacks_path == filled_rasterstacks) {
           layernames_path <- paste(rasterstacks_path.base,"/layernames.filled",".rda" ,sep ="")
         } else {
