@@ -59,6 +59,18 @@ download_zip_data_if_not_present_and_unzip(
     dest_path = traffic_path
     )
 
+# Print all input paths
+print(paste("ICESpath:", ICESpath))
+print(paste("ICESecopath:", ICESecopath))
+print(paste("species_path:", species_path))
+print(paste("filled_rasterstacks:", filled_rasterstacks))
+print(paste("arranged_rasterstacks:", arranged_rasterstacks))
+print(paste("arranged_baseline_path:", arranged_baseline_path))
+print(paste("filtered_baseline_path:", filtered_baseline_path))
+print(paste("data_table_path:", data_table_path))
+print(paste("traffic_path:", traffic_path))
+
+
 stringsAsFactors = F
 #Folder with the original rasterdata
 
@@ -123,7 +135,7 @@ species = Data.table$species[2] # Ficopomatus enigmaticus  "Neogobius melanostom
 # Define which stack to used when extracting environmental data-
 # not using alternative rasterstacks
 
-biooracle_filled_layers = paste(inputs_path,"Biooracle.filled.layers.global2025",".tif", sep="")
+biooracle_filled_layers = paste(filtered_baseline_path,"Biooracle.filled.layers.global2025",".tif", sep="")
 download_zip_data_if_not_present_and_unzip(
 data_path = biooracle_filled_layers,
     data_url = args$biooracle_filled_layers_url,
