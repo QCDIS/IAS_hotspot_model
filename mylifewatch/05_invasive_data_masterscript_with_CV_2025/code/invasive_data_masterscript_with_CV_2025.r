@@ -144,7 +144,7 @@ data_path = biooracle_filled_layers,
 Stack <- stack(biooracle_filled_layers) #"globalStack.rda"#"globalStack.rda" or "europeStack.rda"
 print(paste("Loading raster stack from:", biooracle_filled_layers))
 
-layernames_path <- paste(inputs_path,"/layernames",".rda" ,sep ="")
+layernames_path <- paste(arranged_baseline_path,"/layernames",".rda" ,sep ="")
 download_zip_data_if_not_present_and_unzip(
 data_path = layernames_path,
     data_url = args$layernames_url,
