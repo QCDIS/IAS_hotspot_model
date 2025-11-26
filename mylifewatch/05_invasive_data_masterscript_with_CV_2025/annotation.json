@@ -97,13 +97,6 @@
       "path": "/mnt/inputs/layernames.zip",
       "label": "layernames",
       "description": "zip layernames dir with csv file"
-    },
-    {
-      "type": "zip",
-      "name": "biooracle_filled_layers",
-      "path": "/mnt/inputs/Biooracle.filled.layers.global2025.zip",
-      "label": "biooracle filled layers",
-      "description": "zip biooracle filled layers dir"
     }
   ],
   "outputs": [
