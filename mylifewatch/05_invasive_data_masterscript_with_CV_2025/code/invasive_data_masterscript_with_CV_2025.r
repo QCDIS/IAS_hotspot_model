@@ -709,8 +709,8 @@ write.csv2(as.data.frame(all.AUC),file = all_AUC_path )
 ##################################################################
 
 
-rasterstacks_path = arranged_rasterstacks
-
+# rasterstacks_path = arranged_rasterstacks
+rasterstacks_path = filled_rasterstacks
 dataset_scenarios <- list.dirs(
   paste(rasterstacks_path, sep = ""),
   full.names = FALSE,
